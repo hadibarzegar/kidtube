@@ -54,10 +54,10 @@
 
 ### Persian / RTL (RTL)
 
-- [ ] **RTL-01**: Document root has `dir="rtl"` and `lang="fa"` attributes
-- [ ] **RTL-02**: All layout uses CSS logical properties (margin-inline-start, padding-inline-end, etc.)
+- [x] **RTL-01**: Document root has `dir="rtl"` and `lang="fa"` attributes
+- [x] **RTL-02**: All layout uses CSS logical properties (margin-inline-start, padding-inline-end, etc.)
 - [ ] **RTL-03**: Navigation flows right-to-left; back buttons point right
-- [ ] **RTL-04**: Vazirmatn font loads via next/font with zero layout shift
+- [x] **RTL-04**: Vazirmatn font loads via next/font with zero layout shift
 - [ ] **RTL-05**: All UI text is in Persian (admin panel may be English)
 
 ### User Accounts (AUTH)
@@ -147,10 +147,10 @@
 | PLAY-05 | Phase 3 | Pending |
 | PLAY-06 | Phase 3 | Pending |
 | PLAY-07 | Phase 3 | Pending |
-| RTL-01 | Phase 1 | Pending |
-| RTL-02 | Phase 1 | Pending |
+| RTL-01 | Phase 1 | Complete |
+| RTL-02 | Phase 1 | Complete |
 | RTL-03 | Phase 3 | Pending |
-| RTL-04 | Phase 1 | Pending |
+| RTL-04 | Phase 1 | Complete |
 | RTL-05 | Phase 3 | Pending |
 | AUTH-01 | Phase 4 | Pending |
 | AUTH-02 | Phase 4 | Pending |

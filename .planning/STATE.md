@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 1 of 5 (Foundation and Infrastructure)
-Plan: 1 of 4 in current phase
-Status: In progress
-Last activity: 2026-03-01 — Completed Plan 01: Docker Compose and nginx Infrastructure
+Plan: 4 of 4 in current phase
+Status: Phase complete
+Last activity: 2026-03-01 — Completed Plan 04: Next.js Frontend Apps with RTL and Vazirmatn Font
 
-Progress: [█░░░░░░░░░] 5%
+Progress: [████░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 2 min
-- Total execution time: 2 min
+- Total plans completed: 4
+- Average duration: 4 min
+- Total execution time: 16 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-infrastructure | 1 | 2 min | 2 min |
+| 01-foundation-infrastructure | 4 | 16 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min)
-- Trend: -
+- Last 5 plans: 01-01 (2 min), 01-02 (4 min), 01-03 (5 min), 01-04 (5 min)
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -49,6 +49,9 @@ Recent decisions affecting current work:
 - [01-01]: nginx uses alias (not root) for /hls/ location so /hls/{id}/master.m3u8 maps to /var/www/hls/{id}/master.m3u8 matching HLS path convention
 - [01-01]: CORS wildcard (*) on /hls/ — Video.js requests HLS from same nginx origin in prod, wildcard avoids dev port mismatch issues
 - [01-01]: site-api and admin-api use expose (not ports) — only accessible through nginx, not directly from host
+- [01-04]: Tailwind v4 (installed by create-next-app@latest) uses @theme CSS blocks instead of tailwind.config.ts — font configured via @theme { --font-sans: var(--font-vazirmatn) }
+- [01-04]: next/font/local loads Vazirmatn from node_modules — preferred for offline/Docker builds over Google Fonts
+- [01-04]: admin-app basePath set to /admin to match nginx routing from Plan 01
 
 ### Pending Todos
 
@@ -63,5 +66,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 01-01-PLAN.md (Docker Compose and nginx Infrastructure)
+Stopped at: Completed 01-04-PLAN.md (Next.js Frontend Apps with RTL and Vazirmatn Font) — Phase 1 complete
 Resume file: None
