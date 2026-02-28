@@ -1,0 +1,22 @@
+# Environment files
+.env
+
+# HLS data (keep the directory, ignore contents)
+data/hls/*
+!data/hls/.gitkeep
+
+# Node modules
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+
+# Go build artifacts
+*.exe
+*.out
+
+# OS files
+.DS_Store
+Thumbs.db
