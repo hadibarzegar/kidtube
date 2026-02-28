@@ -49,6 +49,9 @@ Recent decisions affecting current work:
 - [01-01]: nginx uses alias (not root) for /hls/ location so /hls/{id}/master.m3u8 maps to /var/www/hls/{id}/master.m3u8 matching HLS path convention
 - [01-01]: CORS wildcard (*) on /hls/ — Video.js requests HLS from same nginx origin in prod, wildcard avoids dev port mismatch issues
 - [01-01]: site-api and admin-api use expose (not ports) — only accessible through nginx, not directly from host
+- [01-02]: bson.ObjectID instead of primitive.ObjectID — mongo-driver v2 merged primitive types into bson package (bson/primitive subpackage removed in v2)
+- [01-02]: HLS path derived by convention /hls/{episode_id}/master.m3u8 — no explicit path field on Episode documents
+- [01-02]: AgeGroup stored as admin-defined documents (not hardcoded enums) — allows custom age ranges at runtime
 - [01-04]: Tailwind v4 (installed by create-next-app@latest) uses @theme CSS blocks instead of tailwind.config.ts — font configured via @theme { --font-sans: var(--font-vazirmatn) }
 - [01-04]: next/font/local loads Vazirmatn from node_modules — preferred for offline/Docker builds over Google Fonts
 - [01-04]: admin-app basePath set to /admin to match nginx routing from Plan 01
