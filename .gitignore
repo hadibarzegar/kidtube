@@ -16,6 +16,8 @@ dist/
 # Go build artifacts
 *.exe
 *.out
+backend/site-api
+backend/admin-api
 
 # OS files
 .DS_Store
