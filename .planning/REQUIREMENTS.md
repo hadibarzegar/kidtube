@@ -7,8 +7,8 @@
 
 ### Infrastructure (INFRA)
 
-- [ ] **INFRA-01**: Docker Compose starts all services (mongo, site-api, admin-api, site-app, admin-app, nginx) with a single `docker compose up`
-- [ ] **INFRA-02**: nginx reverse-proxies to all services and serves HLS segments from a shared volume with correct CORS headers and MIME types
+- [x] **INFRA-01**: Docker Compose starts all services (mongo, site-api, admin-api, site-app, admin-app, nginx) with a single `docker compose up`
+- [x] **INFRA-02**: nginx reverse-proxies to all services and serves HLS segments from a shared volume with correct CORS headers and MIME types
 - [ ] **INFRA-03**: MongoDB initializes with all required collections (channels, episodes, categories, users, jobs) and indexes
 - [ ] **INFRA-04**: Go backend project uses `cmd/site-api` and `cmd/admin-api` binaries sharing `internal/` packages
 - [ ] **INFRA-05**: Health check endpoints respond on both site-api and admin-api
@@ -115,8 +115,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Pending |
-| INFRA-02 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
+| INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 1 | Pending |
 | INFRA-04 | Phase 1 | Pending |
 | INFRA-05 | Phase 1 | Pending |

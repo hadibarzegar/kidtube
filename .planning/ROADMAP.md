@@ -29,7 +29,7 @@ KidTube is built in five phases that follow a strict dependency chain: foundatio
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: Docker Compose, nginx configuration, and volume strategy
+- [x] 01-01: Docker Compose, nginx configuration, and volume strategy
 - [ ] 01-02: Go project structure, MongoDB schema, and shared internal packages
 - [ ] 01-03: Site-api and admin-api skeletons with health check endpoints
 - [ ] 01-04: Next.js site-app and admin-app scaffolding with RTL root layout and Vazirmatn font
@@ -182,7 +182,7 @@ All 45 v1 requirements are mapped to exactly one phase.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation and Infrastructure | 0/4 | Not started | - |
+| 1. Foundation and Infrastructure | 1/4 | In progress | - |
 | 2. Admin Content Pipeline | 0/5 | Not started | - |
 | 3. Public Browsing and Playback | 0/4 | Not started | - |
 | 4. User Accounts and Personalization | 0/3 | Not started | - |

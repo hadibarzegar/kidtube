@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 1 of 5 (Foundation and Infrastructure)
-Plan: 0 of 4 in current phase
-Status: Ready to plan
-Last activity: 2026-03-01 — Roadmap created, requirements defined (45 v1 requirements, 5 phases, 19 total plans)
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-03-01 — Completed Plan 01: Docker Compose and nginx Infrastructure
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 5%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: -
+- Total plans completed: 1
+- Average duration: 2 min
+- Total execution time: 2 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-foundation-infrastructure | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: -
+- Last 5 plans: 01-01 (2 min)
 - Trend: -
 
 *Updated after each plan completion*
@@ -46,6 +46,9 @@ Recent decisions affecting current work:
 - [Pre-phase]: mongo-driver v2 only — decode into typed Go structs, never raw bson.M maps
 - [Pre-phase]: RTL must be wired in Phase 1 — retrofitting is painful and risky
 - [Pre-phase]: yt-dlp must run in a sequential queue (never concurrent) to avoid YouTube 429s
+- [01-01]: nginx uses alias (not root) for /hls/ location so /hls/{id}/master.m3u8 maps to /var/www/hls/{id}/master.m3u8 matching HLS path convention
+- [01-01]: CORS wildcard (*) on /hls/ — Video.js requests HLS from same nginx origin in prod, wildcard avoids dev port mismatch issues
+- [01-01]: site-api and admin-api use expose (not ports) — only accessible through nginx, not directly from host
 
 ### Pending Todos
 
@@ -60,5 +63,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Roadmap created and written to .planning/ROADMAP.md
+Stopped at: Completed 01-01-PLAN.md (Docker Compose and nginx Infrastructure)
 Resume file: None
