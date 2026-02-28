@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -13,6 +12,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/hadi/kidtube/internal/db"
+	"github.com/hadi/kidtube/internal/handler"
 )
 
 func main() {
@@ -39,16 +39,11 @@ func main() {
 	}
 
 	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(map[string]string{"status": "ok"}); err != nil {
-			log.Printf("admin-api: failed to encode health response: %v", err)
-		}
-	})
+	r.Get("/healthz", handler.HealthHandler(database))
 
 	srv := &http.Server{
 		Addr:    ":" + port,
