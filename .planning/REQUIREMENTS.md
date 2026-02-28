@@ -1,0 +1,172 @@
+# Requirements: KidTube
+
+**Defined:** 2026-03-01
+**Core Value:** Kids can safely watch curated Persian educational videos through an intuitive, age-appropriate interface — no ads, no external links, no distractions.
+
+## v1 Requirements
+
+### Infrastructure (INFRA)
+
+- [ ] **INFRA-01**: Docker Compose starts all services (mongo, site-api, admin-api, site-app, admin-app, nginx) with a single `docker compose up`
+- [ ] **INFRA-02**: nginx reverse-proxies to all services and serves HLS segments from a shared volume with correct CORS headers and MIME types
+- [ ] **INFRA-03**: MongoDB initializes with all required collections (channels, episodes, categories, users, jobs) and indexes
+- [ ] **INFRA-04**: Go backend project uses `cmd/site-api` and `cmd/admin-api` binaries sharing `internal/` packages
+- [ ] **INFRA-05**: Health check endpoints respond on both site-api and admin-api
+
+### Content Management (CONT)
+
+- [ ] **CONT-01**: Admin can create, edit, and delete channels with name, description, thumbnail, category, and age group
+- [ ] **CONT-02**: Admin can create, edit, and delete episodes within a channel with title, description, order, and subtitle file
+- [ ] **CONT-03**: Admin can create, edit, and delete categories
+- [ ] **CONT-04**: Admin can create, edit, and delete age groups
+- [ ] **CONT-05**: Admin can assign categories and age groups to channels
+- [ ] **CONT-06**: Admin panel displays all content in a dashboard UI with tables, search, and filters
+
+### Video Ingestion (VIDE)
+
+- [ ] **VIDE-01**: Admin can paste a YouTube URL and trigger async download + HLS transcode
+- [ ] **VIDE-02**: System downloads video via yt-dlp with rate-limiting protection (sequential queue, sleep intervals)
+- [ ] **VIDE-03**: FFmpeg transcodes to multi-rendition HLS (360p, 480p, 720p) with keyframe-aligned segments and a master playlist
+- [ ] **VIDE-04**: Job status (pending/downloading/transcoding/ready/failed) is visible in admin panel with real-time updates
+- [ ] **VIDE-05**: Failed jobs show error details and can be retried
+- [ ] **VIDE-06**: HLS segments are written to a Docker volume served by nginx
+- [ ] **VIDE-07**: Admin can upload a video file directly as an alternative to YouTube URL import
+
+### Public Browsing (BROW)
+
+- [ ] **BROW-01**: Homepage displays featured/trending content rail and category sections
+- [ ] **BROW-02**: User can browse channels grouped by category
+- [ ] **BROW-03**: User can browse channels filtered by age group (2-5, 6-10)
+- [ ] **BROW-04**: User can view a channel page with channel art, description, and episode list
+- [ ] **BROW-05**: User can search for videos and channels by title
+- [ ] **BROW-06**: All browsing pages use large thumbnail cards suitable for children
+- [ ] **BROW-07**: All pages are fully responsive (mobile, tablet, desktop) with 60px+ touch targets
+
+### Video Playback (PLAY)
+
+- [ ] **PLAY-01**: Video player plays HLS streams with adaptive bitrate switching
+- [ ] **PLAY-02**: Player has playback speed control (0.75x, 1x, 1.25x, 1.5x)
+- [ ] **PLAY-03**: Player auto-plays next episode in channel when current episode ends
+- [ ] **PLAY-04**: Player displays Persian subtitles with correct RTL rendering (WebVTT with direction:rtl)
+- [ ] **PLAY-05**: Player uses large, kid-friendly controls (big play button, accessible seek bar)
+- [ ] **PLAY-06**: Player contains no external links or ads
+- [ ] **PLAY-07**: Player controls are NOT mirrored in RTL layout (explicit dir="ltr" on controls)
+
+### Persian / RTL (RTL)
+
+- [ ] **RTL-01**: Document root has `dir="rtl"` and `lang="fa"` attributes
+- [ ] **RTL-02**: All layout uses CSS logical properties (margin-inline-start, padding-inline-end, etc.)
+- [ ] **RTL-03**: Navigation flows right-to-left; back buttons point right
+- [ ] **RTL-04**: Vazirmatn font loads via next/font with zero layout shift
+- [ ] **RTL-05**: All UI text is in Persian (admin panel may be English)
+
+### User Accounts (AUTH)
+
+- [ ] **AUTH-01**: User can register with email and password
+- [ ] **AUTH-02**: User can log in and receive a JWT token (HttpOnly cookie)
+- [ ] **AUTH-03**: User session persists across browser refresh
+- [ ] **AUTH-04**: All content is viewable without login — accounts are optional
+- [ ] **AUTH-05**: Logged-in user can subscribe to channels
+- [ ] **AUTH-06**: Logged-in user can bookmark episodes
+
+### Admin Authentication (ADMN)
+
+- [ ] **ADMN-01**: Admin can log in with credentials
+- [ ] **ADMN-02**: Admin API endpoints are protected by JWT authentication
+- [ ] **ADMN-03**: Admin can view registered users
+
+## v2 Requirements
+
+### Enhanced User Features
+
+- **USEF-01**: User can continue watching from where they left off (progress tracking)
+- **USEF-02**: User can view their watch history
+
+### Admin Enhancements
+
+- **ADME-01**: Admin can batch-import multiple YouTube URLs at once
+- **ADME-02**: Admin can view viewing stats per episode (view count, completion rate)
+- **ADME-03**: Admin can schedule episode publish dates
+- **ADME-04**: Admin can upload and manage subtitle files separately
+
+### Platform Polish
+
+- **PLSH-01**: nginx cache-control optimized (immutable .ts segments, no-cache .m3u8)
+- **PLSH-02**: Performance audit and optimization pass
+- **PLSH-03**: PWA manifest for app-like install on mobile
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| User-generated content | Kids platforms require editorial control; UGC = unsafe content |
+| Comments / social features | Predator vector on children's platforms; safety risk |
+| Recommendation algorithm | Algorithms optimize for engagement, not safety; harmful to children |
+| Social sharing / like buttons | Encourages external navigation; not age-appropriate |
+| Mandatory accounts | Creates friction; reduces viewership |
+| Email notifications | Children's privacy regulations; dark pattern for this age group |
+| Live streaming | Significant infrastructure complexity; not needed for curated VOD |
+| Payment / subscriptions | All content free in v1 |
+| Native mobile apps | Web-first with responsive design covers mobile |
+| Multi-language UI | Persian-only focus is the differentiator |
+| Smart TV / keyboard navigation | High effort; validate demand first |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| INFRA-01 | Phase 1 | Pending |
+| INFRA-02 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Pending |
+| INFRA-04 | Phase 1 | Pending |
+| INFRA-05 | Phase 1 | Pending |
+| CONT-01 | Phase 2 | Pending |
+| CONT-02 | Phase 2 | Pending |
+| CONT-03 | Phase 2 | Pending |
+| CONT-04 | Phase 2 | Pending |
+| CONT-05 | Phase 2 | Pending |
+| CONT-06 | Phase 2 | Pending |
+| VIDE-01 | Phase 2 | Pending |
+| VIDE-02 | Phase 2 | Pending |
+| VIDE-03 | Phase 2 | Pending |
+| VIDE-04 | Phase 2 | Pending |
+| VIDE-05 | Phase 2 | Pending |
+| VIDE-06 | Phase 2 | Pending |
+| VIDE-07 | Phase 5 | Pending |
+| BROW-01 | Phase 3 | Pending |
+| BROW-02 | Phase 3 | Pending |
+| BROW-03 | Phase 3 | Pending |
+| BROW-04 | Phase 3 | Pending |
+| BROW-05 | Phase 3 | Pending |
+| BROW-06 | Phase 3 | Pending |
+| BROW-07 | Phase 3 | Pending |
+| PLAY-01 | Phase 3 | Pending |
+| PLAY-02 | Phase 3 | Pending |
+| PLAY-03 | Phase 3 | Pending |
+| PLAY-04 | Phase 3 | Pending |
+| PLAY-05 | Phase 3 | Pending |
+| PLAY-06 | Phase 3 | Pending |
+| PLAY-07 | Phase 3 | Pending |
+| RTL-01 | Phase 1 | Pending |
+| RTL-02 | Phase 1 | Pending |
+| RTL-03 | Phase 3 | Pending |
+| RTL-04 | Phase 1 | Pending |
+| RTL-05 | Phase 3 | Pending |
+| AUTH-01 | Phase 4 | Pending |
+| AUTH-02 | Phase 4 | Pending |
+| AUTH-03 | Phase 4 | Pending |
+| AUTH-04 | Phase 3 | Pending |
+| AUTH-05 | Phase 4 | Pending |
+| AUTH-06 | Phase 4 | Pending |
+| ADMN-01 | Phase 2 | Pending |
+| ADMN-02 | Phase 2 | Pending |
+| ADMN-03 | Phase 4 | Pending |
+
+**Coverage:**
+- v1 requirements: 45 total
+- Mapped to phases: 45
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-03-01*
+*Last updated: 2026-03-01 after initial definition*
