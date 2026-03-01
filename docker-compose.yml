@@ -48,9 +48,13 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+    volumes:
+      - ./data/hls:/data/hls:rw
     environment:
       MONGO_URI: ${MONGO_URI}
       PORT: "8082"
+      HLS_ROOT: "/data/hls"
+      JWT_SECRET: "${JWT_SECRET}"
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8082/healthz"]
       interval: 10s
@@ -81,6 +85,8 @@ services:
       - "3001"
     depends_on:
       - admin-api
+    environment:
+      ADMIN_API_INTERNAL_URL: "http://admin-api:8082"
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001/"]
       interval: 10s

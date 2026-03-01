@@ -13,14 +13,20 @@ RUN CGO_ENABLED=0 go build -o /bin/site-api ./cmd/site-api
 FROM builder AS admin-api-build
 RUN CGO_ENABLED=0 go build -o /bin/admin-api ./cmd/admin-api
 
+# Seed target
+FROM builder AS seed-build
+RUN CGO_ENABLED=0 go build -o /bin/seed ./cmd/seed
+
 # Site API runtime
 FROM alpine:3.19 AS site-api
 RUN apk add --no-cache wget
 COPY --from=site-api-build /bin/site-api /bin/site-api
 ENTRYPOINT ["/bin/site-api"]
 
-# Admin API runtime
+# Admin API runtime — includes yt-dlp, ffmpeg, and seed binary
 FROM alpine:3.19 AS admin-api
-RUN apk add --no-cache wget
+RUN apk add --no-cache wget ffmpeg python3 py3-pip && \
+    pip3 install --no-cache-dir yt-dlp --break-system-packages
 COPY --from=admin-api-build /bin/admin-api /bin/admin-api
+COPY --from=seed-build /bin/seed /bin/seed
 ENTRYPOINT ["/bin/admin-api"]
