@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-01T12:19:30Z"
+last_updated: "2026-03-01T12:25:01.610Z"
 progress:
-  total_phases: 5
-  completed_phases: 3
-  total_plans: 16
-  completed_plans: 16
+  total_phases: 6
+  completed_phases: 4
+  total_plans: 19
+  completed_plans: 18
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 5 of 5 (Polish and Operations)
-Plan: 1 of ? in current phase (complete)
-Status: Phase 5 in progress — Plan 01 complete
-Last activity: 2026-03-01 — Completed Plan 05-01: Job Source field, UploadEpisode multipart handler streaming to disk, upload-aware worker skipping yt-dlp, POST /episodes/upload route, nginx upload proxy with 2100m body size
+Plan: 3 of ? in current phase (complete)
+Status: Phase 5 in progress — Plans 01, 03 complete
+Last activity: 2026-03-01 — Completed Plan 05-03: nginx map-based HLS cache headers (.ts immutable 1-year, .m3u8 no-cache), CORS always on 206 range responses, docker-compose production hardening verified
 
-Progress: [██████████] 95%
+Progress: [██████████] 97%
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [██████████] 95%
 | Phase 04-user-accounts-and-personalization P03 | 2 | 1 task | 4 files |
 | Phase 04-user-accounts-and-personalization P01 | 3 | 2 tasks | 14 files |
 | Phase 04-user-accounts-and-personalization P02 | 5 | 2 tasks | 15 files |
+| Phase 05-polish-and-operations P03 | 1 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -132,6 +133,9 @@ Recent decisions affecting current work:
 - [05-01]: http.MaxBytesReader + r.MultipartReader() + io.Copy for upload handler — streams 2GB files directly to disk without memory/temp file buffering
 - [05-01]: nginx exact-match location (= /api/admin/episodes/upload) before prefix /api/admin/ — per-endpoint body size control avoids global client_max_body_size attack surface
 - [05-01]: Close file dst explicitly (not defer) in upload handler — detects write errors (disk full etc.) before responding 202
+- [Phase 05-03]: nginx map directive for per-extension HLS cache headers — single location block avoids add_header inheritance trap, no CORS header drops
+- [Phase 05-03]: add_header always on all CORS headers in /hls/ — required for 206 Partial Content responses used by Video.js HLS range-based segment requests
+- [Phase 05-03]: .ts segments immutable 1-year cache — content-addressed by FFmpeg, safe to cache forever; .m3u8 playlists no-cache — must revalidate to get current segment list
 
 ### Pending Todos
 
@@ -146,5 +150,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 05-01-PLAN.md (Job Source field, UploadEpisode multipart handler, upload-aware worker, POST /episodes/upload route, nginx upload proxy 2100m)
+Stopped at: Completed 05-03-PLAN.md (nginx map-based HLS cache headers, CORS always parameter, docker-compose production hardening verified)
 Resume file: None
