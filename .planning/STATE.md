@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-01T12:25:01.610Z"
+last_updated: "2026-03-01T12:26:00.025Z"
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 19
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -24,8 +24,8 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 
 Phase: 5 of 5 (Polish and Operations)
 Plan: 3 of ? in current phase (complete)
-Status: Phase 5 in progress — Plans 01, 03 complete
-Last activity: 2026-03-01 — Completed Plan 05-03: nginx map-based HLS cache headers (.ts immutable 1-year, .m3u8 no-cache), CORS always on 206 range responses, docker-compose production hardening verified
+Status: Phase 5 in progress — Plans 01, 02, 03 complete
+Last activity: 2026-03-01 — Completed Plan 05-02: Tabbed episode form (YouTube URL / Upload File tabs), drag-and-drop file zone, XHR upload with progress bar, Jobs page Source column with YouTube/Upload badges
 
 Progress: [██████████] 97%
 
@@ -62,6 +62,7 @@ Progress: [██████████] 97%
 | Phase 04-user-accounts-and-personalization P01 | 3 | 2 tasks | 14 files |
 | Phase 04-user-accounts-and-personalization P02 | 5 | 2 tasks | 15 files |
 | Phase 05-polish-and-operations P03 | 1 | 2 tasks | 2 files |
+| Phase 05 P02 | 3 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,8 @@ Recent decisions affecting current work:
 - [Phase 05-03]: nginx map directive for per-extension HLS cache headers — single location block avoids add_header inheritance trap, no CORS header drops
 - [Phase 05-03]: add_header always on all CORS headers in /hls/ — required for 206 Partial Content responses used by Video.js HLS range-based segment requests
 - [Phase 05-03]: .ts segments immutable 1-year cache — content-addressed by FFmpeg, safe to cache forever; .m3u8 playlists no-cache — must revalidate to get current segment list
+- [Phase 05-02]: XHR over fetch for upload progress — fetch API has no upload progress event; XHR xhr.upload.onprogress is the only browser API for tracking bytes sent
+- [Phase 05-02]: Default Source badge to YouTube for legacy jobs — all pre-05-01 jobs lack source field; falsy source defaults to YouTube without requiring migration
 
 ### Pending Todos
 
@@ -150,5 +153,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 05-03-PLAN.md (nginx map-based HLS cache headers, CORS always parameter, docker-compose production hardening verified)
+Stopped at: Completed 05-02-PLAN.md (tabbed episode form with YouTube/Upload tabs, drag-and-drop file zone, XHR upload progress, Jobs page Source column)
 Resume file: None
