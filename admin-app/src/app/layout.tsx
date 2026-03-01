@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { vazirmatn } from '@/lib/fonts';
+// Sidebar is rendered inside LayoutShell (conditionally — not shown on login page)
 import LayoutShell from '@/components/LayoutShell';
 import './globals.css';
 
