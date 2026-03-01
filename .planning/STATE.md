@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-28T21:13:07.779Z"
+status: in-progress
+last_updated: "2026-03-01T05:40:09Z"
 progress:
-  total_phases: 1
+  total_phases: 5
   completed_phases: 1
   total_plans: 4
-  completed_plans: 4
+  completed_plans: 1
 ---
 
 # Project State
@@ -18,36 +18,37 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Kids can safely watch curated Persian educational videos through an intuitive, age-appropriate interface — no ads, no external links, no distractions.
-**Current focus:** Phase 1 — Foundation and Infrastructure
+**Current focus:** Phase 2 — Admin Content Pipeline
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation and Infrastructure)
-Plan: 4 of 4 in current phase
-Status: Phase complete
-Last activity: 2026-03-01 — Completed Plan 04: Next.js Frontend Apps with RTL and Vazirmatn Font
+Phase: 2 of 5 (Admin Content Pipeline)
+Plan: 1 of 4 in current phase (complete)
+Status: In progress
+Last activity: 2026-03-01 — Completed Plan 01: JWT Auth, Seed Binary, and Admin-API Docker Infrastructure
 
 Progress: [████░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 4 min
-- Total execution time: 16 min
+- Total execution time: 19 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-infrastructure | 4 | 16 min | 4 min |
+| 02-admin-content-pipeline | 1 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (4 min), 01-03 (5 min), 01-04 (5 min)
+- Last 5 plans: 01-02 (4 min), 01-03 (5 min), 01-04 (5 min), 02-01 (3 min)
 - Trend: stable
 
 *Updated after each plan completion*
-| Phase 01-foundation-infrastructure P03 | 2 | 2 tasks | 3 files |
+| Phase 02-admin-content-pipeline P01 | 3 | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,10 @@ Recent decisions affecting current work:
 - [Phase 01-03]: HealthHandler accepts *mongo.Database not *mongo.Client — handler operates at database level consistent with all other handlers
 - [Phase 01-03]: 503 on MongoDB ping failure — health check signals true service health for Docker and load balancers, not just process liveness
 - [Phase 01-03]: middleware.RequestID added to both chi routers — required for log correlation in distributed tracing
+- [02-01]: seed binary copied into admin-api Docker image (not a separate service) — run via docker compose exec admin-api /bin/seed
+- [02-01]: auth.Init() called explicitly from main() (not package-level init) so it can be tested without setting JWT_SECRET globally
+- [02-01]: JWT uses HS256 symmetric key — sufficient for single-service admin API
+- [02-01]: Login handler returns identical 401 for user-not-found and wrong-password to prevent credential enumeration
 
 ### Pending Todos
 
@@ -86,5 +91,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 01-04-PLAN.md (Next.js Frontend Apps with RTL and Vazirmatn Font) — Phase 1 complete
+Stopped at: Completed 02-01-PLAN.md (JWT Auth, Seed Binary, and Admin-API Docker Infrastructure)
 Resume file: None

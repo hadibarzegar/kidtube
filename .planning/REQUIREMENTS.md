@@ -71,8 +71,8 @@
 
 ### Admin Authentication (ADMN)
 
-- [ ] **ADMN-01**: Admin can log in with credentials
-- [ ] **ADMN-02**: Admin API endpoints are protected by JWT authentication
+- [x] **ADMN-01**: Admin can log in with credentials
+- [x] **ADMN-02**: Admin API endpoints are protected by JWT authentication
 - [ ] **ADMN-03**: Admin can view registered users
 
 ## v2 Requirements
@@ -158,8 +158,8 @@
 | AUTH-04 | Phase 3 | Pending |
 | AUTH-05 | Phase 4 | Pending |
 | AUTH-06 | Phase 4 | Pending |
-| ADMN-01 | Phase 2 | Pending |
-| ADMN-02 | Phase 2 | Pending |
+| ADMN-01 | Phase 2 | Complete |
+| ADMN-02 | Phase 2 | Complete |
 | ADMN-03 | Phase 4 | Pending |
 
 **Coverage:**
