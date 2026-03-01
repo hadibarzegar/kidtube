@@ -1,0 +1,91 @@
+'use server'
+
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
+
+const ADMIN_API_INTERNAL_URL =
+  process.env.ADMIN_API_INTERNAL_URL ?? 'http://localhost:8082'
+
+async function getAuthHeader(): Promise<Record<string, string>> {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('admin_token')?.value
+  if (!token) return {}
+  return { Authorization: `Bearer ${token}` }
+}
+
+export async function createChannel(prevState: unknown, formData: FormData) {
+  const name = (formData.get('name') as string)?.trim()
+  const description = (formData.get('description') as string)?.trim()
+  const thumbnail = (formData.get('thumbnail') as string)?.trim()
+  const categoryId = formData.get('category_id') as string
+  const ageGroupId = formData.get('age_group_id') as string
+
+  if (!name) return { error: 'Name is required' }
+
+  const auth = await getAuthHeader()
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/channels`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...auth },
+    body: JSON.stringify({
+      name,
+      description: description || '',
+      thumbnail: thumbnail || '',
+      category_ids: categoryId ? [categoryId] : [],
+      age_group_ids: ageGroupId ? [ageGroupId] : [],
+    }),
+  })
+
+  if (!res.ok) {
+    const body = await res.text()
+    return { error: `Failed to create channel: ${body}` }
+  }
+
+  revalidatePath('/admin/channels')
+  redirect('/admin/channels')
+}
+
+export async function updateChannel(id: string, prevState: unknown, formData: FormData) {
+  const name = (formData.get('name') as string)?.trim()
+  const description = (formData.get('description') as string)?.trim()
+  const thumbnail = (formData.get('thumbnail') as string)?.trim()
+  const categoryId = formData.get('category_id') as string
+  const ageGroupId = formData.get('age_group_id') as string
+
+  if (!name) return { error: 'Name is required' }
+
+  const auth = await getAuthHeader()
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/channels/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...auth },
+    body: JSON.stringify({
+      name,
+      description: description || '',
+      thumbnail: thumbnail || '',
+      category_ids: categoryId ? [categoryId] : [],
+      age_group_ids: ageGroupId ? [ageGroupId] : [],
+    }),
+  })
+
+  if (!res.ok) {
+    const body = await res.text()
+    return { error: `Failed to update channel: ${body}` }
+  }
+
+  revalidatePath('/admin/channels')
+  redirect('/admin/channels')
+}
+
+export async function deleteChannel(id: string) {
+  const auth = await getAuthHeader()
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/channels/${id}`, {
+    method: 'DELETE',
+    headers: { ...auth },
+  })
+
+  if (!res.ok && res.status !== 204) {
+    throw new Error(`Failed to delete channel: ${res.status}`)
+  }
+
+  revalidatePath('/admin/channels')
+}
