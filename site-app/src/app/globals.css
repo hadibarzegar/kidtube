@@ -48,3 +48,19 @@ body {
 .video-js .vjs-progress-control {
   height: 0.8em;
 }
+
+/* Ensure player controls have high contrast on dark player background */
+.video-js .vjs-control-bar {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Make seek bar thumb larger for kids */
+.video-js .vjs-play-progress:before {
+  font-size: 1.4em;
+  top: -0.35em;
+}
+
+/* Speed control button styling */
+.video-js .vjs-playback-rate .vjs-playback-rate-value {
+  font-size: 1.1em;
+}
