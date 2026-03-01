@@ -121,7 +121,7 @@ Plans:
 - [ ] 06-01: Add worker.Enqueue calls to CreateEpisode and RetryJob handlers, verify pipeline connectivity
 
 ### Phase 7: Fix Auth & Routing Wiring Bugs
-**Goal**: Fix two integration wiring bugs found in the v1.0 audit: (1) admin-api missing cookie token extractor causes client-side polling to 401, and (2) site-app route guard inactive because proxy.ts is not named middleware.ts.
+**Goal**: Fix two integration wiring bugs found in the v1.0 audit: (1) admin-api missing cookie token extractor causes client-side polling to 401, and (2) site-app route guard inactive because proxy.ts export not detected by build.
 **Depends on**: Phase 2, Phase 4 (fixes code in Phase 2 and Phase 4 handlers)
 **Requirements**: VIDE-04, ADMN-02
 **Gap Closure:** Closes gaps from v1.0 audit (second audit)
@@ -133,7 +133,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 07-01: Add admin cookie extractor and rename site middleware
+- [ ] 07-01: Add admin cookie extractor and fix site-app proxy registration
 
 ## Phase Dependencies
 
