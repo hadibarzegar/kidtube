@@ -85,6 +85,7 @@ func main() {
 		r.Route("/episodes", func(r chi.Router) {
 			r.Get("/", handler.ListEpisodes(database))
 			r.Post("/", handler.CreateEpisode(database))
+			r.Post("/upload", handler.UploadEpisode(database, hlsRoot))
 			r.Get("/{id}", handler.GetEpisode(database))
 			r.Put("/{id}", handler.UpdateEpisode(database))
 			r.Delete("/{id}", handler.DeleteEpisode(database))
