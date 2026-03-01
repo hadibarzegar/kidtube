@@ -45,6 +45,15 @@ func main() {
 
 	r.Get("/healthz", handler.HealthHandler(database))
 
+	// Public routes — no authentication required (AUTH-04).
+	r.Get("/channels", handler.SiteListChannels(database))
+	r.Get("/channels/{id}", handler.SiteGetChannel(database))
+	r.Get("/episodes", handler.SiteListEpisodes(database))
+	r.Get("/episodes/{id}", handler.SiteGetEpisode(database))
+	r.Get("/categories", handler.SiteListCategories(database))
+	r.Get("/age-groups", handler.SiteListAgeGroups(database))
+	r.Get("/search", handler.SiteSearch(database))
+
 	srv := &http.Server{
 		Addr:    ":" + port,
 		Handler: r,

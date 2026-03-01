@@ -70,6 +70,8 @@ services:
       - "3000"
     depends_on:
       - site-api
+    environment:
+      SITE_API_INTERNAL_URL: "http://site-api:8081"
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/"]
       interval: 10s
