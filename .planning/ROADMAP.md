@@ -100,9 +100,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: Direct file upload ingestion — admin-app UI, admin-api multipart endpoint, worker integration
-- [ ] 05-02: nginx HLS cache tuning (immutable .ts, no-cache .m3u8) and MIME/CORS validation
-- [ ] 05-03: Production hardening — restart policies, volume persistence verification, end-to-end smoke test
+- [ ] 05-01-PLAN.md — Backend upload infrastructure: Job model Source field, streaming multipart handler, worker upload-path awareness, nginx upload proxy
+- [ ] 05-02-PLAN.md — Frontend upload UI: tabbed episode form (YouTube/Upload), drag-and-drop, XHR progress bar, Jobs page Source column
+- [ ] 05-03-PLAN.md — nginx HLS cache tuning (map directive, immutable .ts, no-cache .m3u8) and production hardening verification
 
 ### Phase 6: Fix Ingestion Pipeline Wiring
 **Goal**: Wire worker.Enqueue into episode creation and job retry handlers so the YouTube-to-HLS pipeline actually executes at runtime — closing the critical integration defect found in the v1.0 audit.
