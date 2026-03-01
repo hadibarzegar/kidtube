@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in_progress
-last_updated: "2026-03-01T10:02:56Z"
+status: unknown
+last_updated: "2026-03-01T10:10:27.150Z"
 progress:
-  total_phases: 5
-  completed_phases: 2
+  total_phases: 3
+  completed_phases: 3
   total_plans: 13
-  completed_plans: 12
+  completed_plans: 13
 ---
 
 # Project State
@@ -23,18 +23,18 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 3 of 5 (Public Browsing and Playback)
-Plan: 3 of 4 in current phase (complete)
-Status: Phase 3 in progress — Plans 01, 02, 03 complete
-Last activity: 2026-03-01 — Completed Plan 03-03: Video.js 8 HLS player, VideoPlayerWrapper (SSR-disabled), watch page with episode info and related episodes grid
+Plan: 4 of 4 in current phase (complete)
+Status: Phase 3 complete — All 4 plans done
+Last activity: 2026-03-01 — Completed Plan 03-04: CountdownOverlay + WatchClient autoplay-next, Video.js CSS polish, responsive verification
 
-Progress: [█████████░] 75%
+Progress: [██████████] 90%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 4 min
-- Total execution time: 19 min
+- Total plans completed: 6
+- Average duration: 3 min
+- Total execution time: 20 min
 
 **By Phase:**
 
@@ -42,10 +42,10 @@ Progress: [█████████░] 75%
 |-------|-------|-------|----------|
 | 01-foundation-infrastructure | 4 | 16 min | 4 min |
 | 02-admin-content-pipeline | 1 | 3 min | 3 min |
-| 03-public-browsing-and-playback | 3 | 6 min | 2 min |
+| 03-public-browsing-and-playback | 4 | 7 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-04 (5 min), 02-01 (3 min), 03-01 (2 min), 03-02 (2 min), 03-03 (2 min)
+- Last 5 plans: 02-01 (3 min), 03-01 (2 min), 03-02 (2 min), 03-03 (2 min), 03-04 (1 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -56,6 +56,7 @@ Progress: [█████████░] 75%
 | Phase 03-public-browsing-and-playback P01 | 2 | 2 tasks | 8 files |
 | Phase 03-public-browsing-and-playback P02 | 2 | 2 tasks | 13 files |
 | Phase 03-public-browsing-and-playback P03 | 2 | 2 tasks | 7 files |
+| Phase 03-public-browsing-and-playback P04 | 1 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,8 @@ Recent decisions affecting current work:
 - [03-03]: VideoPlayerWrapper must be 'use client' — next/dynamic ssr:false called from a Server Component throws a runtime error
 - [03-03]: dir="ltr" on player wrapper div prevents RTL html dir from mirroring Video.js control bar (PLAY-07)
 - [03-03]: dispose() called in separate useEffect cleanup to free media streams on unmount — MUST be in separate effect from initialization
+- [Phase 03-04]: WatchClient relative container enables absolute CountdownOverlay overlay — autoplay-next pattern for kid episode sequences
+- [Phase 03-04]: nextEpisode computed server-side in page.tsx via order+1 lookup — avoids shipping full episode list to client
 
 ### Pending Todos
 
@@ -124,5 +127,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 03-03-PLAN.md (Video.js 8 HLS player, VideoPlayerWrapper SSR-disabled, watch page with episode info and related episodes grid)
+Stopped at: Completed 03-04-PLAN.md (CountdownOverlay autoplay-next, WatchClient, Video.js CSS polish — Phase 3 complete)
 Resume file: None
