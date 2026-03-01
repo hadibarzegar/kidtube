@@ -22,6 +22,7 @@ type JobRequest struct {
 	JobID     bson.ObjectID
 	EpisodeID bson.ObjectID
 	SourceURL string
+	Source    string // "youtube" | "upload"
 }
 
 // jobQueue is a buffered channel that holds pending job requests.
@@ -87,6 +88,7 @@ func ResumeJobs(ctx context.Context, database *mongo.Database) {
 			JobID:     j.ID,
 			EpisodeID: j.EpisodeID,
 			SourceURL: j.SourceURL,
+			Source:    j.Source,
 		})
 	}
 }
@@ -95,42 +97,45 @@ func ResumeJobs(ctx context.Context, database *mongo.Database) {
 // download via yt-dlp → transcode to HLS via FFmpeg → update episode status.
 // This function runs synchronously inside the single worker goroutine.
 func processJob(ctx context.Context, database *mongo.Database, hlsRoot string, req JobRequest) {
-	log.Printf("worker: starting job %s (episode %s)", req.JobID.Hex(), req.EpisodeID.Hex())
+	log.Printf("worker: starting job %s (episode %s, source=%s)", req.JobID.Hex(), req.EpisodeID.Hex(), req.Source)
 
-	// Step 1: mark as downloading
-	now := time.Now()
-	updateJobStatusWithTime(ctx, database, req.JobID, models.JobStatusDownloading, "", &now, nil)
-
-	// Step 2: download via yt-dlp
 	outputPath := filepath.Join(hlsRoot, req.EpisodeID.Hex(), "source.mp4")
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
-		log.Printf("worker: mkdir failed for job %s: %v", req.JobID.Hex(), err)
-		updateJobStatus(ctx, database, req.JobID, models.JobStatusFailed, "failed to create output directory: "+err.Error())
-		return
-	}
 
-	ytCmd := exec.CommandContext(ctx, "yt-dlp",
-		"--format", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
-		"--merge-output-format", "mp4",
-		"--sleep-requests", "5",
-		"--no-playlist",
-		"-o", outputPath,
-		req.SourceURL,
-	)
-	var ytStderr bytes.Buffer
-	ytCmd.Stderr = &ytStderr
-	if err := ytCmd.Run(); err != nil {
-		errMsg := "yt-dlp failed: " + err.Error()
-		if ytStderr.Len() > 0 {
-			errMsg += " | stderr: " + ytStderr.String()
+	if req.Source != "upload" {
+		// Step 1: mark as downloading
+		now := time.Now()
+		updateJobStatusWithTime(ctx, database, req.JobID, models.JobStatusDownloading, "", &now, nil)
+
+		// Step 2: download via yt-dlp
+		if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+			log.Printf("worker: mkdir failed for job %s: %v", req.JobID.Hex(), err)
+			updateJobStatus(ctx, database, req.JobID, models.JobStatusFailed, "failed to create output directory: "+err.Error())
+			return
 		}
-		log.Printf("worker: yt-dlp error for job %s: %v", req.JobID.Hex(), errMsg)
-		updateJobStatus(ctx, database, req.JobID, models.JobStatusFailed, errMsg)
-		return
-	}
-	log.Printf("worker: download complete for job %s", req.JobID.Hex())
 
-	// Step 3: mark as transcoding
+		ytCmd := exec.CommandContext(ctx, "yt-dlp",
+			"--format", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
+			"--merge-output-format", "mp4",
+			"--sleep-requests", "5",
+			"--no-playlist",
+			"-o", outputPath,
+			req.SourceURL,
+		)
+		var ytStderr bytes.Buffer
+		ytCmd.Stderr = &ytStderr
+		if err := ytCmd.Run(); err != nil {
+			errMsg := "yt-dlp failed: " + err.Error()
+			if ytStderr.Len() > 0 {
+				errMsg += " | stderr: " + ytStderr.String()
+			}
+			log.Printf("worker: yt-dlp error for job %s: %v", req.JobID.Hex(), errMsg)
+			updateJobStatus(ctx, database, req.JobID, models.JobStatusFailed, errMsg)
+			return
+		}
+		log.Printf("worker: download complete for job %s", req.JobID.Hex())
+	}
+
+	// Step 3: mark as transcoding (upload jobs skip Steps 1-2 — source.mp4 already on disk)
 	updateJobStatus(ctx, database, req.JobID, models.JobStatusTranscoding, "")
 
 	// Step 4: transcode to multi-rendition HLS via FFmpeg

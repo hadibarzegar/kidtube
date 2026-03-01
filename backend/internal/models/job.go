@@ -22,6 +22,7 @@ type Job struct {
 	ID          bson.ObjectID `bson:"_id,omitempty" json:"id"`
 	EpisodeID   bson.ObjectID `bson:"episode_id" json:"episode_id"`
 	SourceURL   string        `bson:"source_url" json:"source_url"`
+	Source      string        `bson:"source" json:"source"` // "youtube" | "upload"
 	Status      JobStatus     `bson:"status" json:"status"`
 	Error       string        `bson:"error" json:"error"`
 	StartedAt   *time.Time    `bson:"started_at,omitempty" json:"started_at"`
