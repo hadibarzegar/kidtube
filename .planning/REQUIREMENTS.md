@@ -35,10 +35,10 @@
 ### Public Browsing (BROW)
 
 - [ ] **BROW-01**: Homepage displays featured/trending content rail and category sections
-- [ ] **BROW-02**: User can browse channels grouped by category
-- [ ] **BROW-03**: User can browse channels filtered by age group (2-5, 6-10)
-- [ ] **BROW-04**: User can view a channel page with channel art, description, and episode list
-- [ ] **BROW-05**: User can search for videos and channels by title
+- [x] **BROW-02**: User can browse channels grouped by category
+- [x] **BROW-03**: User can browse channels filtered by age group (2-5, 6-10)
+- [x] **BROW-04**: User can view a channel page with channel art, description, and episode list
+- [x] **BROW-05**: User can search for videos and channels by title
 - [ ] **BROW-06**: All browsing pages use large thumbnail cards suitable for children
 - [ ] **BROW-07**: All pages are fully responsive (mobile, tablet, desktop) with 60px+ touch targets
 
@@ -65,7 +65,7 @@
 - [ ] **AUTH-01**: User can register with email and password
 - [ ] **AUTH-02**: User can log in and receive a JWT token (HttpOnly cookie)
 - [ ] **AUTH-03**: User session persists across browser refresh
-- [ ] **AUTH-04**: All content is viewable without login — accounts are optional
+- [x] **AUTH-04**: All content is viewable without login — accounts are optional
 - [ ] **AUTH-05**: Logged-in user can subscribe to channels
 - [ ] **AUTH-06**: Logged-in user can bookmark episodes
 
@@ -134,10 +134,10 @@
 | VIDE-06 | Phase 2 | Complete |
 | VIDE-07 | Phase 5 | Pending |
 | BROW-01 | Phase 3 | Pending |
-| BROW-02 | Phase 3 | Pending |
-| BROW-03 | Phase 3 | Pending |
-| BROW-04 | Phase 3 | Pending |
-| BROW-05 | Phase 3 | Pending |
+| BROW-02 | Phase 3 | Complete |
+| BROW-03 | Phase 3 | Complete |
+| BROW-04 | Phase 3 | Complete |
+| BROW-05 | Phase 3 | Complete |
 | BROW-06 | Phase 3 | Pending |
 | BROW-07 | Phase 3 | Pending |
 | PLAY-01 | Phase 3 | Pending |
@@ -155,7 +155,7 @@
 | AUTH-01 | Phase 4 | Pending |
 | AUTH-02 | Phase 4 | Pending |
 | AUTH-03 | Phase 4 | Pending |
-| AUTH-04 | Phase 3 | Pending |
+| AUTH-04 | Phase 3 | Complete |
 | AUTH-05 | Phase 4 | Pending |
 | AUTH-06 | Phase 4 | Pending |
 | ADMN-01 | Phase 2 | Complete |

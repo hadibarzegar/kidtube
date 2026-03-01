@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-01T06:21:34.776Z"
+status: in_progress
+last_updated: "2026-03-01T06:37:22Z"
 progress:
-  total_phases: 2
+  total_phases: 5
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 13
+  completed_plans: 10
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Kids can safely watch curated Persian educational videos through an intuitive, age-appropriate interface — no ads, no external links, no distractions.
-**Current focus:** Phase 2 — Admin Content Pipeline
+**Current focus:** Phase 3 — Public Browsing and Playback
 
 ## Current Position
 
-Phase: 2 of 5 (Admin Content Pipeline)
-Plan: 5 of 5 in current phase (complete)
-Status: Phase 2 complete — ready for Phase 3
-Last activity: 2026-03-01 — Completed Plan 05: Channels, Episodes, and Jobs admin UI pages (all 5 content management pages complete)
+Phase: 3 of 5 (Public Browsing and Playback)
+Plan: 1 of 4 in current phase (complete)
+Status: Phase 3 in progress — Plan 01 complete
+Last activity: 2026-03-01 — Completed Plan 03-01: Public site-api endpoints (channels, episodes, categories, age-groups, search) and site-app API helpers
 
-Progress: [████████░░] 44%
+Progress: [████████░░] 55%
 
 ## Performance Metrics
 
@@ -42,9 +42,10 @@ Progress: [████████░░] 44%
 |-------|-------|-------|----------|
 | 01-foundation-infrastructure | 4 | 16 min | 4 min |
 | 02-admin-content-pipeline | 1 | 3 min | 3 min |
+| 03-public-browsing-and-playback | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (4 min), 01-03 (5 min), 01-04 (5 min), 02-01 (3 min)
+- Last 5 plans: 01-02 (4 min), 01-03 (5 min), 01-04 (5 min), 02-01 (3 min), 03-01 (2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -52,6 +53,7 @@ Progress: [████████░░] 44%
 | Phase 02-admin-content-pipeline P03 | 3 | 2 tasks | 2 files |
 | Phase 02 P04 | 6 | 3 tasks | 20 files |
 | Phase 02-admin-content-pipeline P05 | 10 | 2 tasks | 9 files |
+| Phase 03-public-browsing-and-playback P01 | 2 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -94,6 +96,11 @@ Recent decisions affecting current work:
 - [Phase 02-04]: Server actions forward JWT as Authorization: Bearer header (not cookies) to admin-api for server-to-server calls
 - [Phase 02-admin-content-pipeline]: Jobs page is a client component with setInterval polling every 5s; adaptive 30s for terminal-only status filters; apiFetch with credentials for client-side polling
 - [Phase 02-admin-content-pipeline]: Expandable failed-job error rows use Set<string> state; retry re-fetches immediately and collapses the error row on success
+- [03-01]: Public site-api handlers in separate site_*.go files — different query logic from admin handlers (status filtering, array-contains, regex search)
+- [03-01]: Episodes always filtered to status=ready on all public endpoints — pending/failed episodes never surface to site visitors
+- [03-01]: Search uses regexp.QuoteMeta + bson.Regex with options "i" — safely escapes user input for MongoDB regex
+- [03-01]: Search goroutines use graceful degradation — log errors but return successful partial results rather than 500ing
+- [03-01]: site-app uses apiServerFetch (SITE_API_INTERNAL_URL Docker DNS) for Server Components; apiFetch (/api/site nginx proxy) for Client Components
 
 ### Pending Todos
 
@@ -108,5 +115,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 02-05-PLAN.md (Channels, Episodes, and Jobs admin UI pages — all 5 content management pages complete, Phase 2 done)
+Stopped at: Completed 03-01-PLAN.md (Public site-api endpoints and site-app API client — 7 unauthenticated endpoints, parallel search, apiServerFetch/apiFetch helpers)
 Resume file: None
