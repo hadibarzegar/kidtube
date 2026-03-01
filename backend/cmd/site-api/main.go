@@ -79,6 +79,14 @@ func main() {
 
 		r.Get("/me", handler.GetMe(database))
 		r.Put("/me/password", handler.ChangePassword(database))
+
+		r.Get("/me/subscriptions", handler.GetSubscriptions(database))
+		r.Post("/me/subscriptions/{channel_id}", handler.Subscribe(database))
+		r.Delete("/me/subscriptions/{channel_id}", handler.Unsubscribe(database))
+
+		r.Get("/me/bookmarks", handler.GetBookmarks(database))
+		r.Post("/me/bookmarks/{episode_id}", handler.Bookmark(database))
+		r.Delete("/me/bookmarks/{episode_id}", handler.Unbookmark(database))
 	})
 
 	srv := &http.Server{
