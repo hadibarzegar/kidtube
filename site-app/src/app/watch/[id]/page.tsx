@@ -1,5 +1,5 @@
 import { apiServerFetch } from '@/lib/api'
-import { VideoPlayer } from '@/components/VideoPlayerWrapper'
+import WatchClient from '@/app/watch/[id]/WatchClient'
 import ThumbnailCard from '@/components/ThumbnailCard'
 import type { Episode, Channel } from '@/lib/types'
 
@@ -33,7 +33,7 @@ export default async function WatchPage({ params }: Props) {
 
   const episode: Episode = await episodeRes.json()
 
-  // Fetch channel and other episodes in parallel
+  // Fetch channel and all episodes in this channel in parallel
   const [channelRes, episodesRes] = await Promise.all([
     apiServerFetch(`/channels/${episode.channel_id}`),
     apiServerFetch(`/episodes?channel_id=${episode.channel_id}`),
@@ -42,36 +42,23 @@ export default async function WatchPage({ params }: Props) {
   const channel: Channel = channelRes.ok ? await channelRes.json() : { id: episode.channel_id, name: '' } as Channel
   const allEpisodes: Episode[] = episodesRes.ok ? await episodesRes.json() : []
 
+  // Compute next episode (order = current order + 1)
+  const nextEpisode: Episode | null =
+    allEpisodes.find((ep) => ep.order === episode.order + 1) ?? null
+
   // Filter out the current episode from the "other episodes" list
   const otherEpisodes = allEpisodes.filter((ep) => ep.id !== episode.id)
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-4 md:py-6">
-      {/* Player section */}
-      <div className="rounded-2xl overflow-hidden shadow-lg">
-        <VideoPlayer
-          hlsSrc={`/hls/${episode.id}/master.m3u8`}
-          subtitleSrc={episode.subtitle_url || undefined}
-        />
-      </div>
+      {/* Player + episode info — client component for interactivity */}
+      <WatchClient
+        episode={episode}
+        nextEpisode={nextEpisode}
+        channel={channel}
+      />
 
-      {/* Episode info below player */}
-      <div className="mt-4">
-        <h1 className="text-xl md:text-2xl font-bold">{episode.title}</h1>
-        {channel.name && (
-          <a
-            href={`/channel/${channel.id}`}
-            className="text-blue-500 text-sm mt-1 block hover:underline"
-          >
-            {channel.name}
-          </a>
-        )}
-        {episode.description && (
-          <p className="text-gray-600 mt-2 text-sm">{episode.description}</p>
-        )}
-      </div>
-
-      {/* Other episodes from this channel */}
+      {/* Other episodes from this channel — static, rendered by Server Component */}
       {otherEpisodes.length > 0 && (
         <div className="mt-8">
           <h2 className="text-lg font-bold mb-4">قسمت‌های دیگر</h2>
