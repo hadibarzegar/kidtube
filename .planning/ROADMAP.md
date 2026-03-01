@@ -13,6 +13,7 @@ KidTube is built in five phases that follow a strict dependency chain: foundatio
 - [x] **Phase 3: Public Browsing and Playback** - Kids can browse channels and watch videos end-to-end (completed 2026-03-01)
 - [ ] **Phase 4: User Accounts and Personalization** - Optional accounts unlock subscriptions and bookmarks
 - [ ] **Phase 5: Polish and Operations** - File upload ingestion, cache tuning, and operational hardening
+- [ ] **Phase 6: Fix Ingestion Pipeline Wiring** - Wire worker.Enqueue into episode creation and job retry handlers
 
 ## Phase Details
 
@@ -103,13 +104,28 @@ Plans:
 - [ ] 05-02: nginx HLS cache tuning (immutable .ts, no-cache .m3u8) and MIME/CORS validation
 - [ ] 05-03: Production hardening — restart policies, volume persistence verification, end-to-end smoke test
 
+### Phase 6: Fix Ingestion Pipeline Wiring
+**Goal**: Wire worker.Enqueue into episode creation and job retry handlers so the YouTube-to-HLS pipeline actually executes at runtime — closing the critical integration defect found in the v1.0 audit.
+**Depends on**: Phase 2 (fixes code in Phase 2 handlers)
+**Requirements**: VIDE-01, VIDE-02, VIDE-03, VIDE-05, VIDE-06, PLAY-01
+**Gap Closure:** Closes gaps from v1.0 audit
+**Success Criteria** (what must be TRUE):
+  1. CreateEpisode handler calls worker.Enqueue after inserting a Job document — a new YouTube URL submission immediately starts processing
+  2. RetryJob handler calls worker.Enqueue after resetting job status — retried jobs immediately start processing
+  3. The full Admin YouTube URL ingestion flow completes end-to-end: form submission → episode + job insert → worker.Enqueue → yt-dlp download → FFmpeg HLS transcode → segments on disk → nginx serves HLS → Video.js plays it
+  4. The full Admin job retry flow completes: retry click → status reset → worker.Enqueue → reprocessing
+**Plans**: 1 plan
+
+Plans:
+- [ ] 06-01: Add worker.Enqueue calls to CreateEpisode and RetryJob handlers, verify pipeline connectivity
+
 ## Phase Dependencies
 
 ```
 Phase 1 (Foundation)
     |
     v
-Phase 2 (Admin Content Pipeline)
+Phase 2 (Admin Content Pipeline) <-- Phase 6 fixes integration defects here
     |
     v
 Phase 3 (Public Browsing and Playback)
@@ -119,64 +135,66 @@ Phase 4 (User Accounts and Personalization)
     |
     v
 Phase 5 (Polish and Operations)
+
+Phase 6 (Fix Ingestion Pipeline Wiring) -- can run before Phase 4
 ```
 
-All phases are strictly sequential. No phase begins until the previous phase's success criteria are fully met.
+Phases 1-5 are strictly sequential. Phase 6 is a gap closure phase that fixes Phase 2 integration defects and can be executed at any time (recommended: before Phase 4).
 
 ## Coverage Validation
 
-All 45 v1 requirements are mapped to exactly one phase.
+All 45 v1 requirements are mapped to phases. 6 partial requirements are additionally assigned to Phase 6 for gap closure.
 
-| Requirement | Phase | Description |
-|-------------|-------|-------------|
-| INFRA-01 | Phase 1 | Docker Compose starts all services |
-| INFRA-02 | Phase 1 | nginx reverse-proxy + HLS serving |
-| INFRA-03 | Phase 1 | MongoDB collections and indexes |
-| INFRA-04 | Phase 1 | Go project structure with shared internal/ |
-| INFRA-05 | Phase 1 | Health check endpoints |
-| RTL-01 | Phase 1 | dir="rtl" and lang="fa" on html root |
-| RTL-02 | Phase 1 | CSS logical properties throughout |
-| RTL-04 | Phase 1 | Vazirmatn font via next/font |
-| CONT-01 | Phase 2 | Admin channel CRUD |
-| CONT-02 | Phase 2 | Admin episode CRUD |
-| CONT-03 | Phase 2 | Admin category CRUD |
-| CONT-04 | Phase 2 | Admin age group CRUD |
-| CONT-05 | Phase 2 | Category and age group assignment to channels |
-| CONT-06 | Phase 2 | Admin dashboard UI with tables, search, filters |
-| VIDE-01 | Phase 2 | YouTube URL paste and async ingestion trigger |
-| VIDE-02 | Phase 2 | yt-dlp sequential download queue with rate limiting |
-| VIDE-03 | Phase 2 | FFmpeg multi-rendition HLS transcode |
-| VIDE-04 | Phase 2 | Job status visible in admin panel with live updates |
-| VIDE-05 | Phase 2 | Failed job error details and retry |
-| VIDE-06 | Phase 2 | HLS segments written to Docker volume served by nginx |
-| ADMN-01 | Phase 2 | Admin login |
-| ADMN-02 | Phase 2 | JWT-protected admin API endpoints |
-| BROW-01 | Phase 3 | Homepage with featured/trending rail and category sections |
-| BROW-02 | Phase 3 | Browse channels by category |
-| BROW-03 | Phase 3 | Browse channels filtered by age group |
-| BROW-04 | Phase 3 | Channel page with art, description, episode list |
-| BROW-05 | Phase 3 | Search by title |
-| BROW-06 | Phase 3 | Large thumbnail cards suitable for children |
-| BROW-07 | Phase 3 | Responsive layout with 60px+ touch targets |
-| PLAY-01 | Phase 3 | HLS playback with adaptive bitrate |
-| PLAY-02 | Phase 3 | Playback speed control |
-| PLAY-03 | Phase 3 | Auto-play next episode |
-| PLAY-04 | Phase 3 | Persian subtitles with RTL VTT rendering |
-| PLAY-05 | Phase 3 | Large kid-friendly player controls |
-| PLAY-06 | Phase 3 | No external links or ads in player |
-| PLAY-07 | Phase 3 | Player controls not mirrored in RTL layout |
-| RTL-03 | Phase 3 | Navigation flows right-to-left |
-| RTL-05 | Phase 3 | All UI text in Persian |
-| AUTH-04 | Phase 3 | All content viewable without login |
-| AUTH-01 | Phase 4 | User registration with email and password |
-| AUTH-02 | Phase 4 | User login with JWT HttpOnly cookie |
-| AUTH-03 | Phase 4 | Session persists across browser refresh |
-| AUTH-05 | Phase 4 | Logged-in user can subscribe to channels |
-| AUTH-06 | Phase 4 | Logged-in user can bookmark episodes |
-| ADMN-03 | Phase 4 | Admin can view registered users |
-| VIDE-07 | Phase 5 | Admin can upload video file directly |
+| Requirement | Phase | Gap Closure | Description |
+|-------------|-------|-------------|-------------|
+| INFRA-01 | Phase 1 | | Docker Compose starts all services |
+| INFRA-02 | Phase 1 | | nginx reverse-proxy + HLS serving |
+| INFRA-03 | Phase 1 | | MongoDB collections and indexes |
+| INFRA-04 | Phase 1 | | Go project structure with shared internal/ |
+| INFRA-05 | Phase 1 | | Health check endpoints |
+| RTL-01 | Phase 1 | | dir="rtl" and lang="fa" on html root |
+| RTL-02 | Phase 1 | | CSS logical properties throughout |
+| RTL-04 | Phase 1 | | Vazirmatn font via next/font |
+| CONT-01 | Phase 2 | | Admin channel CRUD |
+| CONT-02 | Phase 2 | | Admin episode CRUD |
+| CONT-03 | Phase 2 | | Admin category CRUD |
+| CONT-04 | Phase 2 | | Admin age group CRUD |
+| CONT-05 | Phase 2 | | Category and age group assignment to channels |
+| CONT-06 | Phase 2 | | Admin dashboard UI with tables, search, filters |
+| VIDE-01 | Phase 2 | **Phase 6** | YouTube URL paste and async ingestion trigger |
+| VIDE-02 | Phase 2 | **Phase 6** | yt-dlp sequential download queue with rate limiting |
+| VIDE-03 | Phase 2 | **Phase 6** | FFmpeg multi-rendition HLS transcode |
+| VIDE-04 | Phase 2 | | Job status visible in admin panel with live updates |
+| VIDE-05 | Phase 2 | **Phase 6** | Failed job error details and retry |
+| VIDE-06 | Phase 2 | **Phase 6** | HLS segments written to Docker volume served by nginx |
+| ADMN-01 | Phase 2 | | Admin login |
+| ADMN-02 | Phase 2 | | JWT-protected admin API endpoints |
+| BROW-01 | Phase 3 | | Homepage with featured/trending rail and category sections |
+| BROW-02 | Phase 3 | | Browse channels by category |
+| BROW-03 | Phase 3 | | Browse channels filtered by age group |
+| BROW-04 | Phase 3 | | Channel page with art, description, episode list |
+| BROW-05 | Phase 3 | | Search by title |
+| BROW-06 | Phase 3 | | Large thumbnail cards suitable for children |
+| BROW-07 | Phase 3 | | Responsive layout with 60px+ touch targets |
+| PLAY-01 | Phase 3 | **Phase 6** | HLS playback with adaptive bitrate |
+| PLAY-02 | Phase 3 | | Playback speed control |
+| PLAY-03 | Phase 3 | | Auto-play next episode |
+| PLAY-04 | Phase 3 | | Persian subtitles with RTL VTT rendering |
+| PLAY-05 | Phase 3 | | Large kid-friendly player controls |
+| PLAY-06 | Phase 3 | | No external links or ads in player |
+| PLAY-07 | Phase 3 | | Player controls not mirrored in RTL layout |
+| RTL-03 | Phase 3 | | Navigation flows right-to-left |
+| RTL-05 | Phase 3 | | All UI text in Persian |
+| AUTH-04 | Phase 3 | | All content viewable without login |
+| AUTH-01 | Phase 4 | | User registration with email and password |
+| AUTH-02 | Phase 4 | | User login with JWT HttpOnly cookie |
+| AUTH-03 | Phase 4 | | Session persists across browser refresh |
+| AUTH-05 | Phase 4 | | Logged-in user can subscribe to channels |
+| AUTH-06 | Phase 4 | | Logged-in user can bookmark episodes |
+| ADMN-03 | Phase 4 | | Admin can view registered users |
+| VIDE-07 | Phase 5 | | Admin can upload video file directly |
 
-**Coverage: 45/45 v1 requirements mapped. No orphans.**
+**Coverage: 45/45 v1 requirements mapped. 6 partial requirements assigned to Phase 6 for gap closure.**
 
 ## Progress
 
@@ -187,7 +205,8 @@ All 45 v1 requirements are mapped to exactly one phase.
 | 3. Public Browsing and Playback | 4/4 | Complete   | 2026-03-01 |
 | 4. User Accounts and Personalization | 0/3 | Not started | - |
 | 5. Polish and Operations | 0/3 | Not started | - |
+| 6. Fix Ingestion Pipeline Wiring | 0/1 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-01*
-*Total phases: 5 | Total plans: 19 | v1 requirements: 45/45 covered*
+*Total phases: 6 | Total plans: 20 | v1 requirements: 45/45 covered*
