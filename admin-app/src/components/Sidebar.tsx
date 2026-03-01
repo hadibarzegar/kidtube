@@ -10,6 +10,7 @@ const navLinks = [
   { label: 'Categories', href: '/admin/categories' },
   { label: 'Age Groups', href: '/admin/age-groups' },
   { label: 'Jobs', href: '/admin/jobs' },
+  { label: 'Users', href: '/admin/users' },
 ]
 
 export default function Sidebar() {

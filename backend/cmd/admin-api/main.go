@@ -108,6 +108,7 @@ func main() {
 			r.Get("/{id}", handler.GetJob(database))
 			r.Patch("/{id}/retry", handler.RetryJob(database))
 		})
+		r.Get("/users", handler.ListUsers(database))
 		r.Get("/youtube-meta", handler.YouTubeMeta)
 	})
 
