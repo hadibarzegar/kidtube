@@ -70,9 +70,19 @@ func main() {
 	r.Get("/healthz", handler.HealthHandler(database))
 	r.Post("/auth/login", handler.Login(database))
 
+	// tokenFromAdminCookie reads the admin_token cookie for browser-based auth.
+	// Client-side apiFetch in admin-app sends credentials:'include' (no Bearer header).
+	tokenFromAdminCookie := func(r *http.Request) string {
+		cookie, err := r.Cookie("admin_token")
+		if err != nil {
+			return ""
+		}
+		return cookie.Value
+	}
+
 	// Protected routes — require valid JWT
 	r.Group(func(r chi.Router) {
-		r.Use(jwtauth.Verifier(auth.TokenAuth))
+		r.Use(jwtauth.Verify(auth.TokenAuth, jwtauth.TokenFromHeader, tokenFromAdminCookie))
 		r.Use(jwtauth.Authenticator(auth.TokenAuth))
 
 		r.Route("/channels", func(r chi.Router) {
