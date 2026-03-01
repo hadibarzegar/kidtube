@@ -74,9 +74,41 @@ func main() {
 	r.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(auth.TokenAuth))
 		r.Use(jwtauth.Authenticator(auth.TokenAuth))
-		// Phase 2 Plan 02 will add CRUD routes here.
-		// When adding the episode CREATE handler, call worker.Enqueue(worker.JobRequest{...})
-		// after inserting the Job document into MongoDB.
+
+		r.Route("/channels", func(r chi.Router) {
+			r.Get("/", handler.ListChannels(database))
+			r.Post("/", handler.CreateChannel(database))
+			r.Get("/{id}", handler.GetChannel(database))
+			r.Put("/{id}", handler.UpdateChannel(database))
+			r.Delete("/{id}", handler.DeleteChannel(database))
+		})
+		r.Route("/episodes", func(r chi.Router) {
+			r.Get("/", handler.ListEpisodes(database))
+			r.Post("/", handler.CreateEpisode(database))
+			r.Get("/{id}", handler.GetEpisode(database))
+			r.Put("/{id}", handler.UpdateEpisode(database))
+			r.Delete("/{id}", handler.DeleteEpisode(database))
+		})
+		r.Route("/categories", func(r chi.Router) {
+			r.Get("/", handler.ListCategories(database))
+			r.Post("/", handler.CreateCategory(database))
+			r.Get("/{id}", handler.GetCategory(database))
+			r.Put("/{id}", handler.UpdateCategory(database))
+			r.Delete("/{id}", handler.DeleteCategory(database))
+		})
+		r.Route("/age-groups", func(r chi.Router) {
+			r.Get("/", handler.ListAgeGroups(database))
+			r.Post("/", handler.CreateAgeGroup(database))
+			r.Get("/{id}", handler.GetAgeGroup(database))
+			r.Put("/{id}", handler.UpdateAgeGroup(database))
+			r.Delete("/{id}", handler.DeleteAgeGroup(database))
+		})
+		r.Route("/jobs", func(r chi.Router) {
+			r.Get("/", handler.ListJobs(database))
+			r.Get("/{id}", handler.GetJob(database))
+			r.Patch("/{id}/retry", handler.RetryJob(database))
+		})
+		r.Get("/youtube-meta", handler.YouTubeMeta)
 	})
 
 	srv := &http.Server{
