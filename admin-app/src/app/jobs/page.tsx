@@ -9,6 +9,7 @@ interface Job {
   id: string
   episode_id: string
   source_url: string
+  source: string  // "youtube" | "upload"
   status: string
   error: string
   started_at: string
@@ -173,6 +174,7 @@ export default function JobsPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-2.5 text-left font-semibold text-gray-600">Episode</th>
+                <th className="px-4 py-2.5 text-left font-semibold text-gray-600">Source</th>
                 <th className="px-4 py-2.5 text-left font-semibold text-gray-600">Source URL</th>
                 <th className="px-4 py-2.5 text-left font-semibold text-gray-600">Status</th>
                 <th className="px-4 py-2.5 text-left font-semibold text-gray-600">Started At</th>
@@ -183,7 +185,7 @@ export default function JobsPage() {
             <tbody className="divide-y divide-gray-200 bg-white">
               {jobs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
+                  <td colSpan={7} className="px-4 py-8 text-center text-gray-400">
                     No jobs found.
                   </td>
                 </tr>
@@ -209,6 +211,15 @@ export default function JobsPage() {
                       >
                         <td className="px-4 py-2 text-gray-700 font-mono text-xs whitespace-nowrap">
                           {job.episode_id ? job.episode_id.slice(-8) : '—'}
+                        </td>
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                            job.source === 'upload'
+                              ? 'bg-purple-100 text-purple-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}>
+                            {job.source === 'upload' ? 'Upload' : 'YouTube'}
+                          </span>
                         </td>
                         <td
                           className="px-4 py-2 text-gray-600 whitespace-nowrap"
@@ -239,7 +250,7 @@ export default function JobsPage() {
 
                       {isFailed && isExpanded && (
                         <tr key={`${job.id}-error`} className="bg-red-50">
-                          <td colSpan={6} className="px-6 py-4 border-l-4 border-l-red-400">
+                          <td colSpan={7} className="px-6 py-4 border-l-4 border-l-red-400">
                             <div className="space-y-3">
                               <div>
                                 <p className="text-xs font-semibold text-red-700 mb-1">
