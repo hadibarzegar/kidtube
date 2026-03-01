@@ -73,7 +73,7 @@
 
 - [x] **ADMN-01**: Admin can log in with credentials
 - [x] **ADMN-02**: Admin API endpoints are protected by JWT authentication
-- [ ] **ADMN-03**: Admin can view registered users
+- [x] **ADMN-03**: Admin can view registered users
 
 ## v2 Requirements
 
@@ -160,7 +160,7 @@
 | AUTH-06 | Phase 4 | Pending |
 | ADMN-01 | Phase 2 | Complete |
 | ADMN-02 | Phase 2 | Complete |
-| ADMN-03 | Phase 4 | Pending |
+| ADMN-03 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 45 total
