@@ -27,7 +27,7 @@
 - [x] **VIDE-01**: Admin can paste a YouTube URL and trigger async download + HLS transcode
 - [x] **VIDE-02**: System downloads video via yt-dlp with rate-limiting protection (sequential queue, sleep intervals)
 - [x] **VIDE-03**: FFmpeg transcodes to multi-rendition HLS (360p, 480p, 720p) with keyframe-aligned segments and a master playlist
-- [ ] **VIDE-04**: Job status (pending/downloading/transcoding/ready/failed) is visible in admin panel with real-time updates
+- [x] **VIDE-04**: Job status (pending/downloading/transcoding/ready/failed) is visible in admin panel with real-time updates
 - [x] **VIDE-05**: Failed jobs show error details and can be retried
 - [x] **VIDE-06**: HLS segments are written to a Docker volume served by nginx
 - [x] **VIDE-07**: Admin can upload a video file directly as an alternative to YouTube URL import
@@ -72,7 +72,7 @@
 ### Admin Authentication (ADMN)
 
 - [x] **ADMN-01**: Admin can log in with credentials
-- [ ] **ADMN-02**: Admin API endpoints are protected by JWT authentication
+- [x] **ADMN-02**: Admin API endpoints are protected by JWT authentication
 - [x] **ADMN-03**: Admin can view registered users
 
 ## v2 Requirements
@@ -129,7 +129,7 @@
 | VIDE-01 | Phase 6 | Complete |
 | VIDE-02 | Phase 6 | Complete |
 | VIDE-03 | Phase 6 | Complete |
-| VIDE-04 | Phase 7 | Pending |
+| VIDE-04 | Phase 7 | Complete |
 | VIDE-05 | Phase 6 | Complete |
 | VIDE-06 | Phase 6 | Complete |
 | VIDE-07 | Phase 5 | Complete |
@@ -159,7 +159,7 @@
 | AUTH-05 | Phase 4 | Complete |
 | AUTH-06 | Phase 4 | Complete |
 | ADMN-01 | Phase 2 | Complete |
-| ADMN-02 | Phase 7 | Pending |
+| ADMN-02 | Phase 7 | Complete |
 | ADMN-03 | Phase 4 | Complete |
 
 **Coverage:**

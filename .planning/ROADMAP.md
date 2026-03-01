@@ -14,7 +14,7 @@ KidTube is built in five phases that follow a strict dependency chain: foundatio
 - [x] **Phase 4: User Accounts and Personalization** - Optional accounts unlock subscriptions and bookmarks (completed 2026-03-01)
 - [x] **Phase 5: Polish and Operations** - File upload ingestion, cache tuning, and operational hardening (completed 2026-03-01)
 - [x] **Phase 6: Fix Ingestion Pipeline Wiring** - Wire worker.Enqueue into episode creation and job retry handlers (completed 2026-03-01)
-- [ ] **Phase 7: Fix Auth & Routing Wiring Bugs** - Add admin cookie auth extractor and activate site middleware for guest redirects
+- [x] **Phase 7: Fix Auth & Routing Wiring Bugs** - Add admin cookie auth extractor and activate site middleware for guest redirects (completed 2026-03-01)
 
 ## Phase Details
 
@@ -223,7 +223,7 @@ All 45 v1 requirements are mapped to phases. 6 partial requirements are addition
 | 4. User Accounts and Personalization | 3/3 | Complete   | 2026-03-01 |
 | 5. Polish and Operations | 3/3 | Complete   | 2026-03-01 |
 | 6. Fix Ingestion Pipeline Wiring | 1/1 | Complete   | 2026-03-01 |
-| 7. Fix Auth & Routing Wiring Bugs | 0/1 | Planning   | |
+| 7. Fix Auth & Routing Wiring Bugs | 1/1 | Complete   | 2026-03-01 |
 
 ---
 *Roadmap created: 2026-03-01*

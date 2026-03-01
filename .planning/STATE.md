@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-01T13:17:38.969Z"
+last_updated: "2026-03-01T14:13:24.661Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 20
-  completed_plans: 20
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 21
+  completed_plans: 21
 ---
 
 # Project State
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Kids can safely watch curated Persian educational videos through an intuitive, age-appropriate interface — no ads, no external links, no distractions.
-**Current focus:** Phase 6 — Fix Ingestion Pipeline Wiring
+**Current focus:** Phase 7 — Fix Auth and Routing Wiring Bugs
 
 ## Current Position
 
-Phase: 6 of 6 (Fix Ingestion Pipeline Wiring)
+Phase: 7 of 7 (Fix Auth and Routing Wiring Bugs)
 Plan: 1 of 1 in current phase (complete)
-Status: Phase 6 complete — Plan 01 complete
-Last activity: 2026-03-01 — Completed Plan 06-01: Wired worker.Enqueue into CreateEpisode and RetryJob handlers, closing critical defect where Job documents were inserted but never dispatched to the worker goroutine
+Status: Phase 7 complete — Plan 01 complete
+Last activity: 2026-03-01 — Completed Plan 07-01: Added tokenFromAdminCookie to admin-api JWT verifier and fixed site-app proxy.ts default export, closing VIDE-04 and ADMN-02
 
 Progress: [██████████] 100%
 
@@ -64,6 +64,7 @@ Progress: [██████████] 100%
 | Phase 05-polish-and-operations P03 | 1 | 2 tasks | 2 files |
 | Phase 05 P02 | 3 | 2 tasks | 2 files |
 | Phase 06-fix-ingestion-pipeline-wiring P01 | 1 | 1 task | 2 files |
+| Phase 07-fix-auth-routing-wiring-bugs P01 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -143,6 +144,9 @@ Recent decisions affecting current work:
 - [06-01]: Use job.Source (from fetched MongoDB document) not hardcoded "youtube" in RetryJob so upload jobs also enqueue correctly on retry
 - [06-01]: worker.Enqueue is NOT wrapped in a goroutine — channel is buffered at 100 and call is already non-blocking by design
 - [06-01]: worker.Enqueue called AFTER successful DB insert — worker reads job from MongoDB by ID so document must exist before dispatch
+- [07-01]: admin-api must use jwtauth.Verify (not jwtauth.Verifier) with tokenFromAdminCookie closure so both Bearer header (server actions) and admin_token cookie (client polling) authenticate
+- [07-01]: proxy.ts uses default export for reliable Next.js 16 Turbopack middleware detection
+- [07-01]: Next.js 16 Turbopack registers middleware in functions-config-manifest.json (/_middleware key) — legacy middleware-manifest.json middleware object is always empty in Turbopack builds
 
 ### Pending Todos
 
@@ -157,5 +161,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 06-01-PLAN.md (wired worker.Enqueue into CreateEpisode and RetryJob handlers)
+Stopped at: Completed 07-01-PLAN.md (added tokenFromAdminCookie to admin-api, fixed proxy.ts default export for Next.js 16 middleware)
 Resume file: None
