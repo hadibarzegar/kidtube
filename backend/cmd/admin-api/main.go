@@ -11,6 +11,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
+	"github.com/hadi/kidtube/internal/auth"
 	"github.com/hadi/kidtube/internal/db"
 	"github.com/hadi/kidtube/internal/handler"
 )
@@ -25,6 +27,9 @@ func main() {
 	if mongoURI == "" {
 		mongoURI = "mongodb://localhost:27017"
 	}
+
+	// Initialize JWT auth — panics if JWT_SECRET is not set
+	auth.Init()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -43,7 +48,16 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	// Public routes
 	r.Get("/healthz", handler.HealthHandler(database))
+	r.Post("/auth/login", handler.Login(database))
+
+	// Protected routes — require valid JWT
+	r.Group(func(r chi.Router) {
+		r.Use(jwtauth.Verifier(auth.TokenAuth))
+		r.Use(jwtauth.Authenticator(auth.TokenAuth))
+		// Phase 2 Plan 02 will add CRUD routes here
+	})
 
 	srv := &http.Server{
 		Addr:    ":" + port,
