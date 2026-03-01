@@ -30,9 +30,9 @@ KidTube is built in five phases that follow a strict dependency chain: foundatio
 
 Plans:
 - [x] 01-01: Docker Compose, nginx configuration, and volume strategy
-- [ ] 01-02: Go project structure, MongoDB schema, and shared internal packages
-- [ ] 01-03: Site-api and admin-api skeletons with health check endpoints
-- [ ] 01-04: Next.js site-app and admin-app scaffolding with RTL root layout and Vazirmatn font
+- [x] 01-02: Go project structure, MongoDB schema, and shared internal packages
+- [x] 01-03: Site-api and admin-api skeletons with health check endpoints
+- [x] 01-04: Next.js site-app and admin-app scaffolding with RTL root layout and Vazirmatn font
 
 ### Phase 2: Admin Content Pipeline
 **Goal**: Admin can create and manage channels, episodes, categories, and age groups through a dashboard UI, and can ingest video content via YouTube URL with async HLS transcoding — all visible via job status tracking.
@@ -47,11 +47,11 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 02-01: Admin authentication (JWT login, protected middleware, admin-api route groups)
-- [ ] 02-02: Channel, category, and age group CRUD — admin-api endpoints and admin-app UI
-- [ ] 02-03: Episode CRUD — admin-api endpoints and admin-app UI
-- [ ] 02-04: YouTube ingestion worker (yt-dlp download queue, goroutine pool with context cancellation)
-- [ ] 02-05: FFmpeg multi-rendition HLS transcoding, job status polling, and retry UI
+- [ ] 02-01-PLAN.md — Infrastructure fixes (Dockerfile, docker-compose), JWT auth, and admin user seeding
+- [ ] 02-02-PLAN.md — All REST CRUD handlers (channels, episodes, categories, age groups, jobs, youtube-meta)
+- [ ] 02-03-PLAN.md — Ingestion worker (yt-dlp sequential download + FFmpeg multi-rendition HLS transcode)
+- [ ] 02-04-PLAN.md — Admin UI shell (sidebar, login, middleware) + categories and age groups pages
+- [ ] 02-05-PLAN.md — Channels, episodes, and jobs UI pages with YouTube metadata auto-fetch and polling
 
 ### Phase 3: Public Browsing and Playback
 **Goal**: Any visitor can browse the platform by category and age group, search for content, open a channel, and watch a video with full player controls — no account required.
