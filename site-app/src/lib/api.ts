@@ -28,3 +28,37 @@ export function apiFetch(path: string, options?: RequestInit): Promise<Response>
     },
   })
 }
+
+/**
+ * Server-side authenticated fetch — passes JWT token as Authorization: Bearer header.
+ * Used in Server Components that need user-specific data (subscriptions, bookmarks).
+ */
+export function apiServerAuthFetch(
+  path: string,
+  token: string,
+  options?: RequestInit
+): Promise<Response> {
+  return fetch(`${SITE_API_INTERNAL_URL}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      ...(options?.headers ?? {}),
+    },
+  })
+}
+
+/**
+ * Client-side authenticated fetch — sends site_token cookie automatically via credentials: 'include'.
+ * Used in Client Components for subscribe/bookmark actions.
+ */
+export function authFetch(path: string, options?: RequestInit): Promise<Response> {
+  return fetch(`/api/site${path}`, {
+    ...options,
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options?.headers ?? {}),
+    },
+  })
+}
