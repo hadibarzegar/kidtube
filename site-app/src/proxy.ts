@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const PROTECTED_PATHS = ['/subscriptions', '/bookmarks', '/account']
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const token = request.cookies.get('site_token')?.value
   const { pathname } = request.nextUrl
 
