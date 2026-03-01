@@ -62,9 +62,9 @@
 
 ### User Accounts (AUTH)
 
-- [ ] **AUTH-01**: User can register with email and password
-- [ ] **AUTH-02**: User can log in and receive a JWT token (HttpOnly cookie)
-- [ ] **AUTH-03**: User session persists across browser refresh
+- [x] **AUTH-01**: User can register with email and password
+- [x] **AUTH-02**: User can log in and receive a JWT token (HttpOnly cookie)
+- [x] **AUTH-03**: User session persists across browser refresh
 - [x] **AUTH-04**: All content is viewable without login — accounts are optional
 - [ ] **AUTH-05**: Logged-in user can subscribe to channels
 - [ ] **AUTH-06**: Logged-in user can bookmark episodes
@@ -152,9 +152,9 @@
 | RTL-03 | Phase 3 | Complete |
 | RTL-04 | Phase 1 | Complete |
 | RTL-05 | Phase 3 | Complete |
-| AUTH-01 | Phase 4 | Pending |
-| AUTH-02 | Phase 4 | Pending |
-| AUTH-03 | Phase 4 | Pending |
+| AUTH-01 | Phase 4 | Complete |
+| AUTH-02 | Phase 4 | Complete |
+| AUTH-03 | Phase 4 | Complete |
 | AUTH-04 | Phase 3 | Complete |
 | AUTH-05 | Phase 4 | Pending |
 | AUTH-06 | Phase 4 | Pending |

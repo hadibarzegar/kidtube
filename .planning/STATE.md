@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 4 of 5 (User Accounts and Personalization)
-Plan: 3 of N in current phase
-Status: Phase 4 in progress — Plan 03 complete
-Last activity: 2026-03-01 — Completed Plan 04-03: Admin users list view (ListUsers endpoint + admin-app users page + sidebar link)
+Plan: 1 of 4 in current phase (complete)
+Status: Phase 4 in progress — Plan 01 complete
+Last activity: 2026-03-01 — Completed Plan 04-01: site-api auth handlers (register/login/me), Subscription+Bookmark models, site-app session/auth/login/register pages
 
 Progress: [██████████] 90%
 
@@ -58,6 +58,7 @@ Progress: [██████████] 90%
 | Phase 03-public-browsing-and-playback P03 | 2 | 2 tasks | 7 files |
 | Phase 03-public-browsing-and-playback P04 | 1 | 2 tasks | 4 files |
 | Phase 04-user-accounts-and-personalization P03 | 2 | 1 task | 4 files |
+| Phase 04-user-accounts-and-personalization P01 | 3 | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -117,6 +118,10 @@ Recent decisions affecting current work:
 - [04-03]: ListUsers uses MongoDB SetProjection to exclude password_hash even though json:"-" already prevents JSON serialization — belt-and-suspenders security
 - [04-03]: Users admin page is read-only (no onDelete/editPath) — v1 admin scope is visibility only, not user management
 - [04-03]: GET /users registered as flat route (not r.Route) since only a single GET method is needed
+- [04-01]: jwtauth.TokenFromCookie reads hardcoded 'jwt' cookie — used inline tokenFromSiteCookie closure instead; jwtauth.Verify (not Verifier) required for custom token finder functions
+- [04-01]: getCurrentUser() uses jose jwtVerify locally — avoids GET /me round-trip for basic auth state in Server Components
+- [04-01]: SiteLogin filters role='user' — prevents admin credentials from working on site login; identical 401 for not-found and wrong-password prevents credential enumeration
+- [04-01]: Cookie name site_token (not admin_token) — distinct namespace prevents session collision between site-app and admin-app
 
 ### Pending Todos
 
@@ -131,5 +136,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 04-03-PLAN.md (Admin users list — ListUsers handler, admin users page, sidebar link)
+Stopped at: Completed 04-01-PLAN.md (site-api auth register/login/me, Subscription+Bookmark models, site-app session/auth/login/register pages/proxy)
 Resume file: None
