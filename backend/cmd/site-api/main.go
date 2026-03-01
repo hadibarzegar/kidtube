@@ -11,6 +11,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
+	"github.com/hadi/kidtube/internal/auth"
 	"github.com/hadi/kidtube/internal/db"
 	"github.com/hadi/kidtube/internal/handler"
 )
@@ -25,6 +27,9 @@ func main() {
 	if mongoURI == "" {
 		mongoURI = "mongodb://localhost:27017"
 	}
+
+	// Initialize JWT auth — panics if JWT_SECRET is not set
+	auth.Init()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -53,6 +58,28 @@ func main() {
 	r.Get("/categories", handler.SiteListCategories(database))
 	r.Get("/age-groups", handler.SiteListAgeGroups(database))
 	r.Get("/search", handler.SiteSearch(database))
+
+	// Public auth routes — no JWT required
+	r.Post("/auth/register", handler.SiteRegister(database))
+	r.Post("/auth/login", handler.SiteLogin(database))
+
+	// tokenFromSiteCookie reads the site_token cookie for browser-based auth.
+	tokenFromSiteCookie := func(r *http.Request) string {
+		cookie, err := r.Cookie("site_token")
+		if err != nil {
+			return ""
+		}
+		return cookie.Value
+	}
+
+	// Protected routes — require valid site JWT
+	r.Group(func(r chi.Router) {
+		r.Use(jwtauth.Verify(auth.TokenAuth, jwtauth.TokenFromHeader, tokenFromSiteCookie))
+		r.Use(jwtauth.Authenticator(auth.TokenAuth))
+
+		r.Get("/me", handler.GetMe(database))
+		r.Put("/me/password", handler.ChangePassword(database))
+	})
 
 	srv := &http.Server{
 		Addr:    ":" + port,

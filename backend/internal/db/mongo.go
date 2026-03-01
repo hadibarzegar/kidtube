@@ -11,12 +11,14 @@ import (
 
 // Collection name constants
 const (
-	CollChannels   = "channels"
-	CollEpisodes   = "episodes"
-	CollCategories = "categories"
-	CollAgeGroups  = "age_groups"
-	CollUsers      = "users"
-	CollJobs       = "jobs"
+	CollChannels      = "channels"
+	CollEpisodes      = "episodes"
+	CollCategories    = "categories"
+	CollAgeGroups     = "age_groups"
+	CollUsers         = "users"
+	CollJobs          = "jobs"
+	CollSubscriptions = "subscriptions"
+	CollBookmarks     = "bookmarks"
 )
 
 // Connect establishes a MongoDB connection and returns the database handle.
@@ -73,6 +75,30 @@ func EnsureIndexes(ctx context.Context, database *mongo.Database) error {
 	})
 	if err != nil {
 		return fmt.Errorf("channels indexes: %w", err)
+	}
+
+	// subscriptions: compound unique index on (user_id, channel_id) to prevent duplicate subscriptions
+	_, err = database.Collection(CollSubscriptions).Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{
+			Keys:    bson.D{{Key: "user_id", Value: 1}, {Key: "channel_id", Value: 1}},
+			Options: options.Index().SetUnique(unique),
+		},
+		{Keys: bson.D{{Key: "user_id", Value: 1}}},
+	})
+	if err != nil {
+		return fmt.Errorf("subscriptions indexes: %w", err)
+	}
+
+	// bookmarks: compound unique index on (user_id, episode_id) to prevent duplicate bookmarks
+	_, err = database.Collection(CollBookmarks).Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{
+			Keys:    bson.D{{Key: "user_id", Value: 1}, {Key: "episode_id", Value: 1}},
+			Options: options.Index().SetUnique(unique),
+		},
+		{Keys: bson.D{{Key: "user_id", Value: 1}}},
+	})
+	if err != nil {
+		return fmt.Errorf("bookmarks indexes: %w", err)
 	}
 
 	return nil
