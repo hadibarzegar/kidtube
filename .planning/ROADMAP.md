@@ -183,7 +183,7 @@ All 45 v1 requirements are mapped to exactly one phase.
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and Infrastructure | 4/4 | Complete   | 2026-02-28 |
-| 2. Admin Content Pipeline | 1/5 | In Progress|  |
+| 2. Admin Content Pipeline | 3/5 | In Progress|  |
 | 3. Public Browsing and Playback | 0/4 | Not started | - |
 | 4. User Accounts and Personalization | 0/3 | Not started | - |
 | 5. Polish and Operations | 0/3 | Not started | - |

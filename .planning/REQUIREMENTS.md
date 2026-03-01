@@ -25,11 +25,11 @@
 ### Video Ingestion (VIDE)
 
 - [ ] **VIDE-01**: Admin can paste a YouTube URL and trigger async download + HLS transcode
-- [ ] **VIDE-02**: System downloads video via yt-dlp with rate-limiting protection (sequential queue, sleep intervals)
-- [ ] **VIDE-03**: FFmpeg transcodes to multi-rendition HLS (360p, 480p, 720p) with keyframe-aligned segments and a master playlist
+- [x] **VIDE-02**: System downloads video via yt-dlp with rate-limiting protection (sequential queue, sleep intervals)
+- [x] **VIDE-03**: FFmpeg transcodes to multi-rendition HLS (360p, 480p, 720p) with keyframe-aligned segments and a master playlist
 - [ ] **VIDE-04**: Job status (pending/downloading/transcoding/ready/failed) is visible in admin panel with real-time updates
 - [ ] **VIDE-05**: Failed jobs show error details and can be retried
-- [ ] **VIDE-06**: HLS segments are written to a Docker volume served by nginx
+- [x] **VIDE-06**: HLS segments are written to a Docker volume served by nginx
 - [ ] **VIDE-07**: Admin can upload a video file directly as an alternative to YouTube URL import
 
 ### Public Browsing (BROW)
@@ -127,11 +127,11 @@
 | CONT-05 | Phase 2 | Pending |
 | CONT-06 | Phase 2 | Pending |
 | VIDE-01 | Phase 2 | Pending |
-| VIDE-02 | Phase 2 | Pending |
-| VIDE-03 | Phase 2 | Pending |
+| VIDE-02 | Phase 2 | Complete |
+| VIDE-03 | Phase 2 | Complete |
 | VIDE-04 | Phase 2 | Pending |
 | VIDE-05 | Phase 2 | Pending |
-| VIDE-06 | Phase 2 | Pending |
+| VIDE-06 | Phase 2 | Complete |
 | VIDE-07 | Phase 5 | Pending |
 | BROW-01 | Phase 3 | Pending |
 | BROW-02 | Phase 3 | Pending |

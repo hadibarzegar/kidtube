@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in-progress
-last_updated: "2026-03-01T05:40:09Z"
+status: unknown
+last_updated: "2026-03-01T05:47:37.311Z"
 progress:
-  total_phases: 5
+  total_phases: 2
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 1
+  total_plans: 9
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 2 of 5 (Admin Content Pipeline)
-Plan: 1 of 4 in current phase (complete)
+Plan: 3 of 4 in current phase (complete)
 Status: In progress
-Last activity: 2026-03-01 — Completed Plan 01: JWT Auth, Seed Binary, and Admin-API Docker Infrastructure
+Last activity: 2026-03-01 — Completed Plan 03: Sequential Ingestion Worker (yt-dlp + FFmpeg HLS)
 
 Progress: [████░░░░░░] 20%
 
@@ -49,6 +49,7 @@ Progress: [████░░░░░░] 20%
 
 *Updated after each plan completion*
 | Phase 02-admin-content-pipeline P01 | 3 | 3 tasks | 8 files |
+| Phase 02-admin-content-pipeline P03 | 3 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,9 @@ Recent decisions affecting current work:
 - [02-01]: auth.Init() called explicitly from main() (not package-level init) so it can be tested without setting JWT_SECRET globally
 - [02-01]: JWT uses HS256 symmetric key — sufficient for single-service admin API
 - [02-01]: Login handler returns identical 401 for user-not-found and wrong-password to prevent credential enumeration
+- [Phase 02-03]: Use -force_key_frames expr:gte(t,n_forced*6) for fps-agnostic HLS keyframe alignment (YouTube sources vary 24-60fps)
+- [Phase 02-03]: Capture yt-dlp/ffmpeg stderr into bytes.Buffer for rich Job.Error messages displayed in admin panel
+- [Phase 02-03]: Cancel workerCtx before srv.Shutdown for graceful in-progress job cancellation on restart
 
 ### Pending Todos
 
@@ -84,12 +88,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- **Phase 2 risk**: FFmpeg keyframe alignment is complex — use `-force_key_frames "expr:gte(t,n_forced*6)"` and validate output with ffprobe before proceeding
+- **Phase 2 risk (resolved)**: FFmpeg keyframe alignment implemented with `-force_key_frames "expr:gte(t,n_forced*6)"` for fps-agnostic alignment; validate output with ffprobe during integration testing
 - **Phase 3 risk**: Persian VTT RTL cue rendering differs across browsers and Video.js versions — needs hands-on testing; low-confidence territory
 - **Phase 3 risk**: MongoDB $text index may not tokenize Persian correctly — may need `simple` index or regex fallback; validate during search implementation
 
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 02-01-PLAN.md (JWT Auth, Seed Binary, and Admin-API Docker Infrastructure)
+Stopped at: Completed 02-03-PLAN.md (Sequential Ingestion Worker)
 Resume file: None
