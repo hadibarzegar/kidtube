@@ -103,6 +103,10 @@ Recent decisions affecting current work:
 - [03-01]: Search uses regexp.QuoteMeta + bson.Regex with options "i" — safely escapes user input for MongoDB regex
 - [03-01]: Search goroutines use graceful degradation — log errors but return successful partial results rather than 500ing
 - [03-01]: site-app uses apiServerFetch (SITE_API_INTERNAL_URL Docker DNS) for Server Components; apiFetch (/api/site nginx proxy) for Client Components
+- [03-02]: URL-param approach for age filter (/?age_group_id=xxx) — pure Server Component, bookmarkable, SEO-friendly vs client state
+- [03-02]: Suspense boundary wraps AgeFilterTabs — required by Next.js 15 when useSearchParams is used as child of Server Component
+- [03-02]: Shared types extracted to lib/types.ts — avoids duplicating Channel/Episode/Category/AgeGroup across ~10 consuming files
+- [03-02]: BottomTabBar returns null on /watch/* routes — prevents bottom bar overlapping video player controls
 - [03-03]: VideoPlayerWrapper must be 'use client' — next/dynamic ssr:false called from a Server Component throws a runtime error
 - [03-03]: dir="ltr" on player wrapper div prevents RTL html dir from mirroring Video.js control bar (PLAY-07)
 - [03-03]: dispose() called in separate useEffect cleanup to free media streams on unmount — MUST be in separate effect from initialization

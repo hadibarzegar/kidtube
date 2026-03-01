@@ -34,13 +34,13 @@
 
 ### Public Browsing (BROW)
 
-- [ ] **BROW-01**: Homepage displays featured/trending content rail and category sections
+- [x] **BROW-01**: Homepage displays featured/trending content rail and category sections
 - [x] **BROW-02**: User can browse channels grouped by category
 - [x] **BROW-03**: User can browse channels filtered by age group (2-5, 6-10)
 - [x] **BROW-04**: User can view a channel page with channel art, description, and episode list
 - [x] **BROW-05**: User can search for videos and channels by title
-- [ ] **BROW-06**: All browsing pages use large thumbnail cards suitable for children
-- [ ] **BROW-07**: All pages are fully responsive (mobile, tablet, desktop) with 60px+ touch targets
+- [x] **BROW-06**: All browsing pages use large thumbnail cards suitable for children
+- [x] **BROW-07**: All pages are fully responsive (mobile, tablet, desktop) with 60px+ touch targets
 
 ### Video Playback (PLAY)
 
@@ -56,9 +56,9 @@
 
 - [x] **RTL-01**: Document root has `dir="rtl"` and `lang="fa"` attributes
 - [x] **RTL-02**: All layout uses CSS logical properties (margin-inline-start, padding-inline-end, etc.)
-- [ ] **RTL-03**: Navigation flows right-to-left; back buttons point right
+- [x] **RTL-03**: Navigation flows right-to-left; back buttons point right
 - [x] **RTL-04**: Vazirmatn font loads via next/font with zero layout shift
-- [ ] **RTL-05**: All UI text is in Persian (admin panel may be English)
+- [x] **RTL-05**: All UI text is in Persian (admin panel may be English)
 
 ### User Accounts (AUTH)
 
@@ -133,13 +133,13 @@
 | VIDE-05 | Phase 2 | Complete |
 | VIDE-06 | Phase 2 | Complete |
 | VIDE-07 | Phase 5 | Pending |
-| BROW-01 | Phase 3 | Pending |
+| BROW-01 | Phase 3 | Complete |
 | BROW-02 | Phase 3 | Complete |
 | BROW-03 | Phase 3 | Complete |
 | BROW-04 | Phase 3 | Complete |
 | BROW-05 | Phase 3 | Complete |
-| BROW-06 | Phase 3 | Pending |
-| BROW-07 | Phase 3 | Pending |
+| BROW-06 | Phase 3 | Complete |
+| BROW-07 | Phase 3 | Complete |
 | PLAY-01 | Phase 3 | Complete |
 | PLAY-02 | Phase 3 | Pending |
 | PLAY-03 | Phase 3 | Pending |
@@ -149,9 +149,9 @@
 | PLAY-07 | Phase 3 | Complete |
 | RTL-01 | Phase 1 | Complete |
 | RTL-02 | Phase 1 | Complete |
-| RTL-03 | Phase 3 | Pending |
+| RTL-03 | Phase 3 | Complete |
 | RTL-04 | Phase 1 | Complete |
-| RTL-05 | Phase 3 | Pending |
+| RTL-05 | Phase 3 | Complete |
 | AUTH-01 | Phase 4 | Pending |
 | AUTH-02 | Phase 4 | Pending |
 | AUTH-03 | Phase 4 | Pending |
