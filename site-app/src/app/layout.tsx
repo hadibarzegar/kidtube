@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { vazirmatn } from '@/lib/fonts';
+import TopNavbar from '@/components/TopNavbar';
+import BottomTabBar from '@/components/BottomTabBar';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -14,17 +16,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fa" dir="rtl" className={vazirmatn.variable}>
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased bg-white">
         <div className="min-h-screen">
-          {/* Header placeholder — Phase 3 builds full navigation */}
-          <header className="border-b border-gray-200 px-4 py-3">
-            <div className="mx-auto max-w-7xl">
-              <h1 className="text-xl font-bold">کیدتیوب</h1>
-            </div>
-          </header>
-          <main className="mx-auto max-w-7xl px-4 py-6">
+          <TopNavbar />
+          <main className="pb-20 md:pb-0">
             {children}
           </main>
+          <BottomTabBar />
         </div>
       </body>
     </html>
