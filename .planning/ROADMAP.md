@@ -204,7 +204,7 @@ All 45 v1 requirements are mapped to phases. 6 partial requirements are addition
 | 2. Admin Content Pipeline | 5/5 | Complete   | 2026-03-01 |
 | 3. Public Browsing and Playback | 4/4 | Complete   | 2026-03-01 |
 | 4. User Accounts and Personalization | 3/3 | Complete   | 2026-03-01 |
-| 5. Polish and Operations | 0/3 | Not started | - |
+| 5. Polish and Operations | 1/3 | In Progress|  |
 | 6. Fix Ingestion Pipeline Wiring | 0/1 | Not started | - |
 
 ---

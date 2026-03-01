@@ -30,7 +30,7 @@
 - [x] **VIDE-04**: Job status (pending/downloading/transcoding/ready/failed) is visible in admin panel with real-time updates
 - [ ] **VIDE-05**: Failed jobs show error details and can be retried
 - [ ] **VIDE-06**: HLS segments are written to a Docker volume served by nginx
-- [ ] **VIDE-07**: Admin can upload a video file directly as an alternative to YouTube URL import
+- [x] **VIDE-07**: Admin can upload a video file directly as an alternative to YouTube URL import
 
 ### Public Browsing (BROW)
 
@@ -132,7 +132,7 @@
 | VIDE-04 | Phase 2 | Complete |
 | VIDE-05 | Phase 6 | Pending |
 | VIDE-06 | Phase 6 | Pending |
-| VIDE-07 | Phase 5 | Pending |
+| VIDE-07 | Phase 5 | Complete |
 | BROW-01 | Phase 3 | Complete |
 | BROW-02 | Phase 3 | Complete |
 | BROW-03 | Phase 3 | Complete |

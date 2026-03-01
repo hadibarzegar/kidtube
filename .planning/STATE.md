@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-01T11:52:45Z"
+last_updated: "2026-03-01T12:19:30Z"
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Kids can safely watch curated Persian educational videos through an intuitive, age-appropriate interface — no ads, no external links, no distractions.
-**Current focus:** Phase 4 — User Accounts and Personalization
+**Current focus:** Phase 5 — Polish and Operations
 
 ## Current Position
 
-Phase: 4 of 5 (User Accounts and Personalization)
-Plan: 2 of 4 in current phase (complete)
-Status: Phase 4 in progress — Plan 02 complete
-Last activity: 2026-03-01 — Completed Plan 04-02: subscribe/bookmark API endpoints, SubscribeButton, BookmarkButton, ProfileDropdown, auth-aware TopNavbar, personalized homepage rail, /subscriptions, /bookmarks, /account pages
+Phase: 5 of 5 (Polish and Operations)
+Plan: 1 of ? in current phase (complete)
+Status: Phase 5 in progress — Plan 01 complete
+Last activity: 2026-03-01 — Completed Plan 05-01: Job Source field, UploadEpisode multipart handler streaming to disk, upload-aware worker skipping yt-dlp, POST /episodes/upload route, nginx upload proxy with 2100m body size
 
-Progress: [██████████] 90%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Progress: [██████████] 90%
 - Trend: stable
 
 *Updated after each plan completion*
+| Phase 05-polish-and-operations P01 | 2 | 3 tasks | 5 files |
 | Phase 02-admin-content-pipeline P01 | 3 | 3 tasks | 8 files |
 | Phase 02-admin-content-pipeline P03 | 3 | 2 tasks | 2 files |
 | Phase 02 P04 | 6 | 3 tasks | 20 files |
@@ -127,6 +128,10 @@ Recent decisions affecting current work:
 - [04-02]: TopNavbar calls /me for email — JWT only has user_id and role, not email; one GET /me per page load is acceptable for navbar
 - [04-02]: N+1 lookups in GetSubscriptions/GetBookmarks accepted for v1 — user subscription lists are small; can batch with $in later
 - [04-02]: 409 treated as success by SubscribeButton/BookmarkButton — prevents confusing UX from harmless duplicate-key races
+- [05-01]: Source field on Job struct distinguishes youtube vs upload ingestion paths — no separate collection needed, queryable in admin UI
+- [05-01]: http.MaxBytesReader + r.MultipartReader() + io.Copy for upload handler — streams 2GB files directly to disk without memory/temp file buffering
+- [05-01]: nginx exact-match location (= /api/admin/episodes/upload) before prefix /api/admin/ — per-endpoint body size control avoids global client_max_body_size attack surface
+- [05-01]: Close file dst explicitly (not defer) in upload handler — detects write errors (disk full etc.) before responding 202
 
 ### Pending Todos
 
@@ -141,5 +146,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 04-02-PLAN.md (subscribe/bookmark API, SubscribeButton, BookmarkButton, ProfileDropdown, auth-aware TopNavbar, personalized homepage, /subscriptions, /bookmarks, /account)
+Stopped at: Completed 05-01-PLAN.md (Job Source field, UploadEpisode multipart handler, upload-aware worker, POST /episodes/upload route, nginx upload proxy 2100m)
 Resume file: None
