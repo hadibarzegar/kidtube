@@ -20,7 +20,7 @@
 - [x] **CONT-03**: Admin can create, edit, and delete categories
 - [x] **CONT-04**: Admin can create, edit, and delete age groups
 - [x] **CONT-05**: Admin can assign categories and age groups to channels
-- [ ] **CONT-06**: Admin panel displays all content in a dashboard UI with tables, search, and filters
+- [x] **CONT-06**: Admin panel displays all content in a dashboard UI with tables, search, and filters
 
 ### Video Ingestion (VIDE)
 
@@ -125,7 +125,7 @@
 | CONT-03 | Phase 2 | Complete |
 | CONT-04 | Phase 2 | Complete |
 | CONT-05 | Phase 2 | Complete |
-| CONT-06 | Phase 2 | Pending |
+| CONT-06 | Phase 2 | Complete |
 | VIDE-01 | Phase 2 | Complete |
 | VIDE-02 | Phase 2 | Complete |
 | VIDE-03 | Phase 2 | Complete |

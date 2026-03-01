@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-01T05:47:37.311Z"
+last_updated: "2026-03-01T05:59:20.182Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 9
-  completed_plans: 6
+  completed_plans: 8
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 2 of 5 (Admin Content Pipeline)
-Plan: 3 of 4 in current phase (complete)
+Plan: 4 of 5 in current phase (complete)
 Status: In progress
-Last activity: 2026-03-01 — Completed Plan 03: Sequential Ingestion Worker (yt-dlp + FFmpeg HLS)
+Last activity: 2026-03-01 — Completed Plan 04: Admin Dashboard UI Shell (login, sidebar, DataTable, categories, age groups CRUD)
 
-Progress: [████░░░░░░] 20%
+Progress: [████░░░░░░] 22%
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Progress: [████░░░░░░] 20%
 *Updated after each plan completion*
 | Phase 02-admin-content-pipeline P01 | 3 | 3 tasks | 8 files |
 | Phase 02-admin-content-pipeline P03 | 3 | 2 tasks | 2 files |
+| Phase 02 P04 | 6 | 3 tasks | 20 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,10 @@ Recent decisions affecting current work:
 - [02-02]: YouTubeMeta returns 502 Bad Gateway when yt-dlp fails (upstream dependency failure, not internal error)
 - [02-02]: AgeGroup validation rejects min_age >= max_age and negative values; zero-width ranges invalid
 - [02-02]: RetryJob only permits retry when job.Status == "failed"; returns 400 for all other states
+- [Phase 02-04]: Next.js 16 renamed middleware.ts to proxy.ts with export function proxy() — all admin apps must use proxy.ts
+- [Phase 02-04]: LayoutShell client component checks pathname to conditionally render Sidebar (hidden on login page)
+- [Phase 02-04]: Cookie path='/' not '/admin' — admin_token must reach /api/admin/* nginx proxy paths
+- [Phase 02-04]: Server actions forward JWT as Authorization: Bearer header (not cookies) to admin-api for server-to-server calls
 
 ### Pending Todos
 
@@ -100,5 +105,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 02-02-PLAN.md (Admin REST API CRUD Handlers — channels, categories, age groups, episodes, jobs, youtube-meta)
+Stopped at: Completed 02-04-PLAN.md (Admin Dashboard UI Shell — login, sidebar, DataTable, categories, age groups CRUD)
 Resume file: None
