@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-01T11:43:15.722Z"
+last_updated: "2026-03-01T11:52:45Z"
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 16
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 4 of 5 (User Accounts and Personalization)
-Plan: 1 of 4 in current phase (complete)
-Status: Phase 4 in progress — Plan 01 complete
-Last activity: 2026-03-01 — Completed Plan 04-01: site-api auth handlers (register/login/me), Subscription+Bookmark models, site-app session/auth/login/register pages
+Plan: 2 of 4 in current phase (complete)
+Status: Phase 4 in progress — Plan 02 complete
+Last activity: 2026-03-01 — Completed Plan 04-02: subscribe/bookmark API endpoints, SubscribeButton, BookmarkButton, ProfileDropdown, auth-aware TopNavbar, personalized homepage rail, /subscriptions, /bookmarks, /account pages
 
 Progress: [██████████] 90%
 
@@ -59,6 +59,7 @@ Progress: [██████████] 90%
 | Phase 03-public-browsing-and-playback P04 | 1 | 2 tasks | 4 files |
 | Phase 04-user-accounts-and-personalization P03 | 2 | 1 task | 4 files |
 | Phase 04-user-accounts-and-personalization P01 | 3 | 2 tasks | 14 files |
+| Phase 04-user-accounts-and-personalization P02 | 5 | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -122,6 +123,10 @@ Recent decisions affecting current work:
 - [04-01]: getCurrentUser() uses jose jwtVerify locally — avoids GET /me round-trip for basic auth state in Server Components
 - [04-01]: SiteLogin filters role='user' — prevents admin credentials from working on site login; identical 401 for not-found and wrong-password prevents credential enumeration
 - [04-01]: Cookie name site_token (not admin_token) — distinct namespace prevents session collision between site-app and admin-app
+- [04-02]: ChangePasswordForm is a separate client component — account/page.tsx stays a pure Server Component; form handles its own state and authFetch
+- [04-02]: TopNavbar calls /me for email — JWT only has user_id and role, not email; one GET /me per page load is acceptable for navbar
+- [04-02]: N+1 lookups in GetSubscriptions/GetBookmarks accepted for v1 — user subscription lists are small; can batch with $in later
+- [04-02]: 409 treated as success by SubscribeButton/BookmarkButton — prevents confusing UX from harmless duplicate-key races
 
 ### Pending Todos
 
@@ -136,5 +141,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 04-01-PLAN.md (site-api auth register/login/me, Subscription+Bookmark models, site-app session/auth/login/register pages/proxy)
+Stopped at: Completed 04-02-PLAN.md (subscribe/bookmark API, SubscribeButton, BookmarkButton, ProfileDropdown, auth-aware TopNavbar, personalized homepage, /subscriptions, /bookmarks, /account)
 Resume file: None

@@ -11,7 +11,7 @@ KidTube is built in five phases that follow a strict dependency chain: foundatio
 - [x] **Phase 1: Foundation and Infrastructure** - Skeleton boots, all services connect, RTL and font configured (completed 2026-02-28)
 - [x] **Phase 2: Admin Content Pipeline** - Admin can manage content and ingest YouTube videos into HLS (completed 2026-03-01)
 - [x] **Phase 3: Public Browsing and Playback** - Kids can browse channels and watch videos end-to-end (completed 2026-03-01)
-- [ ] **Phase 4: User Accounts and Personalization** - Optional accounts unlock subscriptions and bookmarks
+- [x] **Phase 4: User Accounts and Personalization** - Optional accounts unlock subscriptions and bookmarks (completed 2026-03-01)
 - [ ] **Phase 5: Polish and Operations** - File upload ingestion, cache tuning, and operational hardening
 - [ ] **Phase 6: Fix Ingestion Pipeline Wiring** - Wire worker.Enqueue into episode creation and job retry handlers
 
@@ -203,7 +203,7 @@ All 45 v1 requirements are mapped to phases. 6 partial requirements are addition
 | 1. Foundation and Infrastructure | 4/4 | Complete   | 2026-02-28 |
 | 2. Admin Content Pipeline | 5/5 | Complete   | 2026-03-01 |
 | 3. Public Browsing and Playback | 4/4 | Complete   | 2026-03-01 |
-| 4. User Accounts and Personalization | 2/3 | In Progress|  |
+| 4. User Accounts and Personalization | 3/3 | Complete   | 2026-03-01 |
 | 5. Polish and Operations | 0/3 | Not started | - |
 | 6. Fix Ingestion Pipeline Wiring | 0/1 | Not started | - |
 

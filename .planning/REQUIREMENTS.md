@@ -66,8 +66,8 @@
 - [x] **AUTH-02**: User can log in and receive a JWT token (HttpOnly cookie)
 - [x] **AUTH-03**: User session persists across browser refresh
 - [x] **AUTH-04**: All content is viewable without login — accounts are optional
-- [ ] **AUTH-05**: Logged-in user can subscribe to channels
-- [ ] **AUTH-06**: Logged-in user can bookmark episodes
+- [x] **AUTH-05**: Logged-in user can subscribe to channels
+- [x] **AUTH-06**: Logged-in user can bookmark episodes
 
 ### Admin Authentication (ADMN)
 
@@ -156,8 +156,8 @@
 | AUTH-02 | Phase 4 | Complete |
 | AUTH-03 | Phase 4 | Complete |
 | AUTH-04 | Phase 3 | Complete |
-| AUTH-05 | Phase 4 | Pending |
-| AUTH-06 | Phase 4 | Pending |
+| AUTH-05 | Phase 4 | Complete |
+| AUTH-06 | Phase 4 | Complete |
 | ADMN-01 | Phase 2 | Complete |
 | ADMN-02 | Phase 2 | Complete |
 | ADMN-03 | Phase 4 | Complete |
