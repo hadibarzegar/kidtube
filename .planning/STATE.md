@@ -81,6 +81,11 @@ Recent decisions affecting current work:
 - [Phase 02-03]: Use -force_key_frames expr:gte(t,n_forced*6) for fps-agnostic HLS keyframe alignment (YouTube sources vary 24-60fps)
 - [Phase 02-03]: Capture yt-dlp/ffmpeg stderr into bytes.Buffer for rich Job.Error messages displayed in admin panel
 - [Phase 02-03]: Cancel workerCtx before srv.Shutdown for graceful in-progress job cancellation on restart
+- [02-02]: CreateEpisode returns 202 Accepted (not 201) when source_url triggers Job creation to signal async processing
+- [02-02]: ListJobs sorts by created_at descending for job queue monitoring
+- [02-02]: YouTubeMeta returns 502 Bad Gateway when yt-dlp fails (upstream dependency failure, not internal error)
+- [02-02]: AgeGroup validation rejects min_age >= max_age and negative values; zero-width ranges invalid
+- [02-02]: RetryJob only permits retry when job.Status == "failed"; returns 400 for all other states
 
 ### Pending Todos
 
@@ -95,5 +100,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 02-03-PLAN.md (Sequential Ingestion Worker)
+Stopped at: Completed 02-02-PLAN.md (Admin REST API CRUD Handlers — channels, categories, age groups, episodes, jobs, youtube-meta)
 Resume file: None

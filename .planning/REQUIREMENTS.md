@@ -15,20 +15,20 @@
 
 ### Content Management (CONT)
 
-- [ ] **CONT-01**: Admin can create, edit, and delete channels with name, description, thumbnail, category, and age group
-- [ ] **CONT-02**: Admin can create, edit, and delete episodes within a channel with title, description, order, and subtitle file
-- [ ] **CONT-03**: Admin can create, edit, and delete categories
-- [ ] **CONT-04**: Admin can create, edit, and delete age groups
-- [ ] **CONT-05**: Admin can assign categories and age groups to channels
+- [x] **CONT-01**: Admin can create, edit, and delete channels with name, description, thumbnail, category, and age group
+- [x] **CONT-02**: Admin can create, edit, and delete episodes within a channel with title, description, order, and subtitle file
+- [x] **CONT-03**: Admin can create, edit, and delete categories
+- [x] **CONT-04**: Admin can create, edit, and delete age groups
+- [x] **CONT-05**: Admin can assign categories and age groups to channels
 - [ ] **CONT-06**: Admin panel displays all content in a dashboard UI with tables, search, and filters
 
 ### Video Ingestion (VIDE)
 
-- [ ] **VIDE-01**: Admin can paste a YouTube URL and trigger async download + HLS transcode
+- [x] **VIDE-01**: Admin can paste a YouTube URL and trigger async download + HLS transcode
 - [x] **VIDE-02**: System downloads video via yt-dlp with rate-limiting protection (sequential queue, sleep intervals)
 - [x] **VIDE-03**: FFmpeg transcodes to multi-rendition HLS (360p, 480p, 720p) with keyframe-aligned segments and a master playlist
-- [ ] **VIDE-04**: Job status (pending/downloading/transcoding/ready/failed) is visible in admin panel with real-time updates
-- [ ] **VIDE-05**: Failed jobs show error details and can be retried
+- [x] **VIDE-04**: Job status (pending/downloading/transcoding/ready/failed) is visible in admin panel with real-time updates
+- [x] **VIDE-05**: Failed jobs show error details and can be retried
 - [x] **VIDE-06**: HLS segments are written to a Docker volume served by nginx
 - [ ] **VIDE-07**: Admin can upload a video file directly as an alternative to YouTube URL import
 
@@ -120,17 +120,17 @@
 | INFRA-03 | Phase 1 | Complete |
 | INFRA-04 | Phase 1 | Complete |
 | INFRA-05 | Phase 1 | Complete |
-| CONT-01 | Phase 2 | Pending |
-| CONT-02 | Phase 2 | Pending |
-| CONT-03 | Phase 2 | Pending |
-| CONT-04 | Phase 2 | Pending |
-| CONT-05 | Phase 2 | Pending |
+| CONT-01 | Phase 2 | Complete |
+| CONT-02 | Phase 2 | Complete |
+| CONT-03 | Phase 2 | Complete |
+| CONT-04 | Phase 2 | Complete |
+| CONT-05 | Phase 2 | Complete |
 | CONT-06 | Phase 2 | Pending |
-| VIDE-01 | Phase 2 | Pending |
+| VIDE-01 | Phase 2 | Complete |
 | VIDE-02 | Phase 2 | Complete |
 | VIDE-03 | Phase 2 | Complete |
-| VIDE-04 | Phase 2 | Pending |
-| VIDE-05 | Phase 2 | Pending |
+| VIDE-04 | Phase 2 | Complete |
+| VIDE-05 | Phase 2 | Complete |
 | VIDE-06 | Phase 2 | Complete |
 | VIDE-07 | Phase 5 | Pending |
 | BROW-01 | Phase 3 | Pending |
