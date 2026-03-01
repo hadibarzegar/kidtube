@@ -14,6 +14,7 @@ KidTube is built in five phases that follow a strict dependency chain: foundatio
 - [x] **Phase 4: User Accounts and Personalization** - Optional accounts unlock subscriptions and bookmarks (completed 2026-03-01)
 - [x] **Phase 5: Polish and Operations** - File upload ingestion, cache tuning, and operational hardening (completed 2026-03-01)
 - [x] **Phase 6: Fix Ingestion Pipeline Wiring** - Wire worker.Enqueue into episode creation and job retry handlers (completed 2026-03-01)
+- [ ] **Phase 7: Fix Auth & Routing Wiring Bugs** - Add admin cookie auth extractor and activate site middleware for guest redirects
 
 ## Phase Details
 
@@ -119,6 +120,21 @@ Plans:
 Plans:
 - [ ] 06-01: Add worker.Enqueue calls to CreateEpisode and RetryJob handlers, verify pipeline connectivity
 
+### Phase 7: Fix Auth & Routing Wiring Bugs
+**Goal**: Fix two integration wiring bugs found in the v1.0 audit: (1) admin-api missing cookie token extractor causes client-side polling to 401, and (2) site-app route guard inactive because proxy.ts is not named middleware.ts.
+**Depends on**: Phase 2, Phase 4 (fixes code in Phase 2 and Phase 4 handlers)
+**Requirements**: VIDE-04, ADMN-02
+**Gap Closure:** Closes gaps from v1.0 audit (second audit)
+**Success Criteria** (what must be TRUE):
+  1. Admin-api JWT verifier has a `tokenFromAdminCookie` extractor registered — admin-app client-side `apiFetch` calls authenticate via `admin_token` cookie
+  2. Admin jobs page polling returns 200 and displays live job status updates (no 401 errors in console)
+  3. Site-app middleware is registered as Next.js Edge Middleware (`middleware-manifest.json` has non-empty middleware object)
+  4. Guests navigating directly to `/subscriptions`, `/bookmarks`, or `/account` are redirected to `/login` instead of seeing empty states
+**Plans**: 1 plan
+
+Plans:
+- [ ] 07-01: Add admin cookie extractor and rename site middleware
+
 ## Phase Dependencies
 
 ```
@@ -126,20 +142,21 @@ Phase 1 (Foundation)
     |
     v
 Phase 2 (Admin Content Pipeline) <-- Phase 6 fixes integration defects here
-    |
+    |                              <-- Phase 7 fixes admin auth wiring here
     v
 Phase 3 (Public Browsing and Playback)
     |
     v
-Phase 4 (User Accounts and Personalization)
+Phase 4 (User Accounts and Personalization) <-- Phase 7 fixes site middleware here
     |
     v
 Phase 5 (Polish and Operations)
 
 Phase 6 (Fix Ingestion Pipeline Wiring) -- can run before Phase 4
+Phase 7 (Fix Auth & Routing Wiring Bugs) -- fixes Phase 2 + Phase 4 wiring
 ```
 
-Phases 1-5 are strictly sequential. Phase 6 is a gap closure phase that fixes Phase 2 integration defects and can be executed at any time (recommended: before Phase 4).
+Phases 1-5 are strictly sequential. Phases 6-7 are gap closure phases that fix integration defects found during milestone audits.
 
 ## Coverage Validation
 
@@ -164,11 +181,11 @@ All 45 v1 requirements are mapped to phases. 6 partial requirements are addition
 | VIDE-01 | Phase 2 | **Phase 6** | YouTube URL paste and async ingestion trigger |
 | VIDE-02 | Phase 2 | **Phase 6** | yt-dlp sequential download queue with rate limiting |
 | VIDE-03 | Phase 2 | **Phase 6** | FFmpeg multi-rendition HLS transcode |
-| VIDE-04 | Phase 2 | | Job status visible in admin panel with live updates |
+| VIDE-04 | Phase 2 | **Phase 7** | Job status visible in admin panel with live updates |
 | VIDE-05 | Phase 2 | **Phase 6** | Failed job error details and retry |
 | VIDE-06 | Phase 2 | **Phase 6** | HLS segments written to Docker volume served by nginx |
 | ADMN-01 | Phase 2 | | Admin login |
-| ADMN-02 | Phase 2 | | JWT-protected admin API endpoints |
+| ADMN-02 | Phase 2 | **Phase 7** | JWT-protected admin API endpoints |
 | BROW-01 | Phase 3 | | Homepage with featured/trending rail and category sections |
 | BROW-02 | Phase 3 | | Browse channels by category |
 | BROW-03 | Phase 3 | | Browse channels filtered by age group |
@@ -194,7 +211,7 @@ All 45 v1 requirements are mapped to phases. 6 partial requirements are addition
 | ADMN-03 | Phase 4 | | Admin can view registered users |
 | VIDE-07 | Phase 5 | | Admin can upload video file directly |
 
-**Coverage: 45/45 v1 requirements mapped. 6 partial requirements assigned to Phase 6 for gap closure.**
+**Coverage: 45/45 v1 requirements mapped. 6 partial requirements assigned to Phase 6 for gap closure. 2 partial requirements assigned to Phase 7 for gap closure.**
 
 ## Progress
 
@@ -206,7 +223,8 @@ All 45 v1 requirements are mapped to phases. 6 partial requirements are addition
 | 4. User Accounts and Personalization | 3/3 | Complete   | 2026-03-01 |
 | 5. Polish and Operations | 3/3 | Complete   | 2026-03-01 |
 | 6. Fix Ingestion Pipeline Wiring | 1/1 | Complete   | 2026-03-01 |
+| 7. Fix Auth & Routing Wiring Bugs | 0/1 | Planning   | |
 
 ---
 *Roadmap created: 2026-03-01*
-*Total phases: 6 | Total plans: 20 | v1 requirements: 45/45 covered*
+*Total phases: 7 | Total plans: 21 | v1 requirements: 45/45 covered*
