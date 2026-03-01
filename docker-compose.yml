@@ -1,3 +1,9 @@
+# Production hardening:
+# - All services use restart: unless-stopped (survives host reboot, respects manual stop)
+# - All services have healthcheck blocks for dependency ordering and monitoring
+# - HLS volume bind-mounted to admin-api (rw) and nginx (ro)
+# - Named volume for MongoDB data persistence
+
 services:
   mongo:
     image: mongo:7
