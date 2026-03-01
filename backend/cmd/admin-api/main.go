@@ -15,6 +15,7 @@ import (
 	"github.com/hadi/kidtube/internal/auth"
 	"github.com/hadi/kidtube/internal/db"
 	"github.com/hadi/kidtube/internal/handler"
+	"github.com/hadi/kidtube/internal/worker"
 )
 
 func main() {
@@ -43,6 +44,23 @@ func main() {
 		log.Fatalf("admin-api: failed to ensure indexes: %v", err)
 	}
 
+	// Read HLS root from env — must match docker-compose.yml volume mount for admin-api
+	hlsRoot := os.Getenv("HLS_ROOT")
+	if hlsRoot == "" {
+		hlsRoot = "./data/hls"
+	}
+
+	// Create a cancellable context for the worker goroutine.
+	// Cancel is deferred so the worker stops cleanly before the process exits.
+	workerCtx, workerCancel := context.WithCancel(context.Background())
+	defer workerCancel()
+
+	// Start the sequential ingestion worker BEFORE accepting HTTP requests.
+	worker.Start(workerCtx, database, hlsRoot)
+
+	// Re-enqueue any pending/in-progress jobs left over from a previous server run.
+	worker.ResumeJobs(context.Background(), database)
+
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
@@ -56,7 +74,9 @@ func main() {
 	r.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(auth.TokenAuth))
 		r.Use(jwtauth.Authenticator(auth.TokenAuth))
-		// Phase 2 Plan 02 will add CRUD routes here
+		// Phase 2 Plan 02 will add CRUD routes here.
+		// When adding the episode CREATE handler, call worker.Enqueue(worker.JobRequest{...})
+		// after inserting the Job document into MongoDB.
 	})
 
 	srv := &http.Server{
@@ -76,6 +96,10 @@ func main() {
 
 	<-done
 	log.Println("admin-api: shutting down...")
+
+	// Cancel the worker context first so the in-progress job can detect cancellation
+	// before the HTTP server stops accepting new requests.
+	workerCancel()
 
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer shutdownCancel()
