@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-01T05:59:20.182Z"
+last_updated: "2026-03-01T06:21:34.776Z"
 progress:
   total_phases: 2
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 2 of 5 (Admin Content Pipeline)
-Plan: 4 of 5 in current phase (complete)
-Status: In progress
-Last activity: 2026-03-01 — Completed Plan 04: Admin Dashboard UI Shell (login, sidebar, DataTable, categories, age groups CRUD)
+Plan: 5 of 5 in current phase (complete)
+Status: Phase 2 complete — ready for Phase 3
+Last activity: 2026-03-01 — Completed Plan 05: Channels, Episodes, and Jobs admin UI pages (all 5 content management pages complete)
 
-Progress: [████░░░░░░] 22%
+Progress: [████████░░] 44%
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Progress: [████░░░░░░] 22%
 | Phase 02-admin-content-pipeline P01 | 3 | 3 tasks | 8 files |
 | Phase 02-admin-content-pipeline P03 | 3 | 2 tasks | 2 files |
 | Phase 02 P04 | 6 | 3 tasks | 20 files |
+| Phase 02-admin-content-pipeline P05 | 10 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,8 @@ Recent decisions affecting current work:
 - [Phase 02-04]: LayoutShell client component checks pathname to conditionally render Sidebar (hidden on login page)
 - [Phase 02-04]: Cookie path='/' not '/admin' — admin_token must reach /api/admin/* nginx proxy paths
 - [Phase 02-04]: Server actions forward JWT as Authorization: Bearer header (not cookies) to admin-api for server-to-server calls
+- [Phase 02-admin-content-pipeline]: Jobs page is a client component with setInterval polling every 5s; adaptive 30s for terminal-only status filters; apiFetch with credentials for client-side polling
+- [Phase 02-admin-content-pipeline]: Expandable failed-job error rows use Set<string> state; retry re-fetches immediately and collapses the error row on success
 
 ### Pending Todos
 
@@ -105,5 +108,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 02-04-PLAN.md (Admin Dashboard UI Shell — login, sidebar, DataTable, categories, age groups CRUD)
+Stopped at: Completed 02-05-PLAN.md (Channels, Episodes, and Jobs admin UI pages — all 5 content management pages complete, Phase 2 done)
 Resume file: None
