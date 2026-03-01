@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/hadi/kidtube/internal/db"
 	"github.com/hadi/kidtube/internal/models"
+	"github.com/hadi/kidtube/internal/worker"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
@@ -142,17 +143,25 @@ func CreateEpisode(database *mongo.Database) http.HandlerFunc {
 			job := models.Job{
 				EpisodeID: episode.ID,
 				SourceURL: req.SourceURL,
+				Source:    "youtube",
 				Status:    models.JobStatusPending,
 				CreatedAt: now,
 				UpdatedAt: now,
 			}
-			_, err := database.Collection(db.CollJobs).InsertOne(ctx, job)
+			res, err := database.Collection(db.CollJobs).InsertOne(ctx, job)
 			if err != nil {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(map[string]string{"error": "failed to create job"}) //nolint:errcheck
 				return
 			}
+			job.ID = res.InsertedID.(bson.ObjectID)
+			worker.Enqueue(worker.JobRequest{
+				JobID:     job.ID,
+				EpisodeID: episode.ID,
+				SourceURL: req.SourceURL,
+				Source:    "youtube",
+			})
 			statusCode = http.StatusAccepted
 		}
 

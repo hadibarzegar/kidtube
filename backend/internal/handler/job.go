@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/hadi/kidtube/internal/db"
 	"github.com/hadi/kidtube/internal/models"
+	"github.com/hadi/kidtube/internal/worker"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -129,6 +130,13 @@ func RetryJob(database *mongo.Database) http.HandlerFunc {
 			json.NewEncoder(w).Encode(map[string]string{"error": "failed to retry job"}) //nolint:errcheck
 			return
 		}
+
+		worker.Enqueue(worker.JobRequest{
+			JobID:     job.ID,
+			EpisodeID: job.EpisodeID,
+			SourceURL: job.SourceURL,
+			Source:    job.Source,
+		})
 
 		job.Status = models.JobStatusPending
 		job.Error = ""
