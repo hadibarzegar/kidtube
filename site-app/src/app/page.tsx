@@ -1,5 +1,7 @@
 import { Suspense } from 'react'
-import { apiServerFetch } from '@/lib/api'
+import { apiServerFetch, apiServerAuthFetch } from '@/lib/api'
+import { getCurrentUser } from '@/lib/auth'
+import { getSiteSession } from '@/lib/session'
 import type { Category, AgeGroup, Channel, Episode } from '@/lib/types'
 import HorizontalRail from '@/components/HorizontalRail'
 import ThumbnailCard from '@/components/ThumbnailCard'
@@ -13,11 +15,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const params = await searchParams
   const ageGroupId = params.age_group_id ?? null
 
-  // Parallel fetch for initial data
-  const [categoriesRes, ageGroupsRes, episodesRes] = await Promise.all([
+  // Parallel fetch for initial data and auth state
+  const [categoriesRes, ageGroupsRes, episodesRes, user] = await Promise.all([
     apiServerFetch('/categories'),
     apiServerFetch('/age-groups'),
     apiServerFetch('/episodes'),
+    getCurrentUser(),
   ])
 
   const categories: Category[] = categoriesRes.ok ? await categoriesRes.json() : []
@@ -26,6 +29,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   // Featured: take first 10 episodes (sorted by order asc from API)
   const featuredEpisodes = allEpisodes.slice(0, 10)
+
+  // Fetch subscribed channels for logged-in users
+  let subscribedChannels: Channel[] = []
+  if (user) {
+    const token = await getSiteSession()
+    if (token) {
+      const subRes = await apiServerAuthFetch('/me/subscriptions', token, { cache: 'no-store' })
+      subscribedChannels = subRes.ok ? await subRes.json() : []
+    }
+  }
 
   // Fetch channels per category, filtered by age group if selected
   const categoryChannelPairs = await Promise.all(
@@ -45,6 +58,21 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       <Suspense fallback={<div className="h-14 px-4 py-3 flex gap-2 overflow-hidden" />}>
         <AgeFilterTabs ageGroups={ageGroups} selectedId={ageGroupId} />
       </Suspense>
+
+      {/* Personalized "My Channels" rail — shown only for logged-in users with subscriptions */}
+      {subscribedChannels.length > 0 && (
+        <HorizontalRail title="کانال‌های من" viewAllHref="/subscriptions">
+          {subscribedChannels.map((ch) => (
+            <ThumbnailCard
+              key={ch.id}
+              title={ch.name}
+              thumbnail={ch.thumbnail}
+              href={`/channel/${ch.id}`}
+              subtitle={ch.description}
+            />
+          ))}
+        </HorizontalRail>
+      )}
 
       {/* Featured rail */}
       {featuredEpisodes.length > 0 && (

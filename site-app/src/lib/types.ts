@@ -1,3 +1,11 @@
+export interface SiteUser {
+  id: string
+  email: string
+  role: string
+  created_at: string
+  updated_at: string
+}
+
 export interface Channel {
   id: string
   name: string

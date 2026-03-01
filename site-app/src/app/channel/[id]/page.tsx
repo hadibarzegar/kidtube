@@ -1,7 +1,10 @@
 import Image from 'next/image'
-import { apiServerFetch } from '@/lib/api'
+import { apiServerFetch, apiServerAuthFetch } from '@/lib/api'
+import { getCurrentUser } from '@/lib/auth'
+import { getSiteSession } from '@/lib/session'
 import type { Channel, Episode } from '@/lib/types'
 import ThumbnailCard from '@/components/ThumbnailCard'
+import SubscribeButton from '@/components/SubscribeButton'
 
 interface ChannelPageProps {
   params: Promise<{ id: string }>
@@ -28,6 +31,20 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
 
   const channel: Channel = await channelRes.json()
   const episodes: Episode[] = episodesRes.ok ? await episodesRes.json() : []
+
+  // Check if the logged-in user is subscribed to this channel
+  const user = await getCurrentUser()
+  let isSubscribed = false
+  if (user) {
+    const token = await getSiteSession()
+    if (token) {
+      const subsRes = await apiServerAuthFetch('/me/subscriptions', token, { cache: 'no-store' })
+      if (subsRes.ok) {
+        const subs: Channel[] = await subsRes.json()
+        isSubscribed = subs.some((ch) => ch.id === id)
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -79,12 +96,17 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
         </div>
       </div>
 
-      {/* Channel description */}
-      {channel.description && (
-        <div className="px-4 py-4 border-b border-gray-100">
+      {/* Channel description + subscribe button */}
+      <div className="px-4 py-4 border-b border-gray-100 flex items-start justify-between gap-4">
+        {channel.description ? (
           <p className="text-gray-600 text-sm leading-relaxed max-w-3xl">{channel.description}</p>
+        ) : (
+          <span />
+        )}
+        <div className="flex-shrink-0">
+          <SubscribeButton channelId={id} initialSubscribed={isSubscribed} />
         </div>
-      )}
+      </div>
 
       {/* Episodes grid */}
       <div className="px-4 py-6">
