@@ -13,7 +13,7 @@ KidTube is built in five phases that follow a strict dependency chain: foundatio
 - [x] **Phase 3: Public Browsing and Playback** - Kids can browse channels and watch videos end-to-end (completed 2026-03-01)
 - [x] **Phase 4: User Accounts and Personalization** - Optional accounts unlock subscriptions and bookmarks (completed 2026-03-01)
 - [x] **Phase 5: Polish and Operations** - File upload ingestion, cache tuning, and operational hardening (completed 2026-03-01)
-- [ ] **Phase 6: Fix Ingestion Pipeline Wiring** - Wire worker.Enqueue into episode creation and job retry handlers
+- [x] **Phase 6: Fix Ingestion Pipeline Wiring** - Wire worker.Enqueue into episode creation and job retry handlers (completed 2026-03-01)
 
 ## Phase Details
 
@@ -205,7 +205,7 @@ All 45 v1 requirements are mapped to phases. 6 partial requirements are addition
 | 3. Public Browsing and Playback | 4/4 | Complete   | 2026-03-01 |
 | 4. User Accounts and Personalization | 3/3 | Complete   | 2026-03-01 |
 | 5. Polish and Operations | 3/3 | Complete   | 2026-03-01 |
-| 6. Fix Ingestion Pipeline Wiring | 0/1 | Not started | - |
+| 6. Fix Ingestion Pipeline Wiring | 1/1 | Complete   | 2026-03-01 |
 
 ---
 *Roadmap created: 2026-03-01*

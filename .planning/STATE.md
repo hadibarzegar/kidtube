@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-01T12:27:13.136Z"
+last_updated: "2026-03-01T13:15:26Z"
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 19
-  completed_plans: 19
+  total_plans: 20
+  completed_plans: 20
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Kids can safely watch curated Persian educational videos through an intuitive, age-appropriate interface — no ads, no external links, no distractions.
-**Current focus:** Phase 5 — Polish and Operations
+**Current focus:** Phase 6 — Fix Ingestion Pipeline Wiring
 
 ## Current Position
 
-Phase: 5 of 5 (Polish and Operations)
-Plan: 3 of ? in current phase (complete)
-Status: Phase 5 in progress — Plans 01, 02, 03 complete
-Last activity: 2026-03-01 — Completed Plan 05-02: Tabbed episode form (YouTube URL / Upload File tabs), drag-and-drop file zone, XHR upload with progress bar, Jobs page Source column with YouTube/Upload badges
+Phase: 6 of 6 (Fix Ingestion Pipeline Wiring)
+Plan: 1 of 1 in current phase (complete)
+Status: Phase 6 complete — Plan 01 complete
+Last activity: 2026-03-01 — Completed Plan 06-01: Wired worker.Enqueue into CreateEpisode and RetryJob handlers, closing critical defect where Job documents were inserted but never dispatched to the worker goroutine
 
-Progress: [██████████] 97%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -63,6 +63,7 @@ Progress: [██████████] 97%
 | Phase 04-user-accounts-and-personalization P02 | 5 | 2 tasks | 15 files |
 | Phase 05-polish-and-operations P03 | 1 | 2 tasks | 2 files |
 | Phase 05 P02 | 3 | 2 tasks | 2 files |
+| Phase 06-fix-ingestion-pipeline-wiring P01 | 1 | 1 task | 2 files |
 
 ## Accumulated Context
 
@@ -139,6 +140,9 @@ Recent decisions affecting current work:
 - [Phase 05-03]: .ts segments immutable 1-year cache — content-addressed by FFmpeg, safe to cache forever; .m3u8 playlists no-cache — must revalidate to get current segment list
 - [Phase 05-02]: XHR over fetch for upload progress — fetch API has no upload progress event; XHR xhr.upload.onprogress is the only browser API for tracking bytes sent
 - [Phase 05-02]: Default Source badge to YouTube for legacy jobs — all pre-05-01 jobs lack source field; falsy source defaults to YouTube without requiring migration
+- [06-01]: Use job.Source (from fetched MongoDB document) not hardcoded "youtube" in RetryJob so upload jobs also enqueue correctly on retry
+- [06-01]: worker.Enqueue is NOT wrapped in a goroutine — channel is buffered at 100 and call is already non-blocking by design
+- [06-01]: worker.Enqueue called AFTER successful DB insert — worker reads job from MongoDB by ID so document must exist before dispatch
 
 ### Pending Todos
 
@@ -153,5 +157,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 05-02-PLAN.md (tabbed episode form with YouTube/Upload tabs, drag-and-drop file zone, XHR upload progress, Jobs page Source column)
+Stopped at: Completed 06-01-PLAN.md (wired worker.Enqueue into CreateEpisode and RetryJob handlers)
 Resume file: None

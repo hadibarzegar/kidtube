@@ -24,12 +24,12 @@
 
 ### Video Ingestion (VIDE)
 
-- [ ] **VIDE-01**: Admin can paste a YouTube URL and trigger async download + HLS transcode
-- [ ] **VIDE-02**: System downloads video via yt-dlp with rate-limiting protection (sequential queue, sleep intervals)
-- [ ] **VIDE-03**: FFmpeg transcodes to multi-rendition HLS (360p, 480p, 720p) with keyframe-aligned segments and a master playlist
+- [x] **VIDE-01**: Admin can paste a YouTube URL and trigger async download + HLS transcode
+- [x] **VIDE-02**: System downloads video via yt-dlp with rate-limiting protection (sequential queue, sleep intervals)
+- [x] **VIDE-03**: FFmpeg transcodes to multi-rendition HLS (360p, 480p, 720p) with keyframe-aligned segments and a master playlist
 - [x] **VIDE-04**: Job status (pending/downloading/transcoding/ready/failed) is visible in admin panel with real-time updates
-- [ ] **VIDE-05**: Failed jobs show error details and can be retried
-- [ ] **VIDE-06**: HLS segments are written to a Docker volume served by nginx
+- [x] **VIDE-05**: Failed jobs show error details and can be retried
+- [x] **VIDE-06**: HLS segments are written to a Docker volume served by nginx
 - [x] **VIDE-07**: Admin can upload a video file directly as an alternative to YouTube URL import
 
 ### Public Browsing (BROW)
@@ -44,7 +44,7 @@
 
 ### Video Playback (PLAY)
 
-- [ ] **PLAY-01**: Video player plays HLS streams with adaptive bitrate switching
+- [x] **PLAY-01**: Video player plays HLS streams with adaptive bitrate switching
 - [x] **PLAY-02**: Player has playback speed control (0.75x, 1x, 1.25x, 1.5x)
 - [x] **PLAY-03**: Player auto-plays next episode in channel when current episode ends
 - [x] **PLAY-04**: Player displays Persian subtitles with correct RTL rendering (WebVTT with direction:rtl)
@@ -126,12 +126,12 @@
 | CONT-04 | Phase 2 | Complete |
 | CONT-05 | Phase 2 | Complete |
 | CONT-06 | Phase 2 | Complete |
-| VIDE-01 | Phase 6 | Pending |
-| VIDE-02 | Phase 6 | Pending |
-| VIDE-03 | Phase 6 | Pending |
+| VIDE-01 | Phase 6 | Complete |
+| VIDE-02 | Phase 6 | Complete |
+| VIDE-03 | Phase 6 | Complete |
 | VIDE-04 | Phase 2 | Complete |
-| VIDE-05 | Phase 6 | Pending |
-| VIDE-06 | Phase 6 | Pending |
+| VIDE-05 | Phase 6 | Complete |
+| VIDE-06 | Phase 6 | Complete |
 | VIDE-07 | Phase 5 | Complete |
 | BROW-01 | Phase 3 | Complete |
 | BROW-02 | Phase 3 | Complete |
@@ -140,7 +140,7 @@
 | BROW-05 | Phase 3 | Complete |
 | BROW-06 | Phase 3 | Complete |
 | BROW-07 | Phase 3 | Complete |
-| PLAY-01 | Phase 6 | Pending |
+| PLAY-01 | Phase 6 | Complete |
 | PLAY-02 | Phase 3 | Complete |
 | PLAY-03 | Phase 3 | Complete |
 | PLAY-04 | Phase 3 | Complete |
