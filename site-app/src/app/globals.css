@@ -13,3 +13,24 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* Video.js kid-friendly overrides — large controls, high contrast */
+.video-js .vjs-big-play-button {
+  font-size: 4em;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  border: none;
+  background-color: rgba(59, 130, 246, 0.85);
+}
+.video-js .vjs-big-play-button:hover {
+  background-color: rgba(59, 130, 246, 1);
+}
+.video-js .vjs-control-bar {
+  font-size: 1.2em;
+  height: 4em;
+}
+.video-js .vjs-progress-control {
+  height: 0.8em;
+}
