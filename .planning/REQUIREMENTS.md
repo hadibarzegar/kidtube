@@ -44,13 +44,13 @@
 
 ### Video Playback (PLAY)
 
-- [ ] **PLAY-01**: Video player plays HLS streams with adaptive bitrate switching
+- [x] **PLAY-01**: Video player plays HLS streams with adaptive bitrate switching
 - [ ] **PLAY-02**: Player has playback speed control (0.75x, 1x, 1.25x, 1.5x)
 - [ ] **PLAY-03**: Player auto-plays next episode in channel when current episode ends
 - [ ] **PLAY-04**: Player displays Persian subtitles with correct RTL rendering (WebVTT with direction:rtl)
-- [ ] **PLAY-05**: Player uses large, kid-friendly controls (big play button, accessible seek bar)
-- [ ] **PLAY-06**: Player contains no external links or ads
-- [ ] **PLAY-07**: Player controls are NOT mirrored in RTL layout (explicit dir="ltr" on controls)
+- [x] **PLAY-05**: Player uses large, kid-friendly controls (big play button, accessible seek bar)
+- [x] **PLAY-06**: Player contains no external links or ads
+- [x] **PLAY-07**: Player controls are NOT mirrored in RTL layout (explicit dir="ltr" on controls)
 
 ### Persian / RTL (RTL)
 
@@ -140,13 +140,13 @@
 | BROW-05 | Phase 3 | Complete |
 | BROW-06 | Phase 3 | Pending |
 | BROW-07 | Phase 3 | Pending |
-| PLAY-01 | Phase 3 | Pending |
+| PLAY-01 | Phase 3 | Complete |
 | PLAY-02 | Phase 3 | Pending |
 | PLAY-03 | Phase 3 | Pending |
 | PLAY-04 | Phase 3 | Pending |
-| PLAY-05 | Phase 3 | Pending |
-| PLAY-06 | Phase 3 | Pending |
-| PLAY-07 | Phase 3 | Pending |
+| PLAY-05 | Phase 3 | Complete |
+| PLAY-06 | Phase 3 | Complete |
+| PLAY-07 | Phase 3 | Complete |
 | RTL-01 | Phase 1 | Complete |
 | RTL-02 | Phase 1 | Complete |
 | RTL-03 | Phase 3 | Pending |
