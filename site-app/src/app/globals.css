@@ -1,22 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-vazirmatn), "Vazirmatn", system-ui, sans-serif;
+  --font-sans: var(--font-vazirmatn), var(--font-nunito), "Nunito", system-ui, sans-serif;
+  --font-display: var(--font-fredoka), var(--font-vazirmatn), "Fredoka", system-ui, sans-serif;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #3B82F6;
-  --primary-light: #DBEAFE;
-  --accent-pink: #EC4899;
-  --accent-yellow: #F59E0B;
-  --accent-green: #10B981;
+  /* Warm Pastel Palette */
+  --color-bg: #FFF8F3;
+  --color-surface: #FFFAF5;
+  --color-primary: #FF8A7A;
+  --color-primary-dark: #E57A6A;
+  --color-primary-light: #FFD4CC;
+  --color-primary-hover: #FFF0EB;
+  --color-secondary: #7EC8E3;
+  --color-secondary-light: #D4EFFA;
+  --color-mint: #7ED6A8;
+  --color-lilac: #C4A8E0;
+  --color-yellow: #FFD166;
+  --color-text: #2D2D3A;
+  --color-text-muted: #6B6B80;
+  --color-text-faint: #9B9BAD;
+  --color-border: #E8DFD6;
+  --color-error: #FF6B6B;
+
+  /* Claymorphism Tokens */
+  --clay-radius: 20px;
+  --clay-radius-sm: 16px;
+  --clay-radius-xs: 12px;
+  --clay-border: 3px solid var(--color-border);
+  --clay-shadow: inset -2px -2px 6px rgba(0,0,0,0.04), 4px 4px 10px rgba(0,0,0,0.08);
+  --clay-shadow-hover: inset -2px -2px 6px rgba(0,0,0,0.04), 6px 8px 16px rgba(0,0,0,0.12);
+  --clay-shadow-press: inset 2px 2px 4px rgba(0,0,0,0.1), 2px 2px 4px rgba(0,0,0,0.05);
+  --clay-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Category Pastel Rotation */
+  --pastel-peach: #FDBCB4;
+  --pastel-blue: #ADD8E6;
+  --pastel-mint: #98FF98;
+  --pastel-lilac: #E6E6FA;
+  --pastel-yellow: #FFE4A0;
+  --pastel-pink: #FFB3D9;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 /* Scrollbar hiding utility */
@@ -28,6 +57,78 @@ body {
   scrollbar-width: none;
 }
 
+/* Claymorphism utility classes */
+.clay-card {
+  background: var(--color-surface);
+  border-radius: var(--clay-radius);
+  border: var(--clay-border);
+  box-shadow: var(--clay-shadow);
+  transition: all 200ms var(--clay-bounce);
+}
+
+.clay-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--clay-shadow-hover);
+  border-color: var(--color-primary);
+}
+
+.clay-card:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: var(--clay-shadow-press);
+}
+
+.clay-btn {
+  border-radius: var(--clay-radius-sm);
+  border: 3px solid;
+  box-shadow: var(--clay-shadow);
+  transition: all 200ms var(--clay-bounce);
+  cursor: pointer;
+}
+
+.clay-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--clay-shadow-hover);
+}
+
+.clay-btn:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: var(--clay-shadow-press);
+}
+
+.clay-input {
+  background: var(--color-surface);
+  border-radius: var(--clay-radius-sm);
+  border: 3px solid var(--color-border);
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.04);
+  transition: border-color 200ms ease;
+}
+
+.clay-input:focus {
+  border-color: var(--color-secondary);
+  outline: none;
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.04), 0 0 0 3px rgba(126,200,227,0.2);
+}
+
+/* Frosted glass navbar */
+.clay-frosted {
+  background: rgba(255, 248, 243, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .clay-card,
+  .clay-card:hover,
+  .clay-card:active,
+  .clay-btn,
+  .clay-btn:hover,
+  .clay-btn:active {
+    transition: none;
+    transform: none;
+  }
+}
+
 /* Video.js kid-friendly overrides — large controls, high contrast */
 .video-js .vjs-big-play-button {
   font-size: 4em;
@@ -36,22 +137,18 @@ body {
   height: 80px;
   line-height: 80px;
   border: none;
-  background-color: rgba(59, 130, 246, 0.85);
+  background-color: rgba(255, 138, 122, 0.85);
 }
 .video-js .vjs-big-play-button:hover {
-  background-color: rgba(59, 130, 246, 1);
+  background-color: rgba(255, 138, 122, 1);
 }
 .video-js .vjs-control-bar {
   font-size: 1.2em;
   height: 4em;
+  background: rgba(0, 0, 0, 0.7);
 }
 .video-js .vjs-progress-control {
   height: 0.8em;
-}
-
-/* Ensure player controls have high contrast on dark player background */
-.video-js .vjs-control-bar {
-  background: rgba(0, 0, 0, 0.7);
 }
 
 /* Make seek bar thumb larger for kids */

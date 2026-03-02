@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { vazirmatn } from '@/lib/fonts';
+import { vazirmatn, fredoka, nunito } from '@/lib/fonts';
 import TopNavbar from '@/components/TopNavbar';
 import BottomTabBar from '@/components/BottomTabBar';
 import './globals.css';
@@ -15,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl" className={vazirmatn.variable}>
-      <body className="font-sans antialiased bg-white">
+    <html lang="fa" dir="rtl" className={`${vazirmatn.variable} ${fredoka.variable} ${nunito.variable}`}>
+      <body className="font-sans antialiased bg-[var(--color-bg)]">
         <div className="min-h-screen">
           <TopNavbar />
           <main className="pb-20 md:pb-0">
