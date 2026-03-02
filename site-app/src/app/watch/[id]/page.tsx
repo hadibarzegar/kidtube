@@ -25,8 +25,8 @@ export default async function WatchPage({ params }: Props) {
   if (!episodeRes.ok) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-12 text-center">
-        <p className="text-2xl font-bold text-gray-700 mb-4">ویدیو یافت نشد</p>
-        <a href="/" className="text-blue-500 hover:underline">
+        <p className="text-2xl font-bold text-[var(--color-text)] mb-4">ویدیو یافت نشد</p>
+        <a href="/" className="text-[var(--color-primary)] hover:underline">
           بازگشت به صفحه اصلی
         </a>
       </div>
@@ -79,14 +79,15 @@ export default async function WatchPage({ params }: Props) {
       {/* Other episodes from this channel — static, rendered by Server Component */}
       {otherEpisodes.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-lg font-bold mb-4">قسمت‌های دیگر</h2>
+          <h2 className="text-lg font-bold mb-4 text-[var(--color-text)]">قسمت‌های دیگر</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {otherEpisodes.map((ep) => (
+            {otherEpisodes.map((ep, i) => (
               <ThumbnailCard
                 key={ep.id}
                 title={ep.title}
                 href={`/watch/${ep.id}`}
                 subtitle={`قسمت ${ep.order}`}
+                index={i}
               />
             ))}
           </div>

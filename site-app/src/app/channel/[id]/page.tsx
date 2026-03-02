@@ -20,10 +20,10 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
 
   if (!channelRes.ok) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
         <div className="text-center py-16">
-          <p className="text-2xl font-bold text-gray-400 mb-2">کانال یافت نشد</p>
-          <a href="/" className="text-blue-500 hover:underline">بازگشت به خانه</a>
+          <p className="text-2xl font-bold text-[var(--color-text-faint)] mb-2">کانال یافت نشد</p>
+          <a href="/" className="text-[var(--color-primary)] hover:underline">بازگشت به خانه</a>
         </div>
       </div>
     )
@@ -47,12 +47,12 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       {/* Back button */}
       <div className="px-4 pt-4">
         <a
           href="/browse"
-          className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-700 font-medium no-underline transition-colors min-h-[44px]"
+          className="inline-flex items-center gap-1 text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-medium no-underline transition-colors min-h-[44px]"
         >
           <svg
             width="20"
@@ -72,7 +72,7 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
       </div>
 
       {/* Channel hero / banner */}
-      <div className="relative w-full bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 aspect-[3/1] overflow-hidden">
+      <div className="relative w-full bg-gradient-to-br from-[#FDBCB4] via-[#E6E6FA] to-[#ADD8E6] aspect-[3/1] overflow-hidden">
         {channel.thumbnail ? (
           <Image
             src={channel.thumbnail}
@@ -97,9 +97,9 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
       </div>
 
       {/* Channel description + subscribe button */}
-      <div className="px-4 py-4 border-b border-gray-100 flex items-start justify-between gap-4">
+      <div className="px-4 py-4 border-b-[3px] border-[var(--color-border)] flex items-start justify-between gap-4">
         {channel.description ? (
-          <p className="text-gray-600 text-sm leading-relaxed max-w-3xl">{channel.description}</p>
+          <p className="text-[var(--color-text-muted)] text-sm leading-relaxed max-w-3xl">{channel.description}</p>
         ) : (
           <span />
         )}
@@ -110,18 +110,19 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
 
       {/* Episodes grid */}
       <div className="px-4 py-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">قسمت‌ها</h2>
+        <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">قسمت‌ها</h2>
 
         {episodes.length === 0 ? (
-          <p className="text-center text-gray-500 py-12 text-lg">قسمتی موجود نیست</p>
+          <p className="text-center text-[var(--color-text-muted)] py-12 text-lg">قسمتی موجود نیست</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {episodes.map((ep) => (
+            {episodes.map((ep, i) => (
               <ThumbnailCard
                 key={ep.id}
                 title={ep.title}
                 href={`/watch/${ep.id}`}
                 subtitle={`قسمت ${ep.order}`}
+                index={i}
               />
             ))}
           </div>

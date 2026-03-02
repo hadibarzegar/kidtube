@@ -38,7 +38,7 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
   return (
     <>
       {/* Player wrapper with countdown overlay */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg">
+      <div className="relative rounded-[20px] overflow-hidden border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)]">
         <VideoPlayer
           hlsSrc={`/hls/${episode.id}/master.m3u8`}
           subtitleSrc={episode.subtitle_url || undefined}
@@ -67,13 +67,13 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
         {channel.name && (
           <a
             href={`/channel/${channel.id}`}
-            className="text-blue-500 text-sm mt-1 block hover:underline"
+            className="text-[var(--color-primary)] text-sm mt-1 block hover:underline"
           >
             {channel.name}
           </a>
         )}
         {episode.description && (
-          <p className="text-gray-600 mt-2 text-sm">{episode.description}</p>
+          <p className="text-[var(--color-text-muted)] mt-2 text-sm">{episode.description}</p>
         )}
       </div>
     </>
