@@ -18,12 +18,12 @@ export default async function SubscriptionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="max-w-6xl mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">کانال‌های من</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-text)] mb-6">کانال‌های من</h1>
 
         {channels.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+          <div className="flex flex-col items-center justify-center py-24 text-[var(--color-text-faint)]">
             <svg
               width="64"
               height="64"
@@ -31,7 +31,7 @@ export default async function SubscriptionsPage() {
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
-              className="mb-4 text-gray-300"
+              className="mb-4 text-[var(--color-primary)] opacity-30"
               aria-hidden="true"
             >
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -39,25 +39,26 @@ export default async function SubscriptionsPage() {
               <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
-            <p className="text-lg font-medium text-gray-500 mb-2">
+            <p className="text-lg font-medium text-[var(--color-text-muted)] mb-2">
               هنوز کانالی را دنبال نکرده‌اید
             </p>
             <a
               href="/browse"
-              className="mt-4 text-blue-500 hover:text-blue-700 font-medium text-sm transition-colors"
+              className="mt-4 text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-medium text-sm transition-colors"
             >
               کانال‌ها را کشف کنید
             </a>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {channels.map((ch) => (
+            {channels.map((ch, i) => (
               <ThumbnailCard
                 key={ch.id}
                 title={ch.name}
                 thumbnail={ch.thumbnail}
                 href={`/channel/${ch.id}`}
                 subtitle={ch.description}
+                index={i}
               />
             ))}
           </div>

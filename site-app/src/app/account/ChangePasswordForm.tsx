@@ -63,7 +63,7 @@ export default function ChangePasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div>
-        <label htmlFor="current_password" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="current_password" className="block text-sm font-medium text-[var(--color-text-muted)] mb-1">
           رمز عبور فعلی
         </label>
         <input
@@ -72,13 +72,13 @@ export default function ChangePasswordForm() {
           required
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+          className="w-full clay-input px-4 py-2.5 text-sm"
           placeholder="رمز عبور فعلی"
         />
       </div>
 
       <div>
-        <label htmlFor="new_password" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="new_password" className="block text-sm font-medium text-[var(--color-text-muted)] mb-1">
           رمز عبور جدید
         </label>
         <input
@@ -87,13 +87,13 @@ export default function ChangePasswordForm() {
           required
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+          className="w-full clay-input px-4 py-2.5 text-sm"
           placeholder="حداقل ۸ کاراکتر"
         />
       </div>
 
       <div>
-        <label htmlFor="confirm_password" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="confirm_password" className="block text-sm font-medium text-[var(--color-text-muted)] mb-1">
           تکرار رمز عبور جدید
         </label>
         <input
@@ -102,17 +102,17 @@ export default function ChangePasswordForm() {
           required
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+          className="w-full clay-input px-4 py-2.5 text-sm"
           placeholder="تکرار رمز عبور جدید"
         />
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
+        <p className="text-sm text-[var(--color-error)] bg-[#FFF0F0] rounded-2xl border-[3px] border-[#FFD4D4] px-3 py-2">{error}</p>
       )}
 
       {success && (
-        <p className="text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
+        <p className="text-sm text-[var(--color-mint)] bg-[#F0FFF4] rounded-2xl border-[3px] border-[#B8E8C8] px-3 py-2">
           رمز عبور تغییر کرد
         </p>
       )}
@@ -120,7 +120,7 @@ export default function ChangePasswordForm() {
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-500 text-white rounded-xl px-6 py-2.5 font-medium text-sm hover:bg-blue-600 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+        className="bg-[var(--color-primary)] text-white rounded-2xl px-6 py-2.5 font-medium text-sm border-[3px] border-[var(--color-primary-dark)] shadow-[var(--clay-shadow)] hover:bg-[var(--color-primary-dark)] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
       >
         {loading ? 'در حال ذخیره...' : 'ذخیره'}
       </button>
