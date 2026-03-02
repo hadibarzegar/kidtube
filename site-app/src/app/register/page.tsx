@@ -21,14 +21,14 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
+      <div className="bg-[var(--color-surface)] rounded-[20px] border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)] p-8 w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-6">
-          <span className="text-2xl font-bold text-blue-500">کیدتیوب</span>
+          <span className="font-display text-2xl font-bold text-[var(--color-primary)]" style={{ textShadow: '2px 2px 0px rgba(255,138,122,0.15)' }}>کیدتیوب</span>
         </div>
 
-        <h1 className="text-xl font-bold text-gray-800 text-center mb-6">ثبت‌نام</h1>
+        <h1 className="text-xl font-bold text-[var(--color-text)] text-center mb-6">ثبت‌نام</h1>
 
         <form action={formAction} onSubmit={handleSubmit} className="flex flex-col gap-4" dir="rtl">
           <input
@@ -37,7 +37,7 @@ export default function RegisterPage() {
             placeholder="ایمیل"
             dir="ltr"
             required
-            className="border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="clay-input px-4 py-3 text-sm"
           />
           <input
             name="password"
@@ -46,7 +46,7 @@ export default function RegisterPage() {
             dir="ltr"
             required
             minLength={8}
-            className="border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="clay-input px-4 py-3 text-sm"
           />
           <input
             name="confirm_password"
@@ -54,11 +54,11 @@ export default function RegisterPage() {
             placeholder="تکرار رمز عبور"
             dir="ltr"
             required
-            className="border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="clay-input px-4 py-3 text-sm"
           />
 
           {(passwordError || state?.error) && (
-            <p className="text-red-500 text-sm text-center">
+            <p className="text-[var(--color-error)] text-sm text-center">
               {passwordError ?? state?.error}
             </p>
           )}
@@ -66,15 +66,15 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg min-h-[48px] transition-colors disabled:opacity-60"
+            className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold rounded-2xl min-h-[48px] border-[3px] border-[var(--color-primary-dark)] shadow-[var(--clay-shadow)] transition-all duration-200 disabled:opacity-60 cursor-pointer"
           >
             {isPending ? 'در حال ثبت‌نام...' : 'ثبت‌نام'}
           </button>
         </form>
 
-        <p className="text-sm text-gray-500 text-center mt-4">
+        <p className="text-sm text-[var(--color-text-muted)] text-center mt-4">
           قبلاً حساب دارید؟{' '}
-          <Link href="/login" className="text-blue-500 hover:underline">
+          <Link href="/login" className="text-[var(--color-primary)] hover:underline">
             ورود
           </Link>
         </p>
