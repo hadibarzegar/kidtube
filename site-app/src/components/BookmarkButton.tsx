@@ -50,9 +50,11 @@ export default function BookmarkButton({ episodeId, initialBookmarked }: Bookmar
       disabled={loading}
       aria-label={bookmarked ? 'حذف نشان' : 'نشان کردن'}
       className={[
-        'p-2 rounded-full hover:bg-gray-100 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center',
-        loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer',
-        bookmarked ? 'text-blue-500' : 'text-gray-600',
+        'p-2 rounded-2xl border-[3px] min-w-[44px] min-h-[44px] flex items-center justify-center transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]',
+        loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5 hover:shadow-[var(--clay-shadow-hover)] active:translate-y-[1px] active:scale-95',
+        bookmarked
+          ? 'text-[var(--color-primary)] bg-[var(--color-primary-hover)] border-[var(--color-primary-light)]'
+          : 'text-[var(--color-text-muted)] bg-[var(--color-surface)] border-[var(--color-border)] hover:border-[var(--color-primary-light)]',
       ].join(' ')}
     >
       <svg

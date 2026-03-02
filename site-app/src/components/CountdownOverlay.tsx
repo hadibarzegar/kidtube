@@ -27,21 +27,21 @@ export default function CountdownOverlay({ nextEpisode, onCancel, onProceed }: C
   }, [onProceed])
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10 rounded-2xl">
-      <div className="bg-white rounded-2xl p-6 text-center shadow-xl max-w-xs mx-4" dir="rtl">
-        <p className="text-sm text-gray-500 mb-2">قسمت بعدی در {seconds} ثانیه</p>
-        <p className="font-bold text-lg mb-1">{nextEpisode.title}</p>
-        <p className="text-sm text-gray-400 mb-4">قسمت {nextEpisode.order}</p>
+    <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10 rounded-[20px]">
+      <div className="bg-[var(--color-surface)] rounded-[20px] p-6 text-center border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)] max-w-xs mx-4" dir="rtl">
+        <p className="text-sm text-[var(--color-text-muted)] mb-2">قسمت بعدی در {seconds} ثانیه</p>
+        <p className="font-bold text-lg text-[var(--color-text)] mb-1">{nextEpisode.title}</p>
+        <p className="text-sm text-[var(--color-text-faint)] mb-4">قسمت {nextEpisode.order}</p>
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 py-3 border border-gray-300 rounded-xl font-medium min-h-[48px]"
+            className="flex-1 py-3 bg-[var(--color-surface)] border-[3px] border-[var(--color-border)] rounded-2xl font-medium min-h-[48px] cursor-pointer transition-all duration-200 hover:border-[var(--color-primary-light)] text-[var(--color-text)]"
           >
             لغو
           </button>
           <button
             onClick={onProceed}
-            className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-medium min-h-[48px]"
+            className="flex-1 py-3 bg-[var(--color-primary)] text-white border-[3px] border-[var(--color-primary-dark)] rounded-2xl font-medium min-h-[48px] cursor-pointer shadow-[var(--clay-shadow)] transition-all duration-200 hover:-translate-y-0.5"
           >
             پخش
           </button>

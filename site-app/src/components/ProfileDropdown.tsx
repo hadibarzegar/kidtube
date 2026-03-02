@@ -32,23 +32,23 @@ export default function ProfileDropdown({ email }: ProfileDropdownProps) {
         onClick={() => setOpen((prev) => !prev)}
         aria-label="منوی حساب کاربری"
         aria-expanded={open}
-        className="w-9 h-9 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm cursor-pointer hover:bg-blue-600 transition-colors"
+        className="w-9 h-9 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm cursor-pointer hover:bg-[var(--color-primary-dark)] transition-colors shadow-[var(--clay-shadow)]"
       >
         {initial}
       </button>
 
       {/* Dropdown menu */}
       {open && (
-        <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 py-2 min-w-[200px] z-50">
+        <div className="absolute top-full left-0 mt-2 bg-[var(--color-surface)] rounded-[20px] border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow-hover)] py-2 min-w-[200px] z-50">
           {/* User email */}
-          <div className="px-4 py-2 text-xs text-gray-500 border-b border-gray-100 truncate">
+          <div className="px-4 py-2 text-xs text-[var(--color-text-muted)] border-b border-[var(--color-border)] truncate">
             {email}
           </div>
 
           <Link
             href="/subscriptions"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors no-underline"
+            className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-primary-hover)] transition-colors no-underline"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -62,7 +62,7 @@ export default function ProfileDropdown({ email }: ProfileDropdownProps) {
           <Link
             href="/bookmarks"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors no-underline"
+            className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-primary-hover)] transition-colors no-underline"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
@@ -73,7 +73,7 @@ export default function ProfileDropdown({ email }: ProfileDropdownProps) {
           <Link
             href="/account"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors no-underline"
+            className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-primary-hover)] transition-colors no-underline"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -82,12 +82,12 @@ export default function ProfileDropdown({ email }: ProfileDropdownProps) {
             حساب کاربری
           </Link>
 
-          <div className="border-t border-gray-100 my-1" />
+          <div className="border-t border-[var(--color-border)] my-1" />
 
           <form action={logout}>
             <button
               type="submit"
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-[var(--color-error)] hover:bg-[#FFF0F0] transition-colors cursor-pointer"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
