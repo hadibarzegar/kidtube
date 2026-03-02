@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-vazirmatn), var(--font-nunito), "Nunito", system-ui, sans-serif;
-  --font-display: var(--font-fredoka), var(--font-vazirmatn), "Fredoka", system-ui, sans-serif;
+  --font-sans: var(--font-vazirmatn), "Nunito", system-ui, sans-serif;
+  --font-display: "Fredoka", var(--font-vazirmatn), system-ui, sans-serif;
 }
 
 :root {
