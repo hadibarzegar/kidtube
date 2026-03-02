@@ -50,7 +50,7 @@ export default function BottomTabBar() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 md:hidden"
+      className="fixed bottom-0 inset-x-0 z-50 clay-frosted border-t-[3px] border-[var(--color-border)] md:hidden shadow-[0_-4px_10px_rgba(0,0,0,0.05)]"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <div className="flex">
@@ -62,11 +62,19 @@ export default function BottomTabBar() {
               href={tab.href}
               className={[
                 'flex flex-col items-center justify-center flex-1 min-h-[60px] gap-1 text-xs font-medium transition-colors duration-200',
-                active ? 'text-blue-500' : 'text-gray-500 hover:text-gray-700',
+                active
+                  ? 'text-[var(--color-primary)]'
+                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
               ].join(' ')}
               aria-current={active ? 'page' : undefined}
             >
-              {tab.icon}
+              {active ? (
+                <span className="bg-[var(--color-primary-light)] rounded-xl px-4 py-1.5 flex items-center justify-center">
+                  {tab.icon}
+                </span>
+              ) : (
+                tab.icon
+              )}
               <span>{tab.label}</span>
             </a>
           )
