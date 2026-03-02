@@ -45,10 +45,10 @@ export default function AgeFilterTabs({ ageGroups, selectedId }: AgeFilterTabsPr
             key={tab.id ?? 'all'}
             onClick={() => handleSelect(tab.id)}
             className={[
-              'min-h-[48px] px-5 rounded-full font-medium text-sm whitespace-nowrap flex-shrink-0 transition-colors duration-200 cursor-pointer',
+              'min-h-[48px] px-5 rounded-2xl font-medium text-sm whitespace-nowrap flex-shrink-0 transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer border-[3px]',
               isActive
-                ? 'bg-blue-500 text-white shadow-sm'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+                ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary-dark)] shadow-[var(--clay-shadow)]'
+                : 'bg-[var(--color-surface)] text-[var(--color-text)] border-[var(--color-border)] hover:border-[var(--color-primary-light)] hover:bg-[var(--color-primary-hover)]',
             ].join(' ')}
           >
             {tab.label}

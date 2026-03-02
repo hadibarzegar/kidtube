@@ -8,13 +8,13 @@ interface HorizontalRailProps {
 
 export default function HorizontalRail({ title, children, viewAllHref }: HorizontalRailProps) {
   return (
-    <section className="py-4">
+    <section className="py-4 border-b border-[var(--color-border)] last:border-b-0">
       <div className="flex items-center justify-between px-4 mb-3">
-        <h2 className="text-lg font-bold text-gray-900">{title}</h2>
+        <h2 className="text-lg font-bold text-[var(--color-text)]">{title}</h2>
         {viewAllHref && (
           <a
             href={viewAllHref}
-            className="text-sm font-medium text-blue-500 hover:text-blue-700 transition-colors"
+            className="text-sm font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] transition-colors"
           >
             مشاهده همه
           </a>
