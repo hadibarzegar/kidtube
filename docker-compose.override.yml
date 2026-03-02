@@ -14,13 +14,3 @@ services:
       - ./backend:/app
     environment:
       AIR_ENABLED: "true"
-
-  site-app:
-    volumes:
-      - ./site-app:/app
-      - /app/node_modules
-
-  admin-app:
-    volumes:
-      - ./admin-app:/app
-      - /app/node_modules

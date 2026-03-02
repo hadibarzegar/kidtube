@@ -108,7 +108,7 @@ export default async function EpisodesPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Episodes</h1>
         <Link
-          href="/admin/episodes/new"
+          href="/episodes/new"
           className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-md hover:bg-slate-700 transition-colors"
         >
           New Episode
@@ -119,7 +119,7 @@ export default async function EpisodesPage() {
         columns={columns}
         data={tableData}
         onDelete={handleDelete}
-        editPath="/admin/episodes"
+        editPath="/episodes"
       />
     </div>
   )

@@ -41,8 +41,8 @@ export async function createChannel(prevState: unknown, formData: FormData) {
     return { error: `Failed to create channel: ${body}` }
   }
 
-  revalidatePath('/admin/channels')
-  redirect('/admin/channels')
+  revalidatePath('/channels')
+  redirect('/channels')
 }
 
 export async function updateChannel(id: string, prevState: unknown, formData: FormData) {
@@ -72,8 +72,8 @@ export async function updateChannel(id: string, prevState: unknown, formData: Fo
     return { error: `Failed to update channel: ${body}` }
   }
 
-  revalidatePath('/admin/channels')
-  redirect('/admin/channels')
+  revalidatePath('/channels')
+  redirect('/channels')
 }
 
 export async function deleteChannel(id: string) {
@@ -87,5 +87,5 @@ export async function deleteChannel(id: string) {
     throw new Error(`Failed to delete channel: ${res.status}`)
   }
 
-  revalidatePath('/admin/channels')
+  revalidatePath('/channels')
 }

@@ -89,7 +89,7 @@ Each task was committed atomically:
 1. **Task 1: Create Docker Compose service definitions and environment template** - `1493325` (chore)
 2. **Task 2: Create nginx reverse-proxy configuration with HLS serving** - `96e8a94` (feat)
 
-**Plan metadata:** TBD (docs: complete plan)
+**Plan metadata:** `0a487c1` (docs: complete plan)
 
 ## Files Created/Modified
 - `docker-compose.yml` - All 6 services with healthchecks, named volume, and nginx bind mounts
@@ -125,3 +125,21 @@ None - no external service configuration required. Copy `.env.example` to `.env`
 ---
 *Phase: 01-foundation-infrastructure*
 *Completed: 2026-03-01*
+## Self-Check
+
+### Files
+- FOUND: docker-compose.yml
+- FOUND: docker-compose.override.yml
+- FOUND: nginx/nginx.conf
+- FOUND: nginx/Dockerfile
+- FOUND: .env.example
+- FOUND: .gitignore
+- FOUND: .dockerignore
+- FOUND: data/hls/.gitkeep
+
+### Commits
+0a487c1 docs(01-01): complete docker compose and nginx infrastructure plan
+96e8a94 feat(01-01): create nginx reverse-proxy configuration with HLS serving
+1493325 chore(01-01): create docker compose service definitions and environment template
+
+## Self-Check: PASSED

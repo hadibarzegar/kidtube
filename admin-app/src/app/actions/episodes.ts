@@ -49,8 +49,8 @@ export async function createEpisode(prevState: unknown, formData: FormData) {
     return { error: `Failed to create episode: ${bodyText}` }
   }
 
-  revalidatePath('/admin/episodes')
-  redirect('/admin/episodes')
+  revalidatePath('/episodes')
+  redirect('/episodes')
 }
 
 export async function updateEpisode(id: string, prevState: unknown, formData: FormData) {
@@ -78,8 +78,8 @@ export async function updateEpisode(id: string, prevState: unknown, formData: Fo
     return { error: `Failed to update episode: ${bodyText}` }
   }
 
-  revalidatePath('/admin/episodes')
-  redirect('/admin/episodes')
+  revalidatePath('/episodes')
+  redirect('/episodes')
 }
 
 export async function deleteEpisode(id: string) {
@@ -93,5 +93,5 @@ export async function deleteEpisode(id: string) {
     throw new Error(`Failed to delete episode: ${res.status}`)
   }
 
-  revalidatePath('/admin/episodes')
+  revalidatePath('/episodes')
 }

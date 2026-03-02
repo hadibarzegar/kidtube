@@ -95,7 +95,7 @@ export default async function ChannelsPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Channels</h1>
         <Link
-          href="/admin/channels/new"
+          href="/channels/new"
           className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-md hover:bg-slate-700 transition-colors"
         >
           New Channel
@@ -106,7 +106,7 @@ export default async function ChannelsPage() {
         columns={columns}
         data={tableData}
         onDelete={handleDelete}
-        editPath="/admin/channels"
+        editPath="/channels"
       />
     </div>
   )

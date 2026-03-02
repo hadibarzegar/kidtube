@@ -5,12 +5,12 @@ import { usePathname } from 'next/navigation'
 import { logout } from '@/app/actions/auth'
 
 const navLinks = [
-  { label: 'Channels', href: '/admin/channels' },
-  { label: 'Episodes', href: '/admin/episodes' },
-  { label: 'Categories', href: '/admin/categories' },
-  { label: 'Age Groups', href: '/admin/age-groups' },
-  { label: 'Jobs', href: '/admin/jobs' },
-  { label: 'Users', href: '/admin/users' },
+  { label: 'Channels', href: '/channels' },
+  { label: 'Episodes', href: '/episodes' },
+  { label: 'Categories', href: '/categories' },
+  { label: 'Age Groups', href: '/age-groups' },
+  { label: 'Jobs', href: '/jobs' },
+  { label: 'Users', href: '/users' },
 ]
 
 export default function Sidebar() {
@@ -27,7 +27,8 @@ export default function Sidebar() {
       <nav className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-1 px-3">
           {navLinks.map(({ label, href }) => {
-            const isActive = pathname === href || pathname.startsWith(href + '/')
+            const fullHref = '/admin' + href
+            const isActive = pathname === fullHref || pathname.startsWith(fullHref + '/')
             return (
               <li key={href}>
                 <Link

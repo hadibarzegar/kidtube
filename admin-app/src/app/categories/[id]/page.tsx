@@ -43,7 +43,7 @@ export default async function CategoryPage({ params }: Props) {
     <div>
       <div className="mb-6">
         <Link
-          href="/admin/categories"
+          href="/categories"
           className="text-sm text-slate-600 hover:underline"
         >
           &larr; Back to Categories

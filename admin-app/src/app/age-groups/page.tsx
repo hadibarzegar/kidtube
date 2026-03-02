@@ -47,7 +47,7 @@ export default async function AgeGroupsPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Age Groups</h1>
         <Link
-          href="/admin/age-groups/new"
+          href="/age-groups/new"
           className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-md hover:bg-slate-700 transition-colors"
         >
           New Age Group
@@ -58,7 +58,7 @@ export default async function AgeGroupsPage() {
         columns={columns}
         data={ageGroups}
         onDelete={handleDelete}
-        editPath="/admin/age-groups"
+        editPath="/age-groups"
       />
     </div>
   )

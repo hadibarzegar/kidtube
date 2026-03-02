@@ -98,7 +98,7 @@ export default function EpisodePage() {
             credentials: 'include',
           })
           if (epRes.status === 404) {
-            router.push('/admin/episodes')
+            router.push('/episodes')
             return
           }
           if (epRes.ok) {
@@ -221,7 +221,7 @@ export default function EpisodePage() {
       xhr.onload = () => {
         setIsUploading(false)
         if (xhr.status === 202) {
-          router.push('/admin/episodes')
+          router.push('/episodes')
         } else {
           setError(`Upload failed: ${xhr.status} ${xhr.responseText}`)
         }
@@ -268,7 +268,7 @@ export default function EpisodePage() {
     <div>
       <div className="mb-6">
         <Link
-          href="/admin/episodes"
+          href="/episodes"
           className="text-sm text-slate-600 hover:underline"
         >
           &larr; Back to Episodes

@@ -44,7 +44,7 @@ export default async function CategoriesPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
         <Link
-          href="/admin/categories/new"
+          href="/categories/new"
           className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-md hover:bg-slate-700 transition-colors"
         >
           New Category
@@ -55,7 +55,7 @@ export default async function CategoriesPage() {
         columns={columns}
         data={categories}
         onDelete={handleDelete}
-        editPath="/admin/categories"
+        editPath="/categories"
       />
     </div>
   )

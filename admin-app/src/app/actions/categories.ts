@@ -30,8 +30,8 @@ export async function createCategory(prevState: unknown, formData: FormData) {
     return { error: `Failed to create category: ${body}` }
   }
 
-  revalidatePath('/admin/categories')
-  redirect('/admin/categories')
+  revalidatePath('/categories')
+  redirect('/categories')
 }
 
 export async function updateCategory(id: string, prevState: unknown, formData: FormData) {
@@ -50,8 +50,8 @@ export async function updateCategory(id: string, prevState: unknown, formData: F
     return { error: `Failed to update category: ${body}` }
   }
 
-  revalidatePath('/admin/categories')
-  redirect('/admin/categories')
+  revalidatePath('/categories')
+  redirect('/categories')
 }
 
 export async function deleteCategory(id: string) {
@@ -65,5 +65,5 @@ export async function deleteCategory(id: string) {
     throw new Error(`Failed to delete category: ${res.status}`)
   }
 
-  revalidatePath('/admin/categories')
+  revalidatePath('/categories')
 }

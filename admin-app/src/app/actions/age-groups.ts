@@ -36,8 +36,8 @@ export async function createAgeGroup(prevState: unknown, formData: FormData) {
     return { error: `Failed to create age group: ${body}` }
   }
 
-  revalidatePath('/admin/age-groups')
-  redirect('/admin/age-groups')
+  revalidatePath('/age-groups')
+  redirect('/age-groups')
 }
 
 export async function updateAgeGroup(id: string, prevState: unknown, formData: FormData) {
@@ -62,8 +62,8 @@ export async function updateAgeGroup(id: string, prevState: unknown, formData: F
     return { error: `Failed to update age group: ${body}` }
   }
 
-  revalidatePath('/admin/age-groups')
-  redirect('/admin/age-groups')
+  revalidatePath('/age-groups')
+  redirect('/age-groups')
 }
 
 export async function deleteAgeGroup(id: string) {
@@ -77,5 +77,5 @@ export async function deleteAgeGroup(id: string) {
     throw new Error(`Failed to delete age group: ${res.status}`)
   }
 
-  revalidatePath('/admin/age-groups')
+  revalidatePath('/age-groups')
 }

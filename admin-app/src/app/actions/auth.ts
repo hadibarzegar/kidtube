@@ -31,10 +31,10 @@ export async function login(prevState: unknown, formData: FormData) {
 
   const data = await res.json()
   await createSession(data.token)
-  redirect('/admin/channels')
+  redirect('/channels')
 }
 
 export async function logout() {
   await deleteSession()
-  redirect('/admin/login')
+  redirect('/login')
 }

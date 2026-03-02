@@ -45,7 +45,7 @@ export default async function AgeGroupPage({ params }: Props) {
     <div>
       <div className="mb-6">
         <Link
-          href="/admin/age-groups"
+          href="/age-groups"
           className="text-sm text-slate-600 hover:underline"
         >
           &larr; Back to Age Groups
