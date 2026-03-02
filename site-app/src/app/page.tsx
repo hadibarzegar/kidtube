@@ -53,7 +53,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   )
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       {/* Age filter tabs — requires Suspense since AgeFilterTabs uses useSearchParams */}
       <Suspense fallback={<div className="h-14 px-4 py-3 flex gap-2 overflow-hidden" />}>
         <AgeFilterTabs ageGroups={ageGroups} selectedId={ageGroupId} />
@@ -62,13 +62,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       {/* Personalized "My Channels" rail — shown only for logged-in users with subscriptions */}
       {subscribedChannels.length > 0 && (
         <HorizontalRail title="کانال‌های من" viewAllHref="/subscriptions">
-          {subscribedChannels.map((ch) => (
+          {subscribedChannels.map((ch, i) => (
             <ThumbnailCard
               key={ch.id}
               title={ch.name}
               thumbnail={ch.thumbnail}
               href={`/channel/${ch.id}`}
               subtitle={ch.description}
+              index={i}
             />
           ))}
         </HorizontalRail>
@@ -77,12 +78,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       {/* Featured rail */}
       {featuredEpisodes.length > 0 && (
         <HorizontalRail title="ویژه">
-          {featuredEpisodes.map((ep) => (
+          {featuredEpisodes.map((ep, i) => (
             <ThumbnailCard
               key={ep.id}
               title={ep.title}
               href={`/watch/${ep.id}`}
               subtitle={`قسمت ${ep.order}`}
+              index={i}
             />
           ))}
         </HorizontalRail>
@@ -97,13 +99,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             title={category.name}
             viewAllHref={`/browse/${category.id}`}
           >
-            {channels.map((ch) => (
+            {channels.map((ch, i) => (
               <ThumbnailCard
                 key={ch.id}
                 title={ch.name}
                 thumbnail={ch.thumbnail}
                 href={`/channel/${ch.id}`}
                 subtitle={ch.description}
+                index={i}
               />
             ))}
           </HorizontalRail>
@@ -113,9 +116,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       {/* Empty state when no content matches filter */}
       {categoryChannelPairs.every(({ channels }) => channels.length === 0) &&
         featuredEpisodes.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+          <div className="flex flex-col items-center justify-center py-24 text-[var(--color-text-faint)]">
             <p className="text-xl">محتوایی یافت نشد</p>
-            <p className="text-sm mt-2">فیلتر سنی دیگری را امتحان کنید</p>
+            <p className="text-sm mt-2 text-[var(--color-text-muted)]">فیلتر سنی دیگری را امتحان کنید</p>
           </div>
         )}
     </div>

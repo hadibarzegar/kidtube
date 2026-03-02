@@ -22,12 +22,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const categoryName = category?.name ?? 'دسته‌بندی'
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="mx-auto max-w-7xl px-4 py-6">
         {/* Back button — chevron pointing right (RTL: right = back) */}
         <a
           href="/browse"
-          className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-700 font-medium mb-6 no-underline transition-colors min-h-[44px]"
+          className="inline-flex items-center gap-1 text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-medium mb-6 no-underline transition-colors min-h-[44px]"
         >
           <svg
             width="20"
@@ -45,19 +45,20 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <span>بازگشت به دسته‌بندی‌ها</span>
         </a>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">{categoryName}</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-text)] mb-6">{categoryName}</h1>
 
         {channels.length === 0 ? (
-          <p className="text-center text-gray-500 py-16 text-lg">کانالی در این دسته‌بندی موجود نیست</p>
+          <p className="text-center text-[var(--color-text-muted)] py-16 text-lg">کانالی در این دسته‌بندی موجود نیست</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {channels.map((ch) => (
+            {channels.map((ch, i) => (
               <ThumbnailCard
                 key={ch.id}
                 title={ch.name}
                 thumbnail={ch.thumbnail}
                 href={`/channel/${ch.id}`}
                 subtitle={ch.description}
+                index={i}
               />
             ))}
           </div>
