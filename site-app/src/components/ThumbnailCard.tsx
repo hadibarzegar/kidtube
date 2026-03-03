@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { resolveImageUrl } from '@/lib/image'
 
 const pastelColors = [
   'bg-[#FDBCB4]', // peach
@@ -13,27 +13,40 @@ interface ThumbnailCardProps {
   title: string
   thumbnail?: string
   href: string
-  subtitle?: string
   index?: number
+  channelName?: string
+  channelThumbnail?: string
+  channelHref?: string
+  episodeNumber?: number
+  subtitle?: string
 }
 
-export default function ThumbnailCard({ title, thumbnail, href, subtitle, index = 0 }: ThumbnailCardProps) {
+export default function ThumbnailCard({
+  title,
+  thumbnail,
+  href,
+  index = 0,
+  channelName,
+  channelThumbnail,
+  channelHref,
+  episodeNumber,
+  subtitle,
+}: ThumbnailCardProps) {
+  const resolvedThumbnail = resolveImageUrl(thumbnail)
+  const resolvedChannelThumb = resolveImageUrl(channelThumbnail)
   const pastelBg = pastelColors[index % pastelColors.length]
+  const channelInitial = channelName?.charAt(0) || title.charAt(0)
 
   return (
-    <a
-      href={href}
-      className="block min-w-[140px] min-h-[60px] snap-start flex-shrink-0 w-[180px] no-underline group"
-    >
-      <div className="rounded-[20px] overflow-hidden border-[3px] border-[var(--color-border)] bg-[var(--color-surface)] shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.04),4px_4px_10px_rgba(0,0,0,0.08)] transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-[3px] group-hover:shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.04),6px_8px_16px_rgba(0,0,0,0.12)] group-hover:border-[var(--color-primary)] group-active:translate-y-[1px] group-active:scale-[0.97] cursor-pointer">
-        <div className="aspect-video relative">
-          {thumbnail ? (
-            <Image
-              src={thumbnail}
+    <div className="group">
+      {/* Thumbnail */}
+      <a href={href} className="block no-underline">
+        <div className="aspect-video relative rounded-[var(--clay-radius)] overflow-hidden transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-[2px] group-hover:shadow-[var(--clay-shadow-hover)] group-active:translate-y-[1px] group-active:scale-[0.98]">
+          {resolvedThumbnail ? (
+            <img
+              src={resolvedThumbnail}
               alt={title}
-              fill
-              className="object-cover"
-              sizes="180px"
+              className="absolute inset-0 w-full h-full object-cover"
             />
           ) : (
             <div className={`w-full h-full ${pastelBg} flex items-center justify-center`}>
@@ -43,13 +56,61 @@ export default function ThumbnailCard({ title, thumbnail, href, subtitle, index 
             </div>
           )}
         </div>
-        <div className="px-2.5 pb-2.5 pt-2">
-          <p className="text-sm font-bold line-clamp-2 text-[var(--color-text)] leading-snug">{title}</p>
-          {subtitle && (
-            <p className="text-xs text-[var(--color-text-muted)] mt-1 line-clamp-1">{subtitle}</p>
+      </a>
+
+      {/* Info area */}
+      <div className="flex gap-3 mt-3 px-0.5">
+        {/* Channel avatar */}
+        {channelName && (
+          <a
+            href={channelHref || href}
+            className="flex-shrink-0 no-underline"
+          >
+            {resolvedChannelThumb ? (
+              <img
+                src={resolvedChannelThumb}
+                alt={channelName}
+                className="w-9 h-9 rounded-full object-cover border-2 border-[var(--color-border)]"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-[var(--color-secondary-light)] flex items-center justify-center border-2 border-[var(--color-secondary)]">
+                <span className="text-[var(--color-secondary)] font-bold text-sm">
+                  {channelInitial}
+                </span>
+              </div>
+            )}
+          </a>
+        )}
+
+        {/* Text info */}
+        <div className="min-w-0 flex-1">
+          <a href={href} className="no-underline">
+            <p className="text-sm font-bold line-clamp-2 text-[var(--color-text)] leading-snug">
+              {title}
+            </p>
+          </a>
+          {channelName && (
+            <a
+              href={channelHref || href}
+              className="no-underline block"
+            >
+              <p className="text-xs text-[var(--color-text-muted)] mt-1 hover:text-[var(--color-text)] transition-colors">
+                {channelName}
+              </p>
+            </a>
+          )}
+          {episodeNumber !== undefined && episodeNumber > 0 && (
+            <p className="text-xs text-[var(--color-text-faint)] mt-0.5">
+              قسمت {episodeNumber}
+            </p>
+          )}
+          {!channelName && subtitle && (
+            <p className="text-xs text-[var(--color-text-muted)] mt-1 line-clamp-1">
+              {subtitle}
+            </p>
           )}
         </div>
       </div>
-    </a>
+    </div>
   )
 }
