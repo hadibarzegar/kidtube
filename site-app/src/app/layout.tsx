@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { vazirmatn } from '@/lib/fonts';
-import TopNavbar from '@/components/TopNavbar';
+import TopBar from '@/components/TopBar';
 import BottomTabBar from '@/components/BottomTabBar';
+import { SidebarProvider } from '@/components/SidebarContext';
+import LayoutShell from '@/components/LayoutShell';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -32,13 +34,15 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-[var(--color-bg)]">
-        <div className="min-h-screen">
-          <TopNavbar />
-          <main className="pb-20 md:pb-0">
-            {children}
-          </main>
-          <BottomTabBar />
-        </div>
+        <SidebarProvider>
+          <div className="min-h-screen">
+            <TopBar />
+            <LayoutShell>
+              {children}
+            </LayoutShell>
+            <BottomTabBar />
+          </div>
+        </SidebarProvider>
       </body>
     </html>
   );
