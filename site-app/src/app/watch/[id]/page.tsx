@@ -2,7 +2,7 @@ import { apiServerFetch, apiServerAuthFetch } from '@/lib/api'
 import { getCurrentUser } from '@/lib/auth'
 import { getSiteSession } from '@/lib/session'
 import WatchClient from '@/app/watch/[id]/WatchClient'
-import ThumbnailCard from '@/components/ThumbnailCard'
+import MiniCard from '@/components/MiniCard'
 import type { Episode, Channel } from '@/lib/types'
 
 interface Props {
@@ -52,47 +52,63 @@ export default async function WatchPage({ params }: Props) {
   // Filter out the current episode from the "other episodes" list
   const otherEpisodes = allEpisodes.filter((ep) => ep.id !== episode.id)
 
-  // Check if the logged-in user has bookmarked this episode
+  // Check bookmark + subscription state for logged-in user
   let isBookmarked = false
+  let isSubscribed = false
   if (user) {
     const token = await getSiteSession()
     if (token) {
-      const bookRes = await apiServerAuthFetch('/me/bookmarks', token, { cache: 'no-store' })
+      const [bookRes, subRes] = await Promise.all([
+        apiServerAuthFetch('/me/bookmarks', token, { cache: 'no-store' }),
+        apiServerAuthFetch('/me/subscriptions', token, { cache: 'no-store' }),
+      ])
       if (bookRes.ok) {
         const bookmarks: Episode[] = await bookRes.json()
         isBookmarked = bookmarks.some((ep) => ep.id === id)
+      }
+      if (subRes.ok) {
+        const subscriptions: Channel[] = await subRes.json()
+        isSubscribed = subscriptions.some((ch) => ch.id === channel.id)
       }
     }
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-4 md:py-6">
-      {/* Player + episode info — client component for interactivity */}
-      <WatchClient
-        episode={episode}
-        nextEpisode={nextEpisode}
-        channel={channel}
-        isBookmarked={isBookmarked}
-        episodeId={episode.id}
-      />
-
-      {/* Other episodes from this channel — static, rendered by Server Component */}
-      {otherEpisodes.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-lg font-bold mb-4 text-[var(--color-text)]">قسمت‌های دیگر</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {otherEpisodes.map((ep, i) => (
-              <ThumbnailCard
-                key={ep.id}
-                title={ep.title}
-                href={`/watch/${ep.id}`}
-                subtitle={`قسمت ${ep.order}`}
-                index={i}
-              />
-            ))}
-          </div>
+    <div className="mx-auto max-w-[1400px] px-4 py-4 md:py-6">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Main column: video + info */}
+        <div className="flex-1 min-w-0">
+          <WatchClient
+            episode={episode}
+            nextEpisode={nextEpisode}
+            channel={channel}
+            isBookmarked={isBookmarked}
+            isSubscribed={isSubscribed}
+            episodeId={episode.id}
+          />
         </div>
-      )}
+
+        {/* Sidebar: other episodes (desktop: right column, mobile: below) */}
+        {otherEpisodes.length > 0 && (
+          <div className="lg:w-[400px] flex-shrink-0" dir="rtl">
+            <h2 className="text-base font-bold mb-3 text-[var(--color-text)] font-display">
+              قسمت‌های دیگر از {channel.name}
+            </h2>
+            <div className="flex flex-col gap-3">
+              {otherEpisodes.map((ep) => (
+                <MiniCard
+                  key={ep.id}
+                  title={ep.title}
+                  thumbnail={ep.thumbnail}
+                  href={`/watch/${ep.id}`}
+                  channelName={channel.name}
+                  episodeNumber={ep.order}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
