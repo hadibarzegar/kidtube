@@ -50,7 +50,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         {channels.length === 0 ? (
           <p className="text-center text-[var(--color-text-muted)] py-16 text-lg">کانالی در این دسته‌بندی موجود نیست</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
             {channels.map((ch, i) => (
               <ThumbnailCard
                 key={ch.id}
