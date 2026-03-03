@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import { apiServerFetch, apiServerAuthFetch } from '@/lib/api'
+import { resolveImageUrl } from '@/lib/image'
 import { getCurrentUser } from '@/lib/auth'
 import { getSiteSession } from '@/lib/session'
 import type { Channel, Episode } from '@/lib/types'
@@ -73,14 +73,11 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
 
       {/* Channel hero / banner */}
       <div className="relative w-full bg-gradient-to-br from-[#FDBCB4] via-[#E6E6FA] to-[#ADD8E6] aspect-[3/1] overflow-hidden">
-        {channel.thumbnail ? (
-          <Image
-            src={channel.thumbnail}
+        {resolveImageUrl(channel.thumbnail) ? (
+          <img
+            src={resolveImageUrl(channel.thumbnail)}
             alt={channel.name}
-            fill
-            className="object-cover"
-            sizes="100vw"
-            priority
+            className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -115,13 +112,17 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
         {episodes.length === 0 ? (
           <p className="text-center text-[var(--color-text-muted)] py-12 text-lg">قسمتی موجود نیست</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
             {episodes.map((ep, i) => (
               <ThumbnailCard
                 key={ep.id}
                 title={ep.title}
+                thumbnail={ep.thumbnail}
                 href={`/watch/${ep.id}`}
-                subtitle={`قسمت ${ep.order}`}
+                channelName={channel.name}
+                channelThumbnail={channel.thumbnail}
+                channelHref={`/channel/${channel.id}`}
+                episodeNumber={ep.order}
                 index={i}
               />
             ))}
