@@ -8,8 +8,10 @@ interface CountdownOverlayProps {
   onProceed: () => void
 }
 
+const TOTAL_SECONDS = 7
+
 export default function CountdownOverlay({ nextEpisode, onCancel, onProceed }: CountdownOverlayProps) {
-  const [seconds, setSeconds] = useState(7)
+  const [seconds, setSeconds] = useState(TOTAL_SECONDS)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,24 +28,68 @@ export default function CountdownOverlay({ nextEpisode, onCancel, onProceed }: C
     return () => clearInterval(interval)
   }, [onProceed])
 
+  // SVG circle progress
+  const radius = 36
+  const circumference = 2 * Math.PI * radius
+  const progress = ((TOTAL_SECONDS - seconds) / TOTAL_SECONDS) * circumference
+
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10 rounded-[20px]">
-      <div className="bg-[var(--color-surface)] rounded-[20px] p-6 text-center border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)] max-w-xs mx-4" dir="rtl">
-        <p className="text-sm text-[var(--color-text-muted)] mb-2">قسمت بعدی در {seconds} ثانیه</p>
-        <p className="font-bold text-lg text-[var(--color-text)] mb-1">{nextEpisode.title}</p>
-        <p className="text-sm text-[var(--color-text-faint)] mb-4">قسمت {nextEpisode.order}</p>
+    <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10 rounded-[20px]" dir="rtl">
+      <div
+        className="bg-[var(--color-surface)] rounded-[24px] p-6 text-center border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow-hover)] max-w-sm mx-4 animate-[kidtube-slide-up_400ms_cubic-bezier(0.34,1.56,0.64,1)]"
+      >
+        {/* Circular countdown */}
+        <div className="flex justify-center mb-4">
+          <div className="relative w-20 h-20">
+            <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+              {/* Background circle */}
+              <circle
+                cx="40" cy="40" r={radius}
+                fill="none"
+                stroke="var(--color-border)"
+                strokeWidth="5"
+              />
+              {/* Progress circle */}
+              <circle
+                cx="40" cy="40" r={radius}
+                fill="none"
+                stroke="var(--color-primary)"
+                strokeWidth="5"
+                strokeLinecap="round"
+                strokeDasharray={circumference}
+                strokeDashoffset={circumference - progress}
+                className="transition-[stroke-dashoffset] duration-1000 ease-linear"
+              />
+            </svg>
+            {/* Countdown number */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-2xl font-bold text-[var(--color-primary)]">
+                {seconds}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Next episode info */}
+        <p className="text-sm text-[var(--color-text-muted)] mb-1">قسمت بعدی</p>
+        <p className="font-bold text-lg text-[var(--color-text)] mb-0.5 leading-tight">{nextEpisode.title}</p>
+        <p className="text-xs text-[var(--color-text-faint)] mb-5">
+          قسمت {nextEpisode.order}
+        </p>
+
+        {/* Action buttons */}
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 py-3 bg-[var(--color-surface)] border-[3px] border-[var(--color-border)] rounded-2xl font-medium min-h-[48px] cursor-pointer transition-all duration-200 hover:border-[var(--color-primary-light)] text-[var(--color-text)]"
+            className="flex-1 py-3 bg-[var(--color-surface)] border-[3px] border-[var(--color-border)] rounded-2xl font-medium min-h-[48px] cursor-pointer transition-all duration-200 [transition-timing-function:var(--clay-bounce)] hover:border-[var(--color-primary-light)] hover:-translate-y-0.5 active:translate-y-[1px] active:scale-[0.97] text-[var(--color-text)]"
           >
             لغو
           </button>
           <button
             onClick={onProceed}
-            className="flex-1 py-3 bg-[var(--color-primary)] text-white border-[3px] border-[var(--color-primary-dark)] rounded-2xl font-medium min-h-[48px] cursor-pointer shadow-[var(--clay-shadow)] transition-all duration-200 hover:-translate-y-0.5"
+            className="flex-1 py-3 bg-[var(--color-primary)] text-white border-[3px] border-[var(--color-primary-dark)] rounded-2xl font-medium min-h-[48px] cursor-pointer shadow-[var(--clay-shadow)] transition-all duration-200 [transition-timing-function:var(--clay-bounce)] hover:-translate-y-0.5 hover:shadow-[var(--clay-shadow-hover)] active:translate-y-[1px] active:scale-[0.97]"
           >
-            پخش
+            پخش کن
           </button>
         </div>
       </div>

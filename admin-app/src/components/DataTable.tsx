@@ -2,11 +2,38 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { ArrowUpDown, ArrowUp, ArrowDown, MoreHorizontal, Pencil, Trash2, Search, Inbox } from 'lucide-react'
 
 export interface Column {
   key: string
   label: string
   sortable?: boolean
+  className?: string
+  render?: (value: unknown, row: Record<string, unknown>) => React.ReactNode
 }
 
 interface DataTableProps {
@@ -15,14 +42,16 @@ interface DataTableProps {
   data: any[]
   onDelete?: (id: string) => void
   editPath?: string
+  searchPlaceholder?: string
 }
 
 type SortDirection = 'asc' | 'desc' | null
 
-export default function DataTable({ columns, data, onDelete, editPath }: DataTableProps) {
+export default function DataTable({ columns, data, onDelete, editPath, searchPlaceholder = 'Search...' }: DataTableProps) {
   const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState<string | null>(null)
   const [sortDir, setSortDir] = useState<SortDirection>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     if (!search.trim()) return data
@@ -55,96 +84,138 @@ export default function DataTable({ columns, data, onDelete, editPath }: DataTab
     }
   }
 
-  function sortIcon(key: string) {
-    if (sortKey !== key) return <span className="ml-1 text-slate-400">↕</span>
-    return (
-      <span className="ml-1 text-slate-700">
-        {sortDir === 'asc' ? '↑' : '↓'}
-      </span>
-    )
+  function SortIcon({ colKey }: { colKey: string }) {
+    if (sortKey !== colKey) return <ArrowUpDown className="ml-1 h-3 w-3 text-muted-foreground/50" />
+    return sortDir === 'asc'
+      ? <ArrowUp className="ml-1 h-3 w-3" />
+      : <ArrowDown className="ml-1 h-3 w-3" />
+  }
+
+  function confirmDelete() {
+    if (deleteId && onDelete) {
+      onDelete(deleteId)
+    }
+    setDeleteId(null)
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Search */}
-      <input
-        type="search"
-        placeholder="Search..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full max-w-xs px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-      />
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder={searchPlaceholder}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-9"
+        />
+      </div>
 
-      <div className="overflow-x-auto rounded-md border border-gray-200">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
-            <tr>
+      {/* Table */}
+      <div className="rounded-lg border bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
               {columns.map((col) => (
-                <th
+                <TableHead
                   key={col.key}
-                  className={`px-4 py-2.5 text-left font-semibold text-gray-600 whitespace-nowrap ${
-                    col.sortable ? 'cursor-pointer select-none hover:bg-gray-100' : ''
-                  }`}
+                  className={`${col.sortable ? 'cursor-pointer select-none' : ''} ${col.className ?? ''}`}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
                 >
-                  {col.label}
-                  {col.sortable && sortIcon(col.key)}
-                </th>
+                  <span className="inline-flex items-center">
+                    {col.label}
+                    {col.sortable && <SortIcon colKey={col.key} />}
+                  </span>
+                </TableHead>
               ))}
               {(editPath || onDelete) && (
-                <th className="px-4 py-2.5 text-right font-semibold text-gray-600">
-                  Actions
-                </th>
+                <TableHead className="w-12">
+                  <span className="sr-only">Actions</span>
+                </TableHead>
               )}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {sorted.length === 0 ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={columns.length + (editPath || onDelete ? 1 : 0)}
-                  className="px-4 py-8 text-center text-gray-400"
+                  className="h-32"
                 >
-                  No results found.
-                </td>
-              </tr>
+                  <div className="flex flex-col items-center justify-center text-muted-foreground">
+                    <Inbox className="h-8 w-8 mb-2" />
+                    <span className="text-sm">No results found.</span>
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : (
               sorted.map((row, idx) => (
-                <tr
-                  key={row.id ?? idx}
-                  className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                >
+                <TableRow key={row.id ?? idx}>
                   {columns.map((col) => (
-                    <td key={col.key} className="px-4 py-2 text-gray-700 whitespace-nowrap">
-                      {row[col.key] ?? '—'}
-                    </td>
+                    <TableCell key={col.key} className={col.className ?? ''}>
+                      {col.render
+                        ? col.render(row[col.key], row)
+                        : (row[col.key] ?? '—')}
+                    </TableCell>
                   ))}
                   {(editPath || onDelete) && (
-                    <td className="px-4 py-2 text-right space-x-2 whitespace-nowrap">
-                      {editPath && (
-                        <Link
-                          href={`${editPath}/${row.id}`}
-                          className="text-slate-700 hover:underline font-medium"
-                        >
-                          Edit
-                        </Link>
-                      )}
-                      {onDelete && (
-                        <button
-                          onClick={() => onDelete(row.id)}
-                          className="text-red-600 hover:underline font-medium"
-                        >
-                          Delete
-                        </button>
-                      )}
-                    </td>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Actions</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {editPath && (
+                            <DropdownMenuItem asChild>
+                              <Link href={`${editPath}/${row.id}`}>
+                                <Pencil className="mr-2 h-3.5 w-3.5" />
+                                Edit
+                              </Link>
+                            </DropdownMenuItem>
+                          )}
+                          {onDelete && (
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => setDeleteId(row.id)}
+                            >
+                              <Trash2 className="mr-2 h-3.5 w-3.5" />
+                              Delete
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   )}
-                </tr>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this item? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteId(null)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -19,6 +19,8 @@ const (
 	CollJobs          = "jobs"
 	CollSubscriptions = "subscriptions"
 	CollBookmarks     = "bookmarks"
+	CollLikes         = "likes"
+	CollViews         = "views"
 )
 
 // Connect establishes a MongoDB connection and returns the database handle.
@@ -99,6 +101,29 @@ func EnsureIndexes(ctx context.Context, database *mongo.Database) error {
 	})
 	if err != nil {
 		return fmt.Errorf("bookmarks indexes: %w", err)
+	}
+
+	// likes: compound unique index on (user_id, episode_id) to prevent duplicate likes
+	_, err = database.Collection(CollLikes).Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{
+			Keys:    bson.D{{Key: "user_id", Value: 1}, {Key: "episode_id", Value: 1}},
+			Options: options.Index().SetUnique(unique),
+		},
+		{Keys: bson.D{{Key: "user_id", Value: 1}}},
+	})
+	if err != nil {
+		return fmt.Errorf("likes indexes: %w", err)
+	}
+
+	// views: compound unique index on (episode_id, viewer_id) for deduplication
+	_, err = database.Collection(CollViews).Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{
+			Keys:    bson.D{{Key: "episode_id", Value: 1}, {Key: "viewer_id", Value: 1}},
+			Options: options.Index().SetUnique(unique),
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("views indexes: %w", err)
 	}
 
 	return nil

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { vazirmatn } from '@/lib/fonts';
-// Sidebar is rendered inside LayoutShell (conditionally — not shown on login page)
+import { TooltipProvider } from '@/components/ui/tooltip';
 import LayoutShell from '@/components/LayoutShell';
 import './globals.css';
 
@@ -17,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en" dir="ltr" className={vazirmatn.variable}>
       <body className="font-sans antialiased">
-        <LayoutShell>
-          {children}
-        </LayoutShell>
+        <TooltipProvider>
+          <LayoutShell>
+            {children}
+          </LayoutShell>
+        </TooltipProvider>
       </body>
     </html>
   );

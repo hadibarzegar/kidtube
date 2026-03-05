@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 140" fill="none">
+  <!-- Play button icon -->
+  <g transform="translate(60, 70)">
+    <!-- Outer glow -->
+    <circle cx="0" cy="0" r="52" fill="#FFD4CC" opacity="0.3"/>
+
+    <!-- Shadow -->
+    <circle cx="3" cy="4" r="42" fill="#E57A6A" opacity="0.2"/>
+
+    <!-- Main circle -->
+    <circle cx="0" cy="0" r="42" fill="url(#playGrad)"/>
+
+    <!-- Play triangle -->
+    <path d="M-12 -20 L-12 20 L20 0 Z" fill="white" opacity="0.95"/>
+
+    <!-- Highlight -->
+    <ellipse cx="-14" cy="-16" rx="10" ry="7" fill="white" opacity="0.18" transform="rotate(-20 -14 -16)"/>
+  </g>
+
+  <!-- KidTube text -->
+  <g transform="translate(130, 70)">
+    <!-- "Kid" in coral -->
+    <text x="0" y="18" font-family="'Fredoka', 'Nunito', 'Poppins', 'Comfortaa', sans-serif" font-weight="700" font-size="62" fill="#FF8A7A" letter-spacing="-1">Kid</text>
+
+    <!-- "Tube" in dark -->
+    <text x="108" y="18" font-family="'Fredoka', 'Nunito', 'Poppins', 'Comfortaa', sans-serif" font-weight="700" font-size="62" fill="#2D2D3A" letter-spacing="-1">Tube</text>
+  </g>
+
+  <!-- Decorative dots -->
+  <circle cx="365" cy="25" r="5" fill="#FFD166" opacity="0.6"/>
+  <circle cx="380" cy="50" r="3.5" fill="#7EC8E3" opacity="0.5"/>
+  <circle cx="355" cy="110" r="4" fill="#C4A8E0" opacity="0.4"/>
+  <circle cx="25" cy="25" r="3" fill="#7ED6A8" opacity="0.5"/>
+  <circle cx="15" cy="115" r="4" fill="#FFD166" opacity="0.4"/>
+
+  <!-- Subtle underline accent -->
+  <path d="M130 92 Q230 100 330 92" stroke="#FFD4CC" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+  <defs>
+    <radialGradient id="playGrad" cx="0.35" cy="0.35" r="0.65">
+      <stop offset="0%" stop-color="#FFB0A5"/>
+      <stop offset="50%" stop-color="#FF8A7A"/>
+      <stop offset="100%" stop-color="#E57A6A"/>
+    </radialGradient>
+  </defs>
+</svg>

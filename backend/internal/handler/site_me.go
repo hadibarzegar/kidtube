@@ -340,3 +340,134 @@ func Unbookmark(database *mongo.Database) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 	}
 }
+
+// GetLikes returns the authenticated user's liked episodes as a JSON array.
+func GetLikes(database *mongo.Database) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID, err := userIDFromContext(r)
+		if err != nil {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		opts := options.Find().SetSort(bson.D{{Key: "created_at", Value: -1}})
+		cursor, err := database.Collection(db.CollLikes).Find(
+			r.Context(),
+			bson.D{{Key: "user_id", Value: userID}},
+			opts,
+		)
+		if err != nil {
+			http.Error(w, "failed to fetch likes", http.StatusInternalServerError)
+			return
+		}
+		defer cursor.Close(r.Context())
+
+		var likes []models.Like
+		if err := cursor.All(r.Context(), &likes); err != nil {
+			http.Error(w, "failed to decode likes", http.StatusInternalServerError)
+			return
+		}
+
+		episodes := make([]models.Episode, 0, len(likes))
+		for _, lk := range likes {
+			var ep models.Episode
+			err := database.Collection(db.CollEpisodes).FindOne(
+				r.Context(),
+				bson.D{{Key: "_id", Value: lk.EpisodeID}, {Key: "status", Value: "ready"}},
+			).Decode(&ep)
+			if err != nil {
+				continue
+			}
+			episodes = append(episodes, ep)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(episodes) //nolint:errcheck
+	}
+}
+
+// Like adds a like for the authenticated user on the given episode.
+func Like(database *mongo.Database) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID, err := userIDFromContext(r)
+		if err != nil {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		episodeID, err := bson.ObjectIDFromHex(chi.URLParam(r, "episode_id"))
+		if err != nil {
+			http.Error(w, "invalid episode_id", http.StatusBadRequest)
+			return
+		}
+
+		// Validate episode exists
+		var ep models.Episode
+		if err := database.Collection(db.CollEpisodes).FindOne(
+			r.Context(),
+			bson.D{{Key: "_id", Value: episodeID}},
+		).Decode(&ep); err != nil {
+			http.Error(w, "episode not found", http.StatusNotFound)
+			return
+		}
+
+		lk := models.Like{
+			UserID:    userID,
+			EpisodeID: episodeID,
+			CreatedAt: time.Now().UTC(),
+		}
+		_, err = database.Collection(db.CollLikes).InsertOne(r.Context(), lk)
+		if err != nil {
+			if mongo.IsDuplicateKeyError(err) {
+				w.WriteHeader(http.StatusConflict) // 409 — already liked
+				return
+			}
+			http.Error(w, "failed to like", http.StatusInternalServerError)
+			return
+		}
+
+		// Atomically increment like_count on the episode
+		_, _ = database.Collection(db.CollEpisodes).UpdateOne(r.Context(),
+			bson.D{{Key: "_id", Value: episodeID}},
+			bson.D{{Key: "$inc", Value: bson.D{{Key: "like_count", Value: int64(1)}}}},
+		)
+
+		w.WriteHeader(http.StatusCreated)
+	}
+}
+
+// Unlike removes a like for the authenticated user from the given episode.
+func Unlike(database *mongo.Database) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID, err := userIDFromContext(r)
+		if err != nil {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		episodeID, err := bson.ObjectIDFromHex(chi.URLParam(r, "episode_id"))
+		if err != nil {
+			http.Error(w, "invalid episode_id", http.StatusBadRequest)
+			return
+		}
+
+		result, err := database.Collection(db.CollLikes).DeleteOne(
+			r.Context(),
+			bson.D{{Key: "user_id", Value: userID}, {Key: "episode_id", Value: episodeID}},
+		)
+		if err != nil {
+			http.Error(w, "failed to unlike", http.StatusInternalServerError)
+			return
+		}
+
+		// Only decrement if a document was actually deleted
+		if result.DeletedCount > 0 {
+			_, _ = database.Collection(db.CollEpisodes).UpdateOne(r.Context(),
+				bson.D{{Key: "_id", Value: episodeID}},
+				bson.D{{Key: "$inc", Value: bson.D{{Key: "like_count", Value: int64(-1)}}}},
+			)
+		}
+
+		w.WriteHeader(http.StatusOK)
+	}
+}

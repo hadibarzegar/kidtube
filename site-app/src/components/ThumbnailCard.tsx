@@ -18,6 +18,7 @@ interface ThumbnailCardProps {
   channelThumbnail?: string
   channelHref?: string
   episodeNumber?: number
+  viewCount?: number
   subtitle?: string
 }
 
@@ -30,6 +31,7 @@ export default function ThumbnailCard({
   channelThumbnail,
   channelHref,
   episodeNumber,
+  viewCount,
   subtitle,
 }: ThumbnailCardProps) {
   const resolvedThumbnail = resolveImageUrl(thumbnail)
@@ -99,11 +101,17 @@ export default function ThumbnailCard({
               </p>
             </a>
           )}
-          {episodeNumber !== undefined && episodeNumber > 0 && (
-            <p className="text-xs text-[var(--color-text-faint)] mt-0.5">
-              قسمت {episodeNumber}
-            </p>
-          )}
+          <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[var(--color-text-faint)]">
+            {episodeNumber !== undefined && episodeNumber > 0 && (
+              <span>قسمت {episodeNumber}</span>
+            )}
+            {viewCount !== undefined && viewCount > 0 && (
+              <>
+                {episodeNumber !== undefined && episodeNumber > 0 && <span>·</span>}
+                <span>{viewCount.toLocaleString('fa-IR')} بازدید</span>
+              </>
+            )}
+          </div>
           {!channelName && subtitle && (
             <p className="text-xs text-[var(--color-text-muted)] mt-1 line-clamp-1">
               {subtitle}

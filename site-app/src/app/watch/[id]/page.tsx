@@ -12,9 +12,9 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { id } = await params
   const res = await apiServerFetch(`/episodes/${id}`)
-  if (!res.ok) return { title: 'کیدتیوب' }
+  if (!res.ok) return { title: 'KidTube' }
   const episode: Episode = await res.json()
-  return { title: `${episode.title} — کیدتیوب` }
+  return { title: `${episode.title} — KidTube` }
 }
 
 export default async function WatchPage({ params }: Props) {
@@ -52,15 +52,17 @@ export default async function WatchPage({ params }: Props) {
   // Filter out the current episode from the "other episodes" list
   const otherEpisodes = allEpisodes.filter((ep) => ep.id !== episode.id)
 
-  // Check bookmark + subscription state for logged-in user
+  // Check bookmark + subscription + like state for logged-in user
   let isBookmarked = false
   let isSubscribed = false
+  let isLiked = false
   if (user) {
     const token = await getSiteSession()
     if (token) {
-      const [bookRes, subRes] = await Promise.all([
+      const [bookRes, subRes, likesRes] = await Promise.all([
         apiServerAuthFetch('/me/bookmarks', token, { cache: 'no-store' }),
         apiServerAuthFetch('/me/subscriptions', token, { cache: 'no-store' }),
+        apiServerAuthFetch('/me/likes', token, { cache: 'no-store' }),
       ])
       if (bookRes.ok) {
         const bookmarks: Episode[] = await bookRes.json()
@@ -69,6 +71,10 @@ export default async function WatchPage({ params }: Props) {
       if (subRes.ok) {
         const subscriptions: Channel[] = await subRes.json()
         isSubscribed = subscriptions.some((ch) => ch.id === channel.id)
+      }
+      if (likesRes.ok) {
+        const likes: Episode[] = await likesRes.json()
+        isLiked = likes.some((ep) => ep.id === id)
       }
     }
   }
@@ -84,6 +90,7 @@ export default async function WatchPage({ params }: Props) {
             channel={channel}
             isBookmarked={isBookmarked}
             isSubscribed={isSubscribed}
+            isLiked={isLiked}
             episodeId={episode.id}
           />
         </div>
@@ -103,6 +110,7 @@ export default async function WatchPage({ params }: Props) {
                   href={`/watch/${ep.id}`}
                   channelName={channel.name}
                   episodeNumber={ep.order}
+                  viewCount={ep.view_count}
                 />
               ))}
             </div>

@@ -23,8 +23,11 @@ export interface Episode {
   title: string
   description: string
   order: number
+  thumbnail: string
   subtitle_url: string
   status: string
+  view_count: number
+  like_count: number
   created_at: string
   updated_at: string
 }
@@ -32,6 +35,7 @@ export interface Episode {
 export interface Category {
   id: string
   name: string
+  thumbnail: string
   created_at: string
   updated_at: string
 }

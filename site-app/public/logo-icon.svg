@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Background -->
+  <rect width="64" height="64" rx="14" fill="#FFF8F3"/>
+
+  <!-- Glow -->
+  <circle cx="32" cy="28" r="26" fill="#FFD4CC" opacity="0.2"/>
+
+  <!-- Shadow -->
+  <circle cx="33" cy="30" r="20" fill="#E57A6A" opacity="0.15"/>
+
+  <!-- Main play button circle -->
+  <circle cx="32" cy="28" r="20" fill="url(#iconGrad)"/>
+
+  <!-- Play triangle -->
+  <path d="M27 18 L27 38 L41 28 Z" fill="white" opacity="0.93"/>
+
+  <!-- Highlight -->
+  <ellipse cx="25" cy="20" rx="5" ry="4" fill="white" opacity="0.18" transform="rotate(-15 25 20)"/>
+
+  <!-- "KT" text below -->
+  <text x="32" y="58" text-anchor="middle" font-family="'Fredoka', 'Nunito', sans-serif" font-weight="700" font-size="14" letter-spacing="-0.5">
+    <tspan fill="#FF8A7A">K</tspan><tspan fill="#2D2D3A">T</tspan>
+  </text>
+
+  <!-- Tiny decorations -->
+  <circle cx="10" cy="12" r="1.5" fill="#FFD166" opacity="0.5"/>
+  <circle cx="54" cy="10" r="1.2" fill="#7EC8E3" opacity="0.5"/>
+
+  <defs>
+    <radialGradient id="iconGrad" cx="0.35" cy="0.35" r="0.65">
+      <stop offset="0%" stop-color="#FFB0A5"/>
+      <stop offset="50%" stop-color="#FF8A7A"/>
+      <stop offset="100%" stop-color="#E57A6A"/>
+    </radialGradient>
+  </defs>
+</svg>

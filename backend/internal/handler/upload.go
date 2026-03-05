@@ -71,6 +71,7 @@ func UploadEpisode(database *mongo.Database, hlsRoot string) http.HandlerFunc {
 			title       string
 			description string
 			order       int
+			thumbnail   string
 			subtitleURL string
 			fileWritten bool
 		)
@@ -129,6 +130,15 @@ func UploadEpisode(database *mongo.Database, hlsRoot string) http.HandlerFunc {
 				if v, err := strconv.Atoi(strings.TrimSpace(string(data))); err == nil {
 					order = v
 				}
+
+			case "thumbnail":
+				data, err := io.ReadAll(io.LimitReader(part, maxFieldSize))
+				if err != nil {
+					os.RemoveAll(outDir) //nolint:errcheck
+					writeJSONError(w, http.StatusBadRequest, "failed to read thumbnail")
+					return
+				}
+				thumbnail = strings.TrimSpace(string(data))
 
 			case "subtitle_url":
 				data, err := io.ReadAll(io.LimitReader(part, maxFieldSize))
@@ -204,6 +214,7 @@ func UploadEpisode(database *mongo.Database, hlsRoot string) http.HandlerFunc {
 			Title:       title,
 			Description: description,
 			Order:       order,
+			Thumbnail:   thumbnail,
 			SubtitleURL: subtitleURL,
 			Status:      "pending",
 			CreatedAt:   now,

@@ -3,8 +3,10 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/hadi/kidtube/internal/db"
 	"github.com/hadi/kidtube/internal/models"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -90,5 +92,64 @@ func SiteGetEpisode(database *mongo.Database) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(episode) //nolint:errcheck
+	}
+}
+
+// RecordView records a view for the given episode. Public — no auth required.
+// Deduplicates by (episode_id, viewer_id). Uses user_id from JWT if present, else IP.
+func RecordView(database *mongo.Database, tokenAuth *jwtauth.JWTAuth) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		episodeID, err := bson.ObjectIDFromHex(chi.URLParam(r, "id"))
+		if err != nil {
+			http.Error(w, "invalid id", http.StatusBadRequest)
+			return
+		}
+
+		// Verify episode exists and is ready
+		count, err := database.Collection(db.CollEpisodes).CountDocuments(ctx, bson.D{
+			{Key: "_id", Value: episodeID},
+			{Key: "status", Value: "ready"},
+		})
+		if err != nil || count == 0 {
+			http.Error(w, "episode not found", http.StatusNotFound)
+			return
+		}
+
+		// Determine viewer_id: prefer user_id from JWT, fall back to IP
+		viewerID := ""
+		token, claims, err := jwtauth.FromContext(ctx)
+		if err == nil && token != nil {
+			if uid, ok := claims["user_id"].(string); ok && uid != "" {
+				viewerID = uid
+			}
+		}
+		if viewerID == "" {
+			viewerID = "ip:" + r.RemoteAddr
+		}
+
+		// Attempt insert — dedup via unique index
+		view := models.View{
+			EpisodeID: episodeID,
+			ViewerID:  viewerID,
+			CreatedAt: time.Now().UTC(),
+		}
+		_, err = database.Collection(db.CollViews).InsertOne(ctx, view)
+		if err != nil {
+			if mongo.IsDuplicateKeyError(err) {
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+			http.Error(w, "failed to record view", http.StatusInternalServerError)
+			return
+		}
+
+		// New view — atomically increment view_count
+		_, _ = database.Collection(db.CollEpisodes).UpdateOne(ctx,
+			bson.D{{Key: "_id", Value: episodeID}},
+			bson.D{{Key: "$inc", Value: bson.D{{Key: "view_count", Value: int64(1)}}}},
+		)
+
+		w.WriteHeader(http.StatusNoContent)
 	}
 }

@@ -16,13 +16,14 @@ async function getAuthHeader(): Promise<Record<string, string>> {
 
 export async function createCategory(prevState: unknown, formData: FormData) {
   const name = (formData.get('name') as string)?.trim()
+  const thumbnail = (formData.get('thumbnail') as string)?.trim()
   if (!name) return { error: 'Name is required' }
 
   const auth = await getAuthHeader()
   const res = await fetch(`${ADMIN_API_INTERNAL_URL}/categories`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...auth },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, thumbnail: thumbnail || '' }),
   })
 
   if (!res.ok) {
@@ -36,13 +37,14 @@ export async function createCategory(prevState: unknown, formData: FormData) {
 
 export async function updateCategory(id: string, prevState: unknown, formData: FormData) {
   const name = (formData.get('name') as string)?.trim()
+  const thumbnail = (formData.get('thumbnail') as string)?.trim()
   if (!name) return { error: 'Name is required' }
 
   const auth = await getAuthHeader()
   const res = await fetch(`${ADMIN_API_INTERNAL_URL}/categories/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...auth },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, thumbnail: thumbnail || '' }),
   })
 
   if (!res.ok) {

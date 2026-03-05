@@ -1,4 +1,5 @@
 import { apiServerFetch } from '@/lib/api'
+import { resolveImageUrl } from '@/lib/image'
 import type { Category } from '@/lib/types'
 
 // Cycle through pastel colors for category cards
@@ -26,20 +27,28 @@ export default async function BrowsePage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {categories.map((cat, idx) => {
               const color = pastelColors[idx % pastelColors.length]
+              const thumb = resolveImageUrl(cat.thumbnail)
               return (
                 <a
                   key={cat.id}
                   href={`/browse/${cat.id}`}
                   className={[
-                    'min-h-[120px] rounded-[20px] border-[3px] flex items-center justify-center p-4 text-center font-bold text-lg no-underline cursor-pointer',
+                    'relative min-h-[120px] rounded-[20px] border-[3px] flex items-center justify-center p-4 text-center font-bold text-lg no-underline cursor-pointer overflow-hidden',
                     'shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.04),4px_4px_10px_rgba(0,0,0,0.08)]',
                     'transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]',
                     'hover:-translate-y-[3px] hover:shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.04),6px_8px_16px_rgba(0,0,0,0.12)]',
                     'active:translate-y-[1px] active:scale-[0.97]',
-                    color.bg, color.text, color.border,
+                    thumb ? 'border-[var(--color-border)]' : `${color.bg} ${color.border}`,
+                    thumb ? 'text-white' : color.text,
                   ].join(' ')}
                 >
-                  {cat.name}
+                  {thumb && (
+                    <>
+                      <img src={thumb} alt={cat.name} className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40" />
+                    </>
+                  )}
+                  <span className="relative z-10 drop-shadow-sm">{cat.name}</span>
                 </a>
               )
             })}

@@ -58,12 +58,14 @@ func main() {
 	r.Get("/categories", handler.SiteListCategories(database))
 	r.Get("/age-groups", handler.SiteListAgeGroups(database))
 	r.Get("/search", handler.SiteSearch(database))
+	r.Get("/images/{id}", handler.ServeImage(database))
 
 	// Public auth routes — no JWT required
 	r.Post("/auth/register", handler.SiteRegister(database))
 	r.Post("/auth/login", handler.SiteLogin(database))
 
 	// tokenFromSiteCookie reads the site_token cookie for browser-based auth.
+	// (defined early so it can be used by both optional-auth and protected route groups)
 	tokenFromSiteCookie := func(r *http.Request) string {
 		cookie, err := r.Cookie("site_token")
 		if err != nil {
@@ -71,6 +73,12 @@ func main() {
 		}
 		return cookie.Value
 	}
+
+	// Public routes with optional JWT — parses token if present but does not reject anonymous requests
+	r.Group(func(r chi.Router) {
+		r.Use(jwtauth.Verify(auth.TokenAuth, jwtauth.TokenFromHeader, tokenFromSiteCookie))
+		r.Post("/episodes/{id}/views", handler.RecordView(database, auth.TokenAuth))
+	})
 
 	// Protected routes — require valid site JWT
 	r.Group(func(r chi.Router) {
@@ -87,6 +95,10 @@ func main() {
 		r.Get("/me/bookmarks", handler.GetBookmarks(database))
 		r.Post("/me/bookmarks/{episode_id}", handler.Bookmark(database))
 		r.Delete("/me/bookmarks/{episode_id}", handler.Unbookmark(database))
+
+		r.Get("/me/likes", handler.GetLikes(database))
+		r.Post("/me/likes/{episode_id}", handler.Like(database))
+		r.Delete("/me/likes/{episode_id}", handler.Unlike(database))
 	})
 
 	srv := &http.Server{

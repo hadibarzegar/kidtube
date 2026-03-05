@@ -121,6 +121,10 @@ func main() {
 		})
 		r.Get("/users", handler.ListUsers(database))
 		r.Get("/youtube-meta", handler.YouTubeMeta)
+
+		// Image upload and serving
+		r.Post("/images/upload", handler.UploadImage(database))
+		r.Get("/images/{id}", handler.ServeImage(database))
 	})
 
 	srv := &http.Server{

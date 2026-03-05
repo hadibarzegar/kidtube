@@ -4,17 +4,22 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
+	"github.com/kkdai/youtube/v2"
+
 	"github.com/hadi/kidtube/internal/db"
 	"github.com/hadi/kidtube/internal/models"
+	"github.com/hadi/kidtube/internal/ytclient"
 )
 
 // JobRequest holds the information needed to process a single ingestion job.
@@ -94,7 +99,7 @@ func ResumeJobs(ctx context.Context, database *mongo.Database) {
 }
 
 // processJob runs the full ingestion pipeline for a single job:
-// download via yt-dlp → transcode to HLS via FFmpeg → update episode status.
+// download via kkdai/youtube → transcode to HLS via FFmpeg → update episode status.
 // This function runs synchronously inside the single worker goroutine.
 func processJob(ctx context.Context, database *mongo.Database, hlsRoot string, req JobRequest) {
 	log.Printf("worker: starting job %s (episode %s, source=%s)", req.JobID.Hex(), req.EpisodeID.Hex(), req.Source)
@@ -106,29 +111,16 @@ func processJob(ctx context.Context, database *mongo.Database, hlsRoot string, r
 		now := time.Now()
 		updateJobStatusWithTime(ctx, database, req.JobID, models.JobStatusDownloading, "", &now, nil)
 
-		// Step 2: download via yt-dlp
+		// Step 2: download via kkdai/youtube library
 		if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
 			log.Printf("worker: mkdir failed for job %s: %v", req.JobID.Hex(), err)
 			updateJobStatus(ctx, database, req.JobID, models.JobStatusFailed, "failed to create output directory: "+err.Error())
 			return
 		}
 
-		ytCmd := exec.CommandContext(ctx, "yt-dlp",
-			"--format", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
-			"--merge-output-format", "mp4",
-			"--sleep-requests", "5",
-			"--no-playlist",
-			"-o", outputPath,
-			req.SourceURL,
-		)
-		var ytStderr bytes.Buffer
-		ytCmd.Stderr = &ytStderr
-		if err := ytCmd.Run(); err != nil {
-			errMsg := "yt-dlp failed: " + err.Error()
-			if ytStderr.Len() > 0 {
-				errMsg += " | stderr: " + ytStderr.String()
-			}
-			log.Printf("worker: yt-dlp error for job %s: %v", req.JobID.Hex(), errMsg)
+		if err := downloadYouTubeVideo(ctx, req.SourceURL, outputPath); err != nil {
+			errMsg := "youtube download failed: " + err.Error()
+			log.Printf("worker: download error for job %s: %s", req.JobID.Hex(), errMsg)
 			updateJobStatus(ctx, database, req.JobID, models.JobStatusFailed, errMsg)
 			return
 		}
@@ -179,6 +171,121 @@ func processJob(ctx context.Context, database *mongo.Database, hlsRoot string, r
 	}
 
 	log.Printf("worker: job %s complete", req.JobID.Hex())
+}
+
+// downloadYouTubeVideo fetches a YouTube video using the kkdai/youtube library
+// and saves it to outputPath. It tries three strategies in order:
+// 1. Combined (video+audio) mp4 format — best quality by bitrate
+// 2. Combined format in any container — ffmpeg handles it downstream
+// 3. Separate video + audio download, then ffmpeg mux
+func downloadYouTubeVideo(ctx context.Context, sourceURL, outputPath string) error {
+	client := ytclient.New()
+
+	video, err := client.GetVideoContext(ctx, sourceURL)
+	if err != nil {
+		return fmt.Errorf("failed to get video info: %w", err)
+	}
+
+	// Strategy 1: combined format (has audio) with mp4 container
+	combined := video.Formats.WithAudioChannels().Type("video/mp4")
+	if len(combined) > 0 {
+		sortByBitrate(combined)
+		return downloadStream(ctx, &client, video, &combined[0], outputPath)
+	}
+
+	// Strategy 2: any combined format (non-mp4 is fine, ffmpeg handles it)
+	anyCombined := video.Formats.WithAudioChannels()
+	if len(anyCombined) > 0 {
+		sortByBitrate(anyCombined)
+		return downloadStream(ctx, &client, video, &anyCombined[0], outputPath)
+	}
+
+	// Strategy 3: separate video + audio, then mux with ffmpeg
+	videoFormats := video.Formats.Type("video/mp4").Select(func(f youtube.Format) bool {
+		return f.Width > 0
+	})
+	if len(videoFormats) == 0 {
+		videoFormats = video.Formats.Select(func(f youtube.Format) bool {
+			return f.Width > 0 && f.AudioChannels == 0
+		})
+	}
+	audioFormats := video.Formats.Select(func(f youtube.Format) bool {
+		return f.AudioChannels > 0 && f.Width == 0
+	})
+
+	if len(videoFormats) == 0 {
+		return fmt.Errorf("no video formats available")
+	}
+	if len(audioFormats) == 0 {
+		return fmt.Errorf("no audio formats available")
+	}
+
+	sortByBitrate(videoFormats)
+	sortByBitrate(audioFormats)
+
+	dir := filepath.Dir(outputPath)
+	videoPath := filepath.Join(dir, "video_only.mp4")
+	audioPath := filepath.Join(dir, "audio_only.m4a")
+
+	if err := downloadStream(ctx, &client, video, &videoFormats[0], videoPath); err != nil {
+		return fmt.Errorf("failed to download video stream: %w", err)
+	}
+	defer os.Remove(videoPath)
+
+	if err := downloadStream(ctx, &client, video, &audioFormats[0], audioPath); err != nil {
+		return fmt.Errorf("failed to download audio stream: %w", err)
+	}
+	defer os.Remove(audioPath)
+
+	return muxVideoAudio(ctx, videoPath, audioPath, outputPath)
+}
+
+func sortByBitrate(formats youtube.FormatList) {
+	sort.Slice(formats, func(i, j int) bool {
+		return formats[i].Bitrate > formats[j].Bitrate
+	})
+}
+
+// downloadStream downloads a single format stream to a file on disk.
+func downloadStream(ctx context.Context, client *youtube.Client, video *youtube.Video, format *youtube.Format, outputPath string) error {
+	stream, _, err := client.GetStreamContext(ctx, video, format)
+	if err != nil {
+		return fmt.Errorf("failed to get stream: %w", err)
+	}
+	defer stream.Close()
+
+	f, err := os.Create(outputPath)
+	if err != nil {
+		return fmt.Errorf("failed to create output file: %w", err)
+	}
+	defer f.Close()
+
+	if _, err := io.Copy(f, stream); err != nil {
+		return fmt.Errorf("failed to write stream to file: %w", err)
+	}
+
+	return nil
+}
+
+// muxVideoAudio uses ffmpeg to combine separate video and audio files into a single mp4.
+func muxVideoAudio(ctx context.Context, videoPath, audioPath, outputPath string) error {
+	var stderr bytes.Buffer
+	cmd := exec.CommandContext(ctx, "ffmpeg",
+		"-i", videoPath,
+		"-i", audioPath,
+		"-c", "copy",
+		"-movflags", "+faststart",
+		"-y",
+		outputPath,
+	)
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		if stderr.Len() > 0 {
+			return fmt.Errorf("ffmpeg mux failed: %w | stderr: %s", err, stderr.String())
+		}
+		return fmt.Errorf("ffmpeg mux failed: %w", err)
+	}
+	return nil
 }
 
 // transcodeHLS runs FFmpeg to produce three HLS renditions (720p, 480p, 360p)

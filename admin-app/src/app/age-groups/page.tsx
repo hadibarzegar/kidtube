@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 import DataTable from '@/components/DataTable'
+import type { Column } from '@/components/DataTable'
 import { deleteAgeGroup } from '@/app/actions/age-groups'
 
 const ADMIN_API_INTERNAL_URL =
@@ -17,21 +19,19 @@ interface AgeGroup {
 async function fetchAgeGroups(): Promise<AgeGroup[]> {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')?.value
-
   const res = await fetch(`${ADMIN_API_INTERNAL_URL}/age-groups`, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     cache: 'no-store',
   })
-
   if (!res.ok) return []
   return res.json()
 }
 
-const columns = [
+const columns: Column[] = [
   { key: 'name', label: 'Name', sortable: true },
-  { key: 'min_age', label: 'Min Age', sortable: true },
-  { key: 'max_age', label: 'Max Age', sortable: true },
-  { key: 'created_at', label: 'Created At', sortable: true },
+  { key: 'min_age', label: 'Min Age', sortable: true, className: 'w-24' },
+  { key: 'max_age', label: 'Max Age', sortable: true, className: 'w-24' },
+  { key: 'created_at', label: 'Created', sortable: true },
 ]
 
 export default async function AgeGroupsPage() {
@@ -43,15 +43,15 @@ export default async function AgeGroupsPage() {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Age Groups</h1>
-        <Link
-          href="/age-groups/new"
-          className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-md hover:bg-slate-700 transition-colors"
-        >
-          New Age Group
-        </Link>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Age Groups</h1>
+          <p className="text-sm text-muted-foreground">{ageGroups.length} age groups total</p>
+        </div>
+        <Button asChild>
+          <Link href="/age-groups/new">New Age Group</Link>
+        </Button>
       </div>
 
       <DataTable
@@ -59,6 +59,7 @@ export default async function AgeGroupsPage() {
         data={ageGroups}
         onDelete={handleDelete}
         editPath="/age-groups"
+        searchPlaceholder="Search age groups..."
       />
     </div>
   )

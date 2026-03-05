@@ -1,7 +1,5 @@
 import { cookies } from 'next/headers'
-import Link from 'next/link'
-import DataTable from '@/components/DataTable'
-import { deleteChannel } from '@/app/actions/channels'
+import ChannelsClient from './ChannelsClient'
 
 const ADMIN_API_INTERNAL_URL =
   process.env.ADMIN_API_INTERNAL_URL ?? 'http://localhost:8082'
@@ -34,40 +32,24 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 
 async function fetchChannels(): Promise<Channel[]> {
   const headers = await getAuthHeaders()
-  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/channels`, {
-    headers,
-    cache: 'no-store',
-  })
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/channels`, { headers, cache: 'no-store' })
   if (!res.ok) return []
   return res.json()
 }
 
 async function fetchCategories(): Promise<Category[]> {
   const headers = await getAuthHeaders()
-  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/categories`, {
-    headers,
-    cache: 'no-store',
-  })
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/categories`, { headers, cache: 'no-store' })
   if (!res.ok) return []
   return res.json()
 }
 
 async function fetchAgeGroups(): Promise<AgeGroup[]> {
   const headers = await getAuthHeaders()
-  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/age-groups`, {
-    headers,
-    cache: 'no-store',
-  })
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/age-groups`, { headers, cache: 'no-store' })
   if (!res.ok) return []
   return res.json()
 }
-
-const columns = [
-  { key: 'name', label: 'Name', sortable: true },
-  { key: 'categoryName', label: 'Category', sortable: true },
-  { key: 'ageGroupName', label: 'Age Group', sortable: true },
-  { key: 'created_at', label: 'Created At', sortable: true },
-]
 
 export default async function ChannelsPage() {
   const [channels, categories, ageGroups] = await Promise.all([
@@ -85,29 +67,5 @@ export default async function ChannelsPage() {
     ageGroupName: ch.age_group_ids?.map((id) => ageGroupMap[id]).filter(Boolean).join(', ') || '—',
   }))
 
-  async function handleDelete(id: string) {
-    'use server'
-    await deleteChannel(id)
-  }
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Channels</h1>
-        <Link
-          href="/channels/new"
-          className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-md hover:bg-slate-700 transition-colors"
-        >
-          New Channel
-        </Link>
-      </div>
-
-      <DataTable
-        columns={columns}
-        data={tableData}
-        onDelete={handleDelete}
-        editPath="/channels"
-      />
-    </div>
-  )
+  return <ChannelsClient tableData={tableData} totalCount={channels.length} />
 }

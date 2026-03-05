@@ -69,6 +69,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   channelThumbnail={channel?.thumbnail}
                   channelHref={channel ? `/channel/${channel.id}` : undefined}
                   episodeNumber={ep.order}
+                  viewCount={ep.view_count}
                 />
               )
             })}

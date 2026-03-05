@@ -19,6 +19,7 @@ export async function createEpisode(prevState: unknown, formData: FormData) {
   const title = (formData.get('title') as string)?.trim()
   const description = (formData.get('description') as string)?.trim()
   const order = Number(formData.get('order') ?? 0)
+  const thumbnail = (formData.get('thumbnail') as string)?.trim()
   const subtitleUrl = (formData.get('subtitle_url') as string)?.trim()
   const sourceUrl = (formData.get('source_url') as string)?.trim()
 
@@ -31,6 +32,7 @@ export async function createEpisode(prevState: unknown, formData: FormData) {
     title,
     description: description || '',
     order: isNaN(order) ? 0 : order,
+    thumbnail: thumbnail || '',
     subtitle_url: subtitleUrl || '',
   }
   if (sourceUrl) {
@@ -57,6 +59,7 @@ export async function updateEpisode(id: string, prevState: unknown, formData: Fo
   const title = (formData.get('title') as string)?.trim()
   const description = (formData.get('description') as string)?.trim()
   const order = Number(formData.get('order') ?? 0)
+  const thumbnail = (formData.get('thumbnail') as string)?.trim()
   const subtitleUrl = (formData.get('subtitle_url') as string)?.trim()
 
   if (!title) return { error: 'Title is required' }
@@ -69,6 +72,7 @@ export async function updateEpisode(id: string, prevState: unknown, formData: Fo
       title,
       description: description || '',
       order: isNaN(order) ? 0 : order,
+      thumbnail: thumbnail || '',
       subtitle_url: subtitleUrl || '',
     }),
   })

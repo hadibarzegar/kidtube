@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getCurrentUser } from '@/lib/auth'
 import { getSiteSession } from '@/lib/session'
 import { apiServerAuthFetch } from '@/lib/api'
@@ -13,10 +14,14 @@ export default async function TopBar() {
   if (user) {
     const token = await getSiteSession()
     if (token) {
-      const meRes = await apiServerAuthFetch('/me', token)
-      if (meRes.ok) {
-        const me: SiteUser = await meRes.json()
-        userEmail = me.email
+      try {
+        const meRes = await apiServerAuthFetch('/me', token)
+        if (meRes.ok) {
+          const me: SiteUser = await meRes.json()
+          userEmail = me.email
+        }
+      } catch {
+        // Backend unreachable — degrade gracefully to logged-out state
       }
     }
   }
@@ -27,12 +32,15 @@ export default async function TopBar() {
         {/* Right side (RTL): Hamburger + Logo */}
         <div className="flex items-center gap-3">
           <TopBarClient />
-          <Link
-            href="/"
-            className="font-display text-xl md:text-2xl font-bold text-[var(--color-primary)] no-underline"
-            style={{ textShadow: '2px 2px 0px rgba(255,138,122,0.15)' }}
-          >
-            کیدتیوب
+          <Link href="/" className="no-underline flex items-center">
+            <Image
+              src="/logo-horizontal.svg"
+              alt="KidTube"
+              width={140}
+              height={36}
+              priority
+              className="h-8 md:h-9 w-auto"
+            />
           </Link>
         </div>
 

@@ -1,7 +1,14 @@
 import { cookies } from 'next/headers'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ChannelForm from './ChannelForm'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
 
 const ADMIN_API_INTERNAL_URL =
   process.env.ADMIN_API_INTERNAL_URL ?? 'http://localhost:8082'
@@ -33,10 +40,7 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 
 async function fetchChannel(id: string): Promise<Channel | null> {
   const headers = await getAuthHeaders()
-  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/channels/${id}`, {
-    headers,
-    cache: 'no-store',
-  })
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/channels/${id}`, { headers, cache: 'no-store' })
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`Failed to fetch channel: ${res.status}`)
   return res.json()
@@ -44,20 +48,14 @@ async function fetchChannel(id: string): Promise<Channel | null> {
 
 async function fetchCategories(): Promise<Category[]> {
   const headers = await getAuthHeaders()
-  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/categories`, {
-    headers,
-    cache: 'no-store',
-  })
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/categories`, { headers, cache: 'no-store' })
   if (!res.ok) return []
   return res.json()
 }
 
 async function fetchAgeGroups(): Promise<AgeGroup[]> {
   const headers = await getAuthHeaders()
-  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/age-groups`, {
-    headers,
-    cache: 'no-store',
-  })
+  const res = await fetch(`${ADMIN_API_INTERNAL_URL}/age-groups`, { headers, cache: 'no-store' })
   if (!res.ok) return []
   return res.json()
 }
@@ -87,28 +85,29 @@ export default async function ChannelPage({ params }: Props) {
   }
 
   return (
-    <div>
-      <div className="mb-6">
-        <Link
-          href="/channels"
-          className="text-sm text-slate-600 hover:underline"
-        >
-          &larr; Back to Channels
-        </Link>
-      </div>
+    <div className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/channels">Channels</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{isNew ? 'New Channel' : channel?.name ?? 'Edit'}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
-        {isNew ? 'New Channel' : `Edit Channel: ${channel?.name}`}
+      <h1 className="text-2xl font-bold tracking-tight">
+        {isNew ? 'New Channel' : 'Edit Channel'}
       </h1>
 
-      <div className="bg-white rounded-md border border-gray-200 p-6 max-w-lg">
-        <ChannelForm
-          id={isNew ? null : id}
-          defaultValues={defaultValues}
-          categories={categories}
-          ageGroups={ageGroups}
-        />
-      </div>
+      <ChannelForm
+        id={isNew ? null : id}
+        defaultValues={defaultValues}
+        categories={categories}
+        ageGroups={ageGroups}
+      />
     </div>
   )
 }

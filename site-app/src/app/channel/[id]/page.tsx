@@ -123,6 +123,7 @@ export default async function ChannelPage({ params }: ChannelPageProps) {
                 channelThumbnail={channel.thumbnail}
                 channelHref={`/channel/${channel.id}`}
                 episodeNumber={ep.order}
+                viewCount={ep.view_count}
                 index={i}
               />
             ))}

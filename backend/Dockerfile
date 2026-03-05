@@ -23,10 +23,9 @@ RUN apk add --no-cache wget
 COPY --from=site-api-build /bin/site-api /bin/site-api
 ENTRYPOINT ["/bin/site-api"]
 
-# Admin API runtime — includes yt-dlp, ffmpeg, and seed binary
+# Admin API runtime — includes ffmpeg and seed binary
 FROM alpine:3.19 AS admin-api
-RUN apk add --no-cache wget ffmpeg python3 py3-pip && \
-    pip3 install --no-cache-dir yt-dlp --break-system-packages
+RUN apk add --no-cache wget ffmpeg
 COPY --from=admin-api-build /bin/admin-api /bin/admin-api
 COPY --from=seed-build /bin/seed /bin/seed
 ENTRYPOINT ["/bin/admin-api"]

@@ -4,7 +4,7 @@ import type { Channel } from '@/lib/types'
 import ThumbnailCard from '@/components/ThumbnailCard'
 
 export const metadata = {
-  title: 'کانال‌های من — کیدتیوب',
+  title: 'کانال‌های من — KidTube',
 }
 
 export default async function SubscriptionsPage() {

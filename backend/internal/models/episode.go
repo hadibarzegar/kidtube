@@ -14,8 +14,11 @@ type Episode struct {
 	Title       string        `bson:"title" json:"title"`
 	Description string        `bson:"description" json:"description"`
 	Order       int           `bson:"order" json:"order"`
+	Thumbnail   string        `bson:"thumbnail" json:"thumbnail"`
 	SubtitleURL string        `bson:"subtitle_url" json:"subtitle_url"`
 	Status      string        `bson:"status" json:"status"` // pending, ready, failed
+	ViewCount   int64         `bson:"view_count" json:"view_count"`
+	LikeCount   int64         `bson:"like_count" json:"like_count"`
 	CreatedAt   time.Time     `bson:"created_at" json:"created_at"`
 	UpdatedAt   time.Time     `bson:"updated_at" json:"updated_at"`
 }

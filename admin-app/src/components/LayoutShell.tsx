@@ -14,7 +14,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 min-h-screen bg-gray-50 p-6 ml-64">
+      <main className="flex-1 min-h-screen bg-muted/40 p-6 ml-60">
         {children}
       </main>
     </div>

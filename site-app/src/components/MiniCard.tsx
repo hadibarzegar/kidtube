@@ -6,9 +6,10 @@ interface MiniCardProps {
   href: string
   channelName?: string
   episodeNumber?: number
+  viewCount?: number
 }
 
-export default function MiniCard({ title, thumbnail, href, channelName, episodeNumber }: MiniCardProps) {
+export default function MiniCard({ title, thumbnail, href, channelName, episodeNumber, viewCount }: MiniCardProps) {
   const resolvedThumbnail = resolveImageUrl(thumbnail)
 
   return (
@@ -40,11 +41,17 @@ export default function MiniCard({ title, thumbnail, href, channelName, episodeN
             {channelName}
           </p>
         )}
-        {episodeNumber !== undefined && episodeNumber > 0 && (
-          <p className="text-xs text-[var(--color-text-faint)] mt-0.5">
-            قسمت {episodeNumber}
-          </p>
-        )}
+        <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[var(--color-text-faint)]">
+          {episodeNumber !== undefined && episodeNumber > 0 && (
+            <span>قسمت {episodeNumber}</span>
+          )}
+          {viewCount !== undefined && viewCount > 0 && (
+            <>
+              {episodeNumber !== undefined && episodeNumber > 0 && <span>·</span>}
+              <span>{viewCount.toLocaleString('fa-IR')} بازدید</span>
+            </>
+          )}
+        </div>
       </div>
     </a>
   )

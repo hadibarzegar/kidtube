@@ -68,7 +68,26 @@ logs-nginx: ## Tail nginx logs
 	docker compose logs -f nginx
 
 # ─── Local Dev (no Docker) ───────────────────────────────────────
-.PHONY: dev-site-api dev-admin-api dev-site-app dev-admin-app dev-seed
+.PHONY: dev dev-site-api dev-admin-api dev-site-app dev-admin-app dev-seed
+
+dev: ## Run all services locally (MongoDB in Docker, apps natively)
+	@echo "Starting MongoDB via Docker..."
+	@docker compose up -d mongo
+	@echo "Waiting for MongoDB to be ready..."
+	@until docker compose exec -T mongo mongosh --eval "db.runCommand('ping')" > /dev/null 2>&1; do sleep 1; done
+	@echo "MongoDB ready. Starting all services..."
+	@trap 'kill 0' EXIT; \
+	(cd backend && MONGO_URI=mongodb://kidtube:kidtube_dev@localhost:27017/kidtube?authSource=admin \
+		PORT=8081 JWT_SECRET=$${JWT_SECRET} \
+		go run ./cmd/site-api) & \
+	(cd backend && MONGO_URI=mongodb://kidtube:kidtube_dev@localhost:27017/kidtube?authSource=admin \
+		PORT=8082 JWT_SECRET=$${JWT_SECRET} HLS_ROOT=../data/hls \
+		go run ./cmd/admin-api) & \
+	(cd site-app && SITE_API_INTERNAL_URL=http://localhost:8081 JWT_SECRET=$${JWT_SECRET} \
+		npm run dev) & \
+	(cd admin-app && ADMIN_API_INTERNAL_URL=http://localhost:8082 \
+		npm run dev -- -p 3001) & \
+	wait
 
 dev-site-api: ## Run site-api locally (requires Go, MongoDB on localhost)
 	cd backend && MONGO_URI=mongodb://kidtube:kidtube_dev@localhost:27017/kidtube?authSource=admin \
@@ -76,7 +95,7 @@ dev-site-api: ## Run site-api locally (requires Go, MongoDB on localhost)
 		JWT_SECRET=$${JWT_SECRET} \
 		go run ./cmd/site-api
 
-dev-admin-api: ## Run admin-api locally (requires Go, MongoDB on localhost, ffmpeg, yt-dlp)
+dev-admin-api: ## Run admin-api locally (requires Go, MongoDB on localhost, ffmpeg)
 	cd backend && MONGO_URI=mongodb://kidtube:kidtube_dev@localhost:27017/kidtube?authSource=admin \
 		PORT=8082 \
 		JWT_SECRET=$${JWT_SECRET} \

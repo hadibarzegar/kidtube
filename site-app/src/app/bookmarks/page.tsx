@@ -4,7 +4,7 @@ import type { Episode } from '@/lib/types'
 import ThumbnailCard from '@/components/ThumbnailCard'
 
 export const metadata = {
-  title: 'نشان‌شده‌ها — کیدتیوب',
+  title: 'نشان‌شده‌ها — KidTube',
 }
 
 export default async function BookmarksPage() {
@@ -54,6 +54,7 @@ export default async function BookmarksPage() {
                 title={ep.title}
                 href={`/watch/${ep.id}`}
                 subtitle={`قسمت ${ep.order}`}
+                viewCount={ep.view_count}
                 index={i}
               />
             ))}

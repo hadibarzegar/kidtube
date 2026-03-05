@@ -18,6 +18,7 @@ type episodeRequest struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Order       int    `json:"order"`
+	Thumbnail   string `json:"thumbnail"`
 	SubtitleURL string `json:"subtitle_url"`
 	SourceURL   string `json:"source_url"`
 }
@@ -122,6 +123,7 @@ func CreateEpisode(database *mongo.Database) http.HandlerFunc {
 			Title:       req.Title,
 			Description: req.Description,
 			Order:       req.Order,
+			Thumbnail:   req.Thumbnail,
 			SubtitleURL: req.SubtitleURL,
 			Status:      "pending",
 			CreatedAt:   now,
@@ -197,6 +199,7 @@ func UpdateEpisode(database *mongo.Database) http.HandlerFunc {
 			{Key: "title", Value: req.Title},
 			{Key: "description", Value: req.Description},
 			{Key: "order", Value: req.Order},
+			{Key: "thumbnail", Value: req.Thumbnail},
 			{Key: "subtitle_url", Value: req.SubtitleURL},
 			{Key: "updated_at", Value: now},
 		}}}
@@ -220,6 +223,7 @@ func UpdateEpisode(database *mongo.Database) http.HandlerFunc {
 			"title":        req.Title,
 			"description":  req.Description,
 			"order":        req.Order,
+			"thumbnail":    req.Thumbnail,
 			"subtitle_url": req.SubtitleURL,
 			"updated_at":   now,
 		}) //nolint:errcheck

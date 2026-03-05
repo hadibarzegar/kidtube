@@ -7,8 +7,11 @@ import LayoutShell from '@/components/LayoutShell';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'کیدتیوب',
+  title: 'KidTube',
   description: 'ویدیوهای آموزشی فارسی برای کودکان',
+  icons: {
+    icon: '/logo-icon.svg',
+  },
 };
 
 export default function RootLayout({

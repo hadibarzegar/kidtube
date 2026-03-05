@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" fill="none">
+  <!-- Play button icon (small) -->
+  <g transform="translate(22, 24)">
+    <circle cx="0" cy="0" r="18" fill="url(#hGrad)"/>
+    <path d="M-6 -10 L-6 10 L9 0 Z" fill="white" opacity="0.93"/>
+    <ellipse cx="-7" cy="-8" rx="5" ry="3.5" fill="white" opacity="0.15" transform="rotate(-15 -7 -8)"/>
+  </g>
+
+  <!-- KidTube text -->
+  <text x="50" y="32" font-family="'Fredoka', 'Nunito', 'Poppins', 'Comfortaa', sans-serif" font-weight="700" font-size="30" letter-spacing="-0.5">
+    <tspan fill="#FF8A7A">Kid</tspan><tspan fill="#2D2D3A">Tube</tspan>
+  </text>
+
+  <defs>
+    <radialGradient id="hGrad" cx="0.35" cy="0.35" r="0.65">
+      <stop offset="0%" stop-color="#FFB0A5"/>
+      <stop offset="50%" stop-color="#FF8A7A"/>
+      <stop offset="100%" stop-color="#E57A6A"/>
+    </radialGradient>
+  </defs>
+</svg>

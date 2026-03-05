@@ -1,7 +1,14 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useState, useActionState } from 'react'
+import Link from 'next/link'
 import { createChannel, updateChannel } from '@/app/actions/channels'
+import ImageUpload from '@/components/ImageUpload'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tv } from 'lucide-react'
 
 interface Category {
   id: string
@@ -31,108 +38,125 @@ interface Props {
 export default function ChannelForm({ id, defaultValues, categories, ageGroups }: Props) {
   const action = id ? updateChannel.bind(null, id) : createChannel
   const [state, formAction, isPending] = useActionState(action, undefined)
+  const [thumbnailUrl, setThumbnailUrl] = useState(defaultValues.thumbnail)
 
   return (
-    <form action={formAction} className="space-y-4">
-      {/* Name */}
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-          Name <span className="text-red-500">*</span>
-        </label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          required
-          defaultValue={defaultValues.name}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-          placeholder="Channel name"
-        />
-      </div>
+    <form action={formAction}>
+      <input type="hidden" name="thumbnail" value={thumbnailUrl} />
 
-      {/* Description */}
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-          Description
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          rows={3}
-          defaultValue={defaultValues.description}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-          placeholder="Channel description"
-        />
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left column — form fields */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-base">Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Name */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium mb-1.5">
+                Name <span className="text-destructive">*</span>
+              </label>
+              <Input
+                id="name"
+                name="name"
+                required
+                defaultValue={defaultValues.name}
+                placeholder="Channel name"
+              />
+            </div>
 
-      {/* Thumbnail URL */}
-      <div>
-        <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700 mb-1">
-          Thumbnail URL
-        </label>
-        <input
-          id="thumbnail"
-          name="thumbnail"
-          type="url"
-          defaultValue={defaultValues.thumbnail}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-          placeholder="https://example.com/thumbnail.jpg"
-        />
-      </div>
+            {/* Description */}
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium mb-1.5">
+                Description
+              </label>
+              <Textarea
+                id="description"
+                name="description"
+                rows={3}
+                defaultValue={defaultValues.description}
+                placeholder="Channel description"
+              />
+            </div>
 
-      {/* Category */}
-      <div>
-        <label htmlFor="category_id" className="block text-sm font-medium text-gray-700 mb-1">
-          Category
-        </label>
-        <select
-          id="category_id"
-          name="category_id"
-          defaultValue={defaultValues.categoryId}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 bg-white"
-        >
-          <option value="">— Select a category —</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-      </div>
+            {/* Category */}
+            <div>
+              <label htmlFor="category_id" className="block text-sm font-medium mb-1.5">
+                Category
+              </label>
+              <select
+                id="category_id"
+                name="category_id"
+                defaultValue={defaultValues.categoryId}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <option value="">— Select a category —</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
 
-      {/* Age Group */}
-      <div>
-        <label htmlFor="age_group_id" className="block text-sm font-medium text-gray-700 mb-1">
-          Age Group
-        </label>
-        <select
-          id="age_group_id"
-          name="age_group_id"
-          defaultValue={defaultValues.ageGroupId}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 bg-white"
-        >
-          <option value="">— Select an age group —</option>
-          {ageGroups.map((ag) => (
-            <option key={ag.id} value={ag.id}>
-              {ag.name}
-            </option>
-          ))}
-        </select>
+            {/* Age Group */}
+            <div>
+              <label htmlFor="age_group_id" className="block text-sm font-medium mb-1.5">
+                Age Group
+              </label>
+              <select
+                id="age_group_id"
+                name="age_group_id"
+                defaultValue={defaultValues.ageGroupId}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <option value="">— Select an age group —</option>
+                {ageGroups.map((ag) => (
+                  <option key={ag.id} value={ag.id}>{ag.name}</option>
+                ))}
+              </select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Right column — thumbnail */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Thumbnail</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {thumbnailUrl ? (
+                <div className="mb-3">
+                  <img
+                    src={thumbnailUrl.startsWith('/images/') ? `/api/admin${thumbnailUrl}` : thumbnailUrl}
+                    alt="Thumbnail"
+                    className="w-full aspect-video rounded-md border object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="w-full aspect-video rounded-md bg-muted flex items-center justify-center mb-3">
+                  <Tv className="w-8 h-8 text-muted-foreground" />
+                </div>
+              )}
+              <ImageUpload value={thumbnailUrl} onChange={setThumbnailUrl} label="" />
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {state?.error && (
-        <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-md">
+        <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">
           {state.error}
-        </p>
+        </div>
       )}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-md hover:bg-slate-700 disabled:opacity-50 transition-colors"
-      >
-        {isPending ? 'Saving...' : id ? 'Update Channel' : 'Create Channel'}
-      </button>
+      <div className="flex items-center gap-3 mt-6 pt-4 border-t">
+        <Button type="submit" disabled={isPending}>
+          {isPending ? 'Saving...' : id ? 'Update Channel' : 'Create Channel'}
+        </Button>
+        <Button type="button" variant="outline" asChild>
+          <Link href="/channels">Cancel</Link>
+        </Button>
+      </div>
     </form>
   )
 }

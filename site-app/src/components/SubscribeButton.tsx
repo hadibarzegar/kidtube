@@ -49,15 +49,14 @@ export default function SubscribeButton({ channelId, initialSubscribed }: Subscr
       onClick={handleClick}
       disabled={loading}
       className={[
-        'min-h-[44px] px-6 rounded-2xl font-medium border-[3px] transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]',
-        'hover:-translate-y-0.5 hover:shadow-[var(--clay-shadow-hover)] active:translate-y-[1px] active:scale-[0.97]',
+        'h-9 px-4 rounded-full text-sm font-semibold transition-all duration-200',
+        loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer active:scale-95',
         subscribed
-          ? 'bg-[var(--color-surface)] text-[var(--color-text-muted)] border-[var(--color-border)]'
-          : 'bg-[var(--color-primary)] text-white border-[var(--color-primary-dark)] shadow-[var(--clay-shadow)]',
-        loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer',
+          ? 'bg-[var(--color-surface)] text-[var(--color-text-muted)] border-[2px] border-[var(--color-border)] hover:bg-[var(--color-border)]'
+          : 'bg-[var(--color-text)] text-[var(--color-bg)] hover:opacity-80',
       ].join(' ')}
     >
-      {subscribed ? 'عضو هستید' : 'عضویت'}
+      {subscribed ? 'عضو شدید ✓' : 'عضویت'}
     </button>
   )
 }

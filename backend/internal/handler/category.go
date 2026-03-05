@@ -13,7 +13,8 @@ import (
 )
 
 type categoryRequest struct {
-	Name string `json:"name"`
+	Name      string `json:"name"`
+	Thumbnail string `json:"thumbnail"`
 }
 
 // ListCategories returns an http.HandlerFunc that lists all categories.
@@ -90,6 +91,7 @@ func CreateCategory(database *mongo.Database) http.HandlerFunc {
 		now := time.Now().UTC()
 		category := models.Category{
 			Name:      req.Name,
+			Thumbnail: req.Thumbnail,
 			CreatedAt: now,
 			UpdatedAt: now,
 		}
@@ -133,6 +135,7 @@ func UpdateCategory(database *mongo.Database) http.HandlerFunc {
 		now := time.Now().UTC()
 		update := bson.D{{Key: "$set", Value: bson.D{
 			{Key: "name", Value: req.Name},
+			{Key: "thumbnail", Value: req.Thumbnail},
 			{Key: "updated_at", Value: now},
 		}}}
 
@@ -153,6 +156,7 @@ func UpdateCategory(database *mongo.Database) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"name":       req.Name,
+			"thumbnail":  req.Thumbnail,
 			"updated_at": now,
 		}) //nolint:errcheck
 	}

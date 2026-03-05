@@ -2,6 +2,7 @@
 import { useActionState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { login } from '@/app/actions/auth'
 
 function LoginForm() {
@@ -13,8 +14,8 @@ function LoginForm() {
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
       <div className="bg-[var(--color-surface)] rounded-[20px] border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)] p-8 w-full max-w-sm">
         {/* Logo */}
-        <div className="text-center mb-6">
-          <span className="font-display text-2xl font-bold text-[var(--color-primary)]" style={{ textShadow: '2px 2px 0px rgba(255,138,122,0.15)' }}>کیدتیوب</span>
+        <div className="flex justify-center mb-6">
+          <Image src="/logo-horizontal.svg" alt="KidTube" width={160} height={40} priority className="h-10 w-auto" />
         </div>
 
         <h1 className="text-xl font-bold text-[var(--color-text)] text-center mb-6">ورود به حساب</h1>

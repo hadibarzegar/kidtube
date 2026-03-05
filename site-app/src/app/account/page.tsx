@@ -4,7 +4,7 @@ import type { SiteUser } from '@/lib/types'
 import ChangePasswordForm from './ChangePasswordForm'
 
 export const metadata = {
-  title: 'حساب کاربری — کیدتیوب',
+  title: 'حساب کاربری — KidTube',
 }
 
 export default async function AccountPage() {

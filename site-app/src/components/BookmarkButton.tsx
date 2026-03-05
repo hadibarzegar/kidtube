@@ -50,16 +50,16 @@ export default function BookmarkButton({ episodeId, initialBookmarked }: Bookmar
       disabled={loading}
       aria-label={bookmarked ? 'حذف نشان' : 'نشان کردن'}
       className={[
-        'p-2 rounded-2xl border-[3px] min-w-[44px] min-h-[44px] flex items-center justify-center transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]',
-        loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5 hover:shadow-[var(--clay-shadow-hover)] active:translate-y-[1px] active:scale-95',
+        'flex items-center gap-1.5 h-9 px-4 rounded-full text-sm font-semibold transition-all duration-200',
+        loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer active:scale-95 hover:bg-[var(--color-border)]',
         bookmarked
-          ? 'text-[var(--color-primary)] bg-[var(--color-primary-hover)] border-[var(--color-primary-light)]'
-          : 'text-[var(--color-text-muted)] bg-[var(--color-surface)] border-[var(--color-border)] hover:border-[var(--color-primary-light)]',
+          ? 'text-[var(--color-primary)]'
+          : 'text-[var(--color-text)]',
       ].join(' ')}
     >
       <svg
-        width="24"
-        height="24"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill={bookmarked ? 'currentColor' : 'none'}
         stroke="currentColor"
@@ -68,6 +68,7 @@ export default function BookmarkButton({ episodeId, initialBookmarked }: Bookmar
       >
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
       </svg>
+      <span>{bookmarked ? 'ذخیره شده' : 'ذخیره'}</span>
     </button>
   )
 }

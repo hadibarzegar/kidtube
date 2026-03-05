@@ -172,6 +172,7 @@ export default function SearchOverlay() {
                       thumbnail={ep.thumbnail}
                       href={`/watch/${ep.id}`}
                       subtitle={`قسمت ${ep.order}`}
+                      viewCount={ep.view_count}
                       index={i}
                     />
                   ))}
