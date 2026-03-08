@@ -11,7 +11,11 @@ interface SearchResults {
   episodes: Episode[]
 }
 
-export default function SearchOverlay() {
+interface SearchOverlayProps {
+  maxMaturity?: string
+}
+
+export default function SearchOverlay({ maxMaturity }: SearchOverlayProps) {
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get('q') ?? ''
 
@@ -33,7 +37,8 @@ export default function SearchOverlay() {
     setError(null)
 
     try {
-      const res = await apiFetch(`/search?q=${encodeURIComponent(q)}`)
+      const maturitySuffix = maxMaturity ? `&max_maturity=${encodeURIComponent(maxMaturity)}` : ''
+      const res = await apiFetch(`/search?q=${encodeURIComponent(q)}${maturitySuffix}`)
       if (!res.ok) {
         setError('خطا در جستجو')
         setResults(null)

@@ -17,8 +17,11 @@ type Episode struct {
 	Thumbnail   string        `bson:"thumbnail" json:"thumbnail"`
 	SubtitleURL string        `bson:"subtitle_url" json:"subtitle_url"`
 	Status      string        `bson:"status" json:"status"` // pending, ready, failed
-	ViewCount   int64         `bson:"view_count" json:"view_count"`
-	LikeCount   int64         `bson:"like_count" json:"like_count"`
+	ViewCount      int64  `bson:"view_count" json:"view_count"`
+	LikeCount      int64  `bson:"like_count" json:"like_count"`
+	MaturityRating string `bson:"maturity_rating,omitempty" json:"maturity_rating"` // "all-ages", "6+", "9+", "12+"
+	IntroEndSec    int    `bson:"intro_end_sec,omitempty" json:"intro_end_sec"`
+	RecapEndSec    int    `bson:"recap_end_sec,omitempty" json:"recap_end_sec"`
 	CreatedAt   time.Time     `bson:"created_at" json:"created_at"`
 	UpdatedAt   time.Time     `bson:"updated_at" json:"updated_at"`
 }

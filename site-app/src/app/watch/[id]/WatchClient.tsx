@@ -7,7 +7,11 @@ import CountdownOverlay from '@/components/CountdownOverlay'
 import BookmarkButton from '@/components/BookmarkButton'
 import LikeButton from '@/components/LikeButton'
 import SubscribeButton from '@/components/SubscribeButton'
-import { apiFetch } from '@/lib/api'
+import ShareButton from '@/components/ShareButton'
+import ReportButton from '@/components/ReportButton'
+import BlockEpisodeButton from '@/components/BlockEpisodeButton'
+import AddToPlaylistModal from '@/components/AddToPlaylistModal'
+import { apiFetch, authFetch } from '@/lib/api'
 import type { Episode, Channel } from '@/lib/types'
 import { resolveImageUrl } from '@/lib/image'
 
@@ -19,12 +23,16 @@ interface WatchClientProps {
   isSubscribed?: boolean
   isLiked?: boolean
   episodeId?: string
+  initialProgressSec?: number
+  isLoggedIn?: boolean
+  activeChildId?: string | null
 }
 
-export default function WatchClient({ episode, nextEpisode, channel, isBookmarked, isSubscribed, isLiked, episodeId }: WatchClientProps) {
+export default function WatchClient({ episode, nextEpisode, channel, isBookmarked, isSubscribed, isLiked, episodeId, initialProgressSec, isLoggedIn, activeChildId }: WatchClientProps) {
   const router = useRouter()
   const [showCountdown, setShowCountdown] = useState(false)
   const [descExpanded, setDescExpanded] = useState(false)
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false)
   const viewRecorded = useRef(false)
 
   const onEnded = useCallback(() => {
@@ -42,9 +50,19 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
   const onPlay = useCallback(() => {
     if (viewRecorded.current) return
     viewRecorded.current = true
-    // Fire-and-forget — record the view
     apiFetch(`/episodes/${episode.id}/views`, { method: 'POST' }).catch(() => {})
   }, [episode.id])
+
+  const onTimeUpdate = useCallback((currentTime: number, duration: number) => {
+    if (!isLoggedIn || !episodeId) return
+    authFetch(`/me/watch-progress/${episodeId}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        progress_sec: Math.floor(currentTime),
+        duration_sec: Math.floor(duration),
+      }),
+    }).catch(() => {})
+  }, [episodeId, isLoggedIn])
 
   const channelInitial = channel.name?.charAt(0) || '?'
   const hasDescription = !!episode.description?.trim()
@@ -58,6 +76,10 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
           subtitleSrc={episode.subtitle_url || undefined}
           onEnded={onEnded}
           onPlay={onPlay}
+          initialTimeSec={initialProgressSec}
+          onTimeUpdate={onTimeUpdate}
+          introEndSec={episode.intro_end_sec}
+          recapEndSec={episode.recap_end_sec}
         />
         {showCountdown && nextEpisode && (
           <CountdownOverlay key="countdown"
@@ -113,19 +135,35 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
           />
         </div>
 
-        {/* Action buttons (like + bookmark grouped) */}
+        {/* Action buttons */}
         {episodeId !== undefined && (
-          <div className="flex items-center bg-[var(--color-surface)] rounded-full border-[2px] border-[var(--color-border)]">
-            <LikeButton
-              episodeId={episodeId}
-              initialLiked={isLiked ?? false}
-              initialLikeCount={episode.like_count ?? 0}
-            />
-            <div className="w-px h-5 bg-[var(--color-border)]" />
-            <BookmarkButton
-              episodeId={episodeId}
-              initialBookmarked={isBookmarked ?? false}
-            />
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center bg-[var(--color-surface)] rounded-full border-[2px] border-[var(--color-border)]">
+              <LikeButton
+                episodeId={episodeId}
+                initialLiked={isLiked ?? false}
+                initialLikeCount={episode.like_count ?? 0}
+              />
+              <div className="w-px h-5 bg-[var(--color-border)]" />
+              <BookmarkButton
+                episodeId={episodeId}
+                initialBookmarked={isBookmarked ?? false}
+              />
+              <div className="w-px h-5 bg-[var(--color-border)]" />
+              <ShareButton episodeId={episodeId} title={episode.title} />
+            </div>
+            <button
+              onClick={() => setShowPlaylistModal(true)}
+              className="h-9 w-9 rounded-full flex items-center justify-center bg-[var(--color-surface)] border-[2px] border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors cursor-pointer"
+              title="افزودن به لیست پخش"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+            <ReportButton episodeId={episodeId} />
+            <BlockEpisodeButton episodeId={episodeId} childId={activeChildId ?? null} />
           </div>
         )}
       </div>
@@ -154,6 +192,14 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
             </button>
           )}
         </div>
+      )}
+
+      {/* Add to Playlist Modal */}
+      {showPlaylistModal && episodeId && (
+        <AddToPlaylistModal
+          episodeId={episodeId}
+          onClose={() => setShowPlaylistModal(false)}
+        />
       )}
     </div>
   )

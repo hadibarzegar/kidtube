@@ -1,6 +1,8 @@
-import { apiServerFetch } from '@/lib/api'
+import { apiServerFetch, apiServerAuthFetch } from '@/lib/api'
+import { getCurrentUser } from '@/lib/auth'
+import { getSiteSession } from '@/lib/session'
 import { resolveImageUrl } from '@/lib/image'
-import type { Category } from '@/lib/types'
+import type { Category, SiteUser } from '@/lib/types'
 
 // Cycle through pastel colors for category cards
 const pastelColors = [
@@ -13,6 +15,25 @@ const pastelColors = [
 ]
 
 export default async function BrowsePage() {
+  // Determine maturity filter from active child profile
+  let _maturityParam = ''
+  const user = await getCurrentUser()
+  if (user) {
+    const token = await getSiteSession()
+    if (token) {
+      const meRes = await apiServerAuthFetch('/me', token)
+      if (meRes.ok) {
+        const meData: SiteUser = await meRes.json()
+        if (meData.active_child_id && meData.child_profiles) {
+          const activeChild = meData.child_profiles.find((c) => c.id === meData.active_child_id)
+          if (activeChild && activeChild.maturity_level && activeChild.maturity_level !== 'all-ages') {
+            _maturityParam = `?max_maturity=${encodeURIComponent(activeChild.maturity_level)}`
+          }
+        }
+      }
+    }
+  }
+
   const res = await apiServerFetch('/categories')
   const categories: Category[] = res.ok ? await res.json() : []
 

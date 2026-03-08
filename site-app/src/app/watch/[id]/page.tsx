@@ -3,7 +3,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { getSiteSession } from '@/lib/session'
 import WatchClient from '@/app/watch/[id]/WatchClient'
 import MiniCard from '@/components/MiniCard'
-import type { Episode, Channel } from '@/lib/types'
+import type { Episode, Channel, SiteUser } from '@/lib/types'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -56,13 +56,17 @@ export default async function WatchPage({ params }: Props) {
   let isBookmarked = false
   let isSubscribed = false
   let isLiked = false
+  let initialProgressSec = 0
+  let activeChildId: string | null = null
   if (user) {
     const token = await getSiteSession()
     if (token) {
-      const [bookRes, subRes, likesRes] = await Promise.all([
+      const [bookRes, subRes, likesRes, progressRes, meRes] = await Promise.all([
         apiServerAuthFetch('/me/bookmarks', token, { cache: 'no-store' }),
         apiServerAuthFetch('/me/subscriptions', token, { cache: 'no-store' }),
         apiServerAuthFetch('/me/likes', token, { cache: 'no-store' }),
+        apiServerAuthFetch(`/me/watch-progress/${id}`, token, { cache: 'no-store' }),
+        apiServerAuthFetch('/me', token, { cache: 'no-store' }),
       ])
       if (bookRes.ok) {
         const bookmarks: Episode[] = await bookRes.json()
@@ -75,6 +79,16 @@ export default async function WatchPage({ params }: Props) {
       if (likesRes.ok) {
         const likes: Episode[] = await likesRes.json()
         isLiked = likes.some((ep) => ep.id === id)
+      }
+      if (progressRes.ok) {
+        const progress = await progressRes.json()
+        if (!progress.completed) {
+          initialProgressSec = progress.progress_sec ?? 0
+        }
+      }
+      if (meRes.ok) {
+        const meData: SiteUser = await meRes.json()
+        activeChildId = meData.active_child_id ?? null
       }
     }
   }
@@ -92,6 +106,9 @@ export default async function WatchPage({ params }: Props) {
             isSubscribed={isSubscribed}
             isLiked={isLiked}
             episodeId={episode.id}
+            initialProgressSec={initialProgressSec}
+            isLoggedIn={!!user}
+            activeChildId={activeChildId}
           />
         </div>
 

@@ -34,6 +34,8 @@ func SiteSearch(database *mongo.Database) http.HandlerFunc {
 		// Build case-insensitive regex using QuoteMeta to safely escape user input.
 		regexPattern := bson.Regex{Pattern: regexp.QuoteMeta(q), Options: "i"}
 
+		maxMaturity := r.URL.Query().Get("max_maturity")
+
 		var (
 			channels []models.Channel
 			episodes []models.Episode
@@ -63,10 +65,15 @@ func SiteSearch(database *mongo.Database) http.HandlerFunc {
 		// Query episodes by title in a goroutine — only status=ready.
 		go func() {
 			defer wg.Done()
-			cursor, err := database.Collection(db.CollEpisodes).Find(ctx, bson.D{
+			episodeFilter := bson.D{
 				{Key: "title", Value: bson.D{{Key: "$regex", Value: regexPattern}}},
 				{Key: "status", Value: "ready"},
-			})
+			}
+			if maxMaturity != "" {
+				allowed := maturityAllowed(maxMaturity)
+				episodeFilter = append(episodeFilter, bson.E{Key: "maturity_rating", Value: bson.D{{Key: "$in", Value: allowed}}})
+			}
+			cursor, err := database.Collection(db.CollEpisodes).Find(ctx, episodeFilter)
 			if err != nil {
 				log.Printf("site search: episodes query error: %v", err)
 				return

@@ -8,6 +8,7 @@ export default function TopBarClient() {
   return (
     <button
       onClick={toggle}
+      data-tour="sidebar"
       className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--color-primary-hover)] transition-colors cursor-pointer"
       aria-label="تغییر منوی کناری"
     >

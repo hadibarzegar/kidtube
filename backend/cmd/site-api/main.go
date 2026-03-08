@@ -74,6 +74,14 @@ func main() {
 		return cookie.Value
 	}
 
+	// Public discovery endpoints
+	r.Get("/discover/trending", handler.GetTrending(database))
+	r.Get("/discover/new", handler.GetNewEpisodes(database))
+	r.Get("/discover/popular-in/{category_id}", handler.GetPopularInCategory(database))
+	r.Get("/discover/because-you-watched/{episode_id}", handler.GetRelatedEpisodes(database))
+	r.Get("/playlists/featured", handler.ListFeaturedPlaylists(database))
+	r.Get("/playlists/{id}", handler.GetPublicPlaylist(database))
+
 	// Public routes with optional JWT — parses token if present but does not reject anonymous requests
 	r.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verify(auth.TokenAuth, jwtauth.TokenFromHeader, tokenFromSiteCookie))
@@ -88,17 +96,84 @@ func main() {
 		r.Get("/me", handler.GetMe(database))
 		r.Put("/me/password", handler.ChangePassword(database))
 
+		// Subscriptions
 		r.Get("/me/subscriptions", handler.GetSubscriptions(database))
 		r.Post("/me/subscriptions/{channel_id}", handler.Subscribe(database))
 		r.Delete("/me/subscriptions/{channel_id}", handler.Unsubscribe(database))
 
+		// Bookmarks
 		r.Get("/me/bookmarks", handler.GetBookmarks(database))
 		r.Post("/me/bookmarks/{episode_id}", handler.Bookmark(database))
 		r.Delete("/me/bookmarks/{episode_id}", handler.Unbookmark(database))
 
+		// Likes
 		r.Get("/me/likes", handler.GetLikes(database))
 		r.Post("/me/likes/{episode_id}", handler.Like(database))
 		r.Delete("/me/likes/{episode_id}", handler.Unlike(database))
+
+		// Child profiles
+		r.Post("/me/pin", handler.SetParentPIN(database))
+		r.Post("/me/pin/verify", handler.VerifyParentPIN(database))
+		r.Get("/me/children", handler.ListChildren(database))
+		r.Post("/me/children", handler.CreateChild(database))
+		r.Put("/me/children/{child_id}", handler.UpdateChild(database))
+		r.Delete("/me/children/{child_id}", handler.DeleteChild(database))
+		r.Post("/me/children/{child_id}/activate", handler.ActivateChild(database))
+		r.Post("/me/children/deactivate", handler.DeactivateChild(database))
+
+		// Child passcodes
+		r.Post("/me/children/{childId}/passcode", handler.SetChildPasscode(database))
+		r.Post("/me/children/{childId}/verify-passcode", handler.VerifyChildPasscode(database))
+		r.Delete("/me/children/{childId}/passcode", handler.RemoveChildPasscode(database))
+
+		// Parental controls
+		r.Post("/me/children/{child_id}/screen-time", handler.ReportScreenTime(database))
+		r.Get("/me/children/{child_id}/screen-time", handler.GetScreenTime(database))
+		r.Get("/me/children/{child_id}/activity", handler.GetViewingActivity(database))
+		r.Post("/me/children/{child_id}/channel-rules", handler.SetChannelRule(database))
+		r.Get("/me/children/{child_id}/channel-rules", handler.ListChannelRules(database))
+		r.Delete("/me/children/{child_id}/channel-rules/{rule_id}", handler.DeleteChannelRule(database))
+
+		// Watch progress & history
+		r.Post("/me/watch-progress/{episode_id}", handler.UpdateWatchProgress(database))
+		r.Get("/me/watch-progress/{episode_id}", handler.GetWatchProgress(database))
+		r.Get("/me/continue-watching", handler.GetContinueWatching(database))
+		r.Get("/me/watch-history", handler.GetWatchHistory(database))
+		r.Delete("/me/watch-history", handler.ClearWatchHistory(database))
+
+		// Playlists
+		r.Get("/me/playlists", handler.ListPlaylists(database))
+		r.Post("/me/playlists", handler.CreatePlaylist(database))
+		r.Get("/me/playlists/{id}", handler.GetPlaylist(database))
+		r.Put("/me/playlists/{id}", handler.UpdatePlaylist(database))
+		r.Delete("/me/playlists/{id}", handler.DeletePlaylist(database))
+		r.Post("/me/playlists/{id}/episodes/{episode_id}", handler.AddToPlaylist(database))
+		r.Delete("/me/playlists/{id}/episodes/{episode_id}", handler.RemoveFromPlaylist(database))
+
+		// Content reporting
+		r.Post("/episodes/{id}/report", handler.ReportContent(database))
+
+		// Notifications
+		r.Get("/me/notifications", handler.ListNotifications(database))
+		r.Post("/me/notifications/read-all", handler.MarkAllNotificationsRead(database))
+		r.Get("/me/notifications/unread-count", handler.UnreadNotificationCount(database))
+
+		// Bedtime rules
+		r.Put("/me/children/{childId}/bedtime", handler.SetBedtime(database))
+		r.Get("/me/children/{childId}/bedtime", handler.GetBedtime(database))
+		r.Delete("/me/children/{childId}/bedtime", handler.DeleteBedtime(database))
+
+		// Episode blocking
+		r.Post("/me/children/{childId}/blocked-episodes", handler.BlockEpisode(database))
+		r.Delete("/me/children/{childId}/blocked-episodes/{episodeId}", handler.UnblockEpisode(database))
+		r.Get("/me/children/{childId}/blocked-episodes", handler.ListBlockedEpisodes(database))
+
+		// Gamification
+		r.Get("/me/children/{childId}/badges", handler.GetBadges(database))
+		r.Get("/me/children/{childId}/streak", handler.GetStreak(database))
+
+		// Personalized discovery
+		r.Get("/discover/personalized", handler.GetPersonalized(database))
 	})
 
 	srv := &http.Server{

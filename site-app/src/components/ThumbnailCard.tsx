@@ -1,4 +1,6 @@
 import { resolveImageUrl } from '@/lib/image'
+import ProgressBar from '@/components/ProgressBar'
+import MaturityBadge from '@/components/MaturityBadge'
 
 const pastelColors = [
   'bg-[#FDBCB4]', // peach
@@ -20,6 +22,8 @@ interface ThumbnailCardProps {
   episodeNumber?: number
   viewCount?: number
   subtitle?: string
+  progressPct?: number
+  maturityRating?: string
 }
 
 export default function ThumbnailCard({
@@ -33,6 +37,8 @@ export default function ThumbnailCard({
   episodeNumber,
   viewCount,
   subtitle,
+  progressPct,
+  maturityRating,
 }: ThumbnailCardProps) {
   const resolvedThumbnail = resolveImageUrl(thumbnail)
   const resolvedChannelThumb = resolveImageUrl(channelThumbnail)
@@ -55,6 +61,14 @@ export default function ThumbnailCard({
               <span className="text-white text-3xl font-bold opacity-70 drop-shadow-sm">
                 {title.charAt(0)}
               </span>
+            </div>
+          )}
+          {progressPct !== undefined && progressPct > 0 && (
+            <ProgressBar progressPct={progressPct} />
+          )}
+          {maturityRating && maturityRating !== 'all-ages' && (
+            <div className="absolute top-2 left-2">
+              <MaturityBadge rating={maturityRating} />
             </div>
           )}
         </div>

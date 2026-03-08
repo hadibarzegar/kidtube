@@ -122,6 +122,21 @@ func main() {
 		r.Get("/users", handler.ListUsers(database))
 		r.Get("/youtube-meta", handler.YouTubeMeta)
 
+		// Admin playlists
+		r.Route("/playlists", func(r chi.Router) {
+			r.Get("/", handler.AdminListPlaylists(database))
+			r.Post("/", handler.AdminCreatePlaylist(database))
+			r.Put("/{id}", handler.AdminUpdatePlaylist(database))
+			r.Delete("/{id}", handler.AdminDeletePlaylist(database))
+		})
+
+		// Content reports moderation
+		r.Route("/reports", func(r chi.Router) {
+			r.Get("/", handler.AdminListReports(database))
+			r.Get("/{id}", handler.AdminGetReport(database))
+			r.Patch("/{id}", handler.AdminReviewReport(database))
+		})
+
 		// Image upload and serving
 		r.Post("/images/upload", handler.UploadImage(database))
 		r.Get("/images/{id}", handler.ServeImage(database))

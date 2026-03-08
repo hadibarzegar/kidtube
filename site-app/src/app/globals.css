@@ -378,3 +378,41 @@ body {
   .video-js:not(.vjs-has-started) .vjs-big-play-button { animation: none; }
   .video-js .vjs-big-play-button:hover { transform: none; }
 }
+
+/* ─── Dark Theme ─── */
+[data-theme="dark"] {
+  --color-bg: #1a1a2e;
+  --color-surface: #22223a;
+  --color-primary: #FF8A7A;
+  --color-primary-dark: #E57A6A;
+  --color-primary-light: #3d2a27;
+  --color-primary-hover: #2d1f1c;
+  --color-secondary: #7EC8E3;
+  --color-secondary-light: #1a2d36;
+  --color-text: #E8E6F0;
+  --color-text-muted: #9B9BAD;
+  --color-text-faint: #6B6B80;
+  --color-border: #2D2D45;
+  --color-error: #FF6B6B;
+}
+
+/* ─── Ocean Theme ─── */
+[data-theme="ocean"] {
+  --color-bg: #E8F4F8;
+  --color-surface: #F0F8FF;
+  --color-primary: #4ECDC4;
+  --color-primary-dark: #3DBDB4;
+  --color-primary-light: #D4F5F2;
+  --color-primary-hover: #E8FAF8;
+  --color-secondary: #6CB4EE;
+  --color-secondary-light: #D4EFFA;
+  --color-text: #1A3A4A;
+  --color-text-muted: #4A7A8A;
+  --color-text-faint: #7AA0B0;
+  --color-border: #C8DFE8;
+  --color-error: #FF6B6B;
+}
+
+[data-theme="dark"] .clay-frosted {
+  background: rgba(26, 26, 46, 0.9);
+}

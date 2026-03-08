@@ -5,6 +5,8 @@ import { getSiteSession } from '@/lib/session'
 import { apiServerAuthFetch } from '@/lib/api'
 import ProfileDropdown from '@/components/ProfileDropdown'
 import TopBarClient from '@/components/TopBarClient'
+import NotificationBell from '@/components/NotificationBell'
+import VoiceSearchButton from '@/components/VoiceSearchButton'
 import type { SiteUser } from '@/lib/types'
 
 export default async function TopBar() {
@@ -27,7 +29,7 @@ export default async function TopBar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 clay-frosted border-b-[3px] border-[var(--color-border)] shadow-[0_4px_10px_rgba(0,0,0,0.05)]">
+    <header className="sticky top-0 z-40 clay-frosted border-b border-[var(--color-border)] shadow-sm">
       <div className="flex items-center justify-between px-4 md:px-6 h-[56px]">
         {/* Right side (RTL): Hamburger + Logo */}
         <div className="flex items-center gap-3">
@@ -46,7 +48,7 @@ export default async function TopBar() {
 
         {/* Center: Search (desktop only) */}
         <div className="hidden md:flex flex-1 max-w-xl mx-8">
-          <form action="/search" method="GET" className="relative w-full">
+          <form id="search-form" action="/search" method="GET" className="relative w-full" data-tour="search">
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-faint)] pointer-events-none">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="11" cy="11" r="8" />
@@ -54,19 +56,26 @@ export default async function TopBar() {
               </svg>
             </span>
             <input
+              id="search-input"
               type="search"
               name="q"
               placeholder="جستجو..."
-              className="w-full min-h-[40px] pr-10 pl-4 clay-input text-sm font-medium rounded-full"
+              className="w-full h-10 pr-10 pl-12 bg-[var(--color-bg)] border-2 border-[var(--color-border)] rounded-full text-sm font-medium focus:border-[var(--color-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary-light)] transition-all"
               dir="rtl"
             />
+            <div className="absolute left-1 top-1/2 -translate-y-1/2">
+              <VoiceSearchButton />
+            </div>
           </form>
         </div>
 
         {/* Left side (RTL): User avatar or login */}
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           {user && userEmail ? (
-            <ProfileDropdown email={userEmail} />
+            <>
+              <NotificationBell />
+              <ProfileDropdown email={userEmail} />
+            </>
           ) : (
             <Link
               href="/login"
