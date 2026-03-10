@@ -293,21 +293,20 @@ body {
   font-family: 'Vazirmatn', system-ui, sans-serif !important;
   font-size: 12px;
   line-height: 44px;
-  padding: 0 3px;
-  min-width: auto;
+  padding: 0 4px;
+  min-width: 3.5em;
+  display: flex !important;
+  align-items: center;
 }
 .video-js .vjs-current-time {
   padding-right: 0;
-  display: block;
 }
 .video-js .vjs-time-divider {
-  padding: 0 1px;
+  padding: 0 2px;
   min-width: auto;
-  display: block;
 }
 .video-js .vjs-duration {
   padding-left: 0;
-  display: block;
 }
 .video-js .vjs-remaining-time {
   display: none;

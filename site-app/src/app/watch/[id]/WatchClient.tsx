@@ -11,7 +11,6 @@ import ShareButton from '@/components/ShareButton'
 import ReportButton from '@/components/ReportButton'
 import BlockEpisodeButton from '@/components/BlockEpisodeButton'
 import AddToPlaylistModal from '@/components/AddToPlaylistModal'
-import { useMiniPlayer } from '@/components/MiniPlayerProvider'
 import { useAmbientColor } from '@/hooks/useAmbientColor'
 import { apiFetch, authFetch } from '@/lib/api'
 import type { Episode, Channel } from '@/lib/types'
@@ -39,8 +38,6 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
   const [ambientEnabled, setAmbientEnabled] = useState(true)
   const viewRecorded = useRef(false)
   const currentTimeRef = useRef(0)
-
-  const { activate: activateMiniPlayer } = useMiniPlayer()
 
   // Ambient mode: extract dominant color from video
   const ambientColor = useAmbientColor('.video-js video', ambientEnabled)
@@ -80,18 +77,6 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
   const handleTheaterToggle = useCallback(() => {
     setIsTheater(prev => !prev)
   }, [])
-
-  // Mini-player: activate when navigating away
-  const handleMiniPlayerActivate = useCallback(() => {
-    if (!episodeId) return
-    activateMiniPlayer({
-      episodeId,
-      hlsSrc: `/hls/${episode.id}/master.m3u8`,
-      title: episode.title || channel.name,
-      channelName: channel.name,
-      currentTime: currentTimeRef.current,
-    })
-  }, [episodeId, episode.id, episode.title, channel.name, activateMiniPlayer])
 
   const channelInitial = channel.name?.charAt(0) || '?'
   const hasDescription = !!episode.description?.trim()
@@ -162,20 +147,6 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
             </button>
           )}
 
-          {/* Mini-player button */}
-          {!isKidMode && (
-            <button
-              onClick={handleMiniPlayerActivate}
-              className="text-xs px-3 py-1 rounded-full border-2 border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer"
-              title="پخش کوچک"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="inline mr-1">
-                <rect x="2" y="2" width="20" height="20" rx="2" />
-                <rect x="11" y="11" width="10" height="10" rx="1" fill="currentColor" opacity="0.3" />
-              </svg>
-              پخش کوچک
-            </button>
-          )}
         </div>
       </div>
 

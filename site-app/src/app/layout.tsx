@@ -7,8 +7,6 @@ import { SidebarProvider } from '@/components/SidebarContext';
 import LayoutShell from '@/components/LayoutShell';
 import ThemeProvider from '@/components/ThemeProvider';
 import SoundProvider from '@/components/SoundProvider';
-import MiniPlayerProvider from '@/components/MiniPlayerProvider';
-import MiniPlayer from '@/components/MiniPlayer';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -30,7 +28,6 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-[var(--color-bg)]">
         <ThemeProvider>
           <SoundProvider>
-            <MiniPlayerProvider>
               <SidebarProvider>
                 <div className="min-h-screen">
                   <TopBar />
@@ -39,10 +36,8 @@ export default function RootLayout({
                   </LayoutShell>
                   <BottomTabBar />
                   <OnboardingTour />
-                  <MiniPlayer />
                 </div>
               </SidebarProvider>
-            </MiniPlayerProvider>
           </SoundProvider>
         </ThemeProvider>
       </body>

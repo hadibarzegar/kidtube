@@ -227,31 +227,6 @@ export function VideoPlayer({
       })
       playerRef.current = player
 
-      // --- Volume normalization via Web Audio API ---
-      player.on('loadedmetadata', () => {
-        try {
-          const videoElement = player.el()?.querySelector('video') as HTMLVideoElement | null
-          if (videoElement && typeof AudioContext !== 'undefined') {
-            const audioCtx = new AudioContext()
-            const source = audioCtx.createMediaElementSource(videoElement)
-            const compressor = audioCtx.createDynamicsCompressor()
-            compressor.threshold.value = -24
-            compressor.knee.value = 30
-            compressor.ratio.value = 12
-            compressor.attack.value = 0.003
-            compressor.release.value = 0.25
-            source.connect(compressor)
-            compressor.connect(audioCtx.destination)
-
-            player.on('dispose', () => {
-              audioCtx.close().catch(() => {})
-            })
-          }
-        } catch {
-          // Audio context not supported — silent fail
-        }
-      })
-
       // Persianize time displays on every time update
       const persianize = () => {
         const el = player.el()
