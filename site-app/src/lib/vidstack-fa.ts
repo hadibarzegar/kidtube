@@ -1,4 +1,4 @@
-import type { DefaultLayoutTranslations } from '@vidstack/react';
+import type { DefaultLayoutTranslations } from '@vidstack/react/player/layouts/default';
 
 export const persianTranslations: Partial<DefaultLayoutTranslations> = {
   'Announcements': 'اعلان‌ها',
