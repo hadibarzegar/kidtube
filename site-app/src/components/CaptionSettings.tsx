@@ -67,7 +67,7 @@ export function CaptionSettings({ onClose }: CaptionSettingsProps) {
   return (
     <div
       dir="rtl"
-      className="absolute bottom-16 left-4 z-30 max-w-xs w-64 p-4 bg-[var(--color-surface)] border-[3px] border-[var(--color-border)] rounded-[var(--clay-radius)] shadow-[var(--clay-shadow)] text-[var(--color-text)] text-sm"
+      className="max-w-xs w-64 p-4 bg-[var(--color-surface)] border-[3px] border-[var(--color-border)] rounded-[var(--clay-radius)] shadow-[var(--clay-shadow)] text-[var(--color-text)] text-sm"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">

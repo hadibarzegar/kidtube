@@ -11,6 +11,8 @@ import ShareButton from '@/components/ShareButton'
 import ReportButton from '@/components/ReportButton'
 import BlockEpisodeButton from '@/components/BlockEpisodeButton'
 import AddToPlaylistModal from '@/components/AddToPlaylistModal'
+import { useMiniPlayer } from '@/components/MiniPlayerProvider'
+import { useAmbientColor } from '@/hooks/useAmbientColor'
 import { apiFetch, authFetch } from '@/lib/api'
 import type { Episode, Channel } from '@/lib/types'
 import { resolveImageUrl } from '@/lib/image'
@@ -33,7 +35,17 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
   const [showCountdown, setShowCountdown] = useState(false)
   const [descExpanded, setDescExpanded] = useState(false)
   const [showPlaylistModal, setShowPlaylistModal] = useState(false)
+  const [isTheater, setIsTheater] = useState(false)
+  const [ambientEnabled, setAmbientEnabled] = useState(true)
   const viewRecorded = useRef(false)
+  const currentTimeRef = useRef(0)
+
+  const { activate: activateMiniPlayer } = useMiniPlayer()
+
+  // Ambient mode: extract dominant color from video
+  const ambientColor = useAmbientColor('.video-js video', ambientEnabled)
+
+  const isKidMode = !!activeChildId
 
   const onEnded = useCallback(() => {
     if (nextEpisode) setShowCountdown(true)
@@ -54,6 +66,7 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
   }, [episode.id])
 
   const onTimeUpdate = useCallback((currentTime: number, duration: number) => {
+    currentTimeRef.current = currentTime
     if (!isLoggedIn || !episodeId) return
     authFetch(`/me/watch-progress/${episodeId}`, {
       method: 'POST',
@@ -64,46 +77,117 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
     }).catch(() => {})
   }, [episodeId, isLoggedIn])
 
+  const handleTheaterToggle = useCallback(() => {
+    setIsTheater(prev => !prev)
+  }, [])
+
+  // Mini-player: activate when navigating away
+  const handleMiniPlayerActivate = useCallback(() => {
+    if (!episodeId) return
+    activateMiniPlayer({
+      episodeId,
+      hlsSrc: `/hls/${episode.id}/master.m3u8`,
+      title: episode.title || channel.name,
+      channelName: channel.name,
+      currentTime: currentTimeRef.current,
+    })
+  }, [episodeId, episode.id, episode.title, channel.name, activateMiniPlayer])
+
   const channelInitial = channel.name?.charAt(0) || '?'
   const hasDescription = !!episode.description?.trim()
 
   return (
     <div dir="rtl">
-      {/* Player */}
-      <div className="relative rounded-2xl overflow-hidden bg-black w-full aspect-video max-h-[70vh] mx-auto">
-        <VideoPlayer
-          hlsSrc={`/hls/${episode.id}/master.m3u8`}
-          subtitleSrc={episode.subtitle_url || undefined}
-          onEnded={onEnded}
-          onPlay={onPlay}
-          initialTimeSec={initialProgressSec}
-          onTimeUpdate={onTimeUpdate}
-          introEndSec={episode.intro_end_sec}
-          recapEndSec={episode.recap_end_sec}
-        />
-        {showCountdown && nextEpisode && (
-          <CountdownOverlay key="countdown"
-            nextEpisode={nextEpisode}
-            onCancel={onCancel}
-            onProceed={onProceed}
+      {/* Ambient glow wrapper */}
+      <div
+        className={`rounded-2xl p-1 ambient-glow ${isTheater ? 'theater-mode-bg' : ''}`}
+        style={
+          ambientColor
+            ? {
+                boxShadow: `0 0 80px 30px ${ambientColor}, 0 0 160px 60px ${ambientColor}`,
+              }
+            : undefined
+        }
+      >
+        {/* Player */}
+        <div
+          className={`relative overflow-hidden bg-black w-full aspect-video mx-auto ${
+            isTheater ? 'theater-mode-player max-h-[85vh] rounded-none' : 'rounded-2xl max-h-[70vh]'
+          }`}
+        >
+          <VideoPlayer
+            hlsSrc={`/hls/${episode.id}/master.m3u8`}
+            subtitleSrc={episode.subtitle_url || undefined}
+            onEnded={onEnded}
+            onPlay={onPlay}
+            initialTimeSec={initialProgressSec}
+            onTimeUpdate={onTimeUpdate}
+            introEndSec={episode.intro_end_sec}
+            recapEndSec={episode.recap_end_sec}
+            isKidMode={isKidMode}
+            onTheaterToggle={handleTheaterToggle}
+            isTheater={isTheater}
           />
-        )}
-      </div>
-
-      {/* Title */}
-      <div className="mt-3">
-        <h1 className="text-lg md:text-xl font-bold text-[var(--color-text)] leading-snug font-display">
-          {episode.title || channel.name}
-        </h1>
-        <div className="flex items-center gap-2 mt-0.5 text-sm text-[var(--color-text-muted)]">
-          {episode.view_count > 0 && (
-            <span>{episode.view_count.toLocaleString('fa-IR')} بازدید</span>
-          )}
-          {episode.view_count > 0 && episode.order > 0 && <span>·</span>}
-          {episode.order > 0 && (
-            <span>قسمت {episode.order}</span>
+          {showCountdown && nextEpisode && (
+            <CountdownOverlay key="countdown"
+              nextEpisode={nextEpisode}
+              onCancel={onCancel}
+              onProceed={onProceed}
+            />
           )}
         </div>
+      </div>
+
+      {/* Controls row below player: ambient toggle + mini-player button */}
+      <div className="flex items-center justify-between mt-2 px-1">
+        <div className="flex items-center gap-3">
+          {/* Title */}
+          <h1 className="text-lg md:text-xl font-bold text-[var(--color-text)] leading-snug font-display">
+            {episode.title || channel.name}
+          </h1>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* Ambient mode toggle */}
+          {!isKidMode && (
+            <button
+              onClick={() => setAmbientEnabled(!ambientEnabled)}
+              className={`text-xs px-3 py-1 rounded-full border-2 transition-colors cursor-pointer ${
+                ambientEnabled
+                  ? 'border-[var(--color-primary)] bg-[var(--color-primary-hover)] text-[var(--color-primary)]'
+                  : 'border-[var(--color-border)] text-[var(--color-text-muted)]'
+              }`}
+              title={ambientEnabled ? 'غیرفعال کردن حالت محیطی' : 'فعال کردن حالت محیطی'}
+            >
+              {ambientEnabled ? '🌈 محیطی' : '🌈 محیطی'}
+            </button>
+          )}
+
+          {/* Mini-player button */}
+          {!isKidMode && (
+            <button
+              onClick={handleMiniPlayerActivate}
+              className="text-xs px-3 py-1 rounded-full border-2 border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer"
+              title="پخش کوچک"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="inline mr-1">
+                <rect x="2" y="2" width="20" height="20" rx="2" />
+                <rect x="11" y="11" width="10" height="10" rx="1" fill="currentColor" opacity="0.3" />
+              </svg>
+              پخش کوچک
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* View count + episode number */}
+      <div className="flex items-center gap-2 mt-0.5 text-sm text-[var(--color-text-muted)] px-1">
+        {episode.view_count > 0 && (
+          <span>{episode.view_count.toLocaleString('fa-IR')} بازدید</span>
+        )}
+        {episode.view_count > 0 && episode.order > 0 && <span>·</span>}
+        {episode.order > 0 && (
+          <span>قسمت {episode.order}</span>
+        )}
       </div>
 
       {/* Channel row + action buttons */}

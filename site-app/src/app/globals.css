@@ -1,10 +1,26 @@
 @import "tailwindcss";
 
-/* Explicit @font-face so Video.js elements can use Vazirmatn by name */
+/* ─── Local Font Faces ─── */
 @font-face {
   font-family: 'Vazirmatn';
   src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
   font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fredoka';
+  src: url('/fonts/Fredoka-Latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/Nunito-Latin.woff2') format('woff2');
+  font-weight: 300 700;
   font-style: normal;
   font-display: swap;
 }
@@ -373,10 +389,102 @@ body {
   transition: opacity 600ms ease;
 }
 
+/* ─── Hide native Video.js buttons we replaced with overlays ─── */
+.video-js .vjs-picture-in-picture-control,
+.video-js .vjs-subs-caps-button {
+  display: none !important;
+}
+
+/* ─── Pill-Shaped Control Groups (YouTube 2025 style) ─── */
+.video-js .vjs-control-bar {
+  gap: 2px;
+}
+
+/* Left pill: play + volume */
+.video-js .vjs-play-control,
+.video-js .vjs-volume-panel {
+  background: rgba(255, 255, 255, 0.08);
+}
+.video-js .vjs-play-control {
+  border-radius: 20px 0 0 20px;
+  padding-left: 4px;
+}
+.video-js .vjs-volume-panel {
+  border-radius: 0 20px 20px 0;
+  padding-right: 4px;
+}
+
+/* Right pill: quality + fullscreen */
+.video-js .vjs-quality-menu-button,
+.video-js .vjs-fullscreen-control {
+  background: rgba(255, 255, 255, 0.08);
+}
+.video-js .vjs-quality-menu-button {
+  border-radius: 20px 0 0 20px;
+  padding-left: 2px;
+}
+.video-js .vjs-fullscreen-control {
+  border-radius: 0 20px 20px 0;
+  padding-right: 2px;
+}
+
+/* Separator between pill groups */
+.video-js .vjs-time-control {
+  margin: 0 2px;
+}
+
+/* ─── Kid Mode Controls ─── */
+.video-js.vjs-kid-mode .vjs-control-bar {
+  height: 56px;
+  padding: 0 10px;
+}
+.video-js.vjs-kid-mode .vjs-control {
+  width: 52px;
+  height: 56px;
+}
+.video-js.vjs-kid-mode .vjs-play-control {
+  width: 56px;
+}
+.video-js.vjs-kid-mode .vjs-icon-placeholder::before {
+  font-size: 2em;
+  line-height: 56px;
+}
+.video-js.vjs-kid-mode .vjs-big-play-button {
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  font-size: 3.5em;
+}
+/* Hide advanced controls in kid mode */
+.video-js.vjs-kid-mode .vjs-playback-rate,
+.video-js.vjs-kid-mode .vjs-quality-menu-button,
+.video-js.vjs-kid-mode .vjs-picture-in-picture-control,
+.video-js.vjs-kid-mode .vjs-subs-caps-button {
+  display: none !important;
+}
+
+/* ─── Theater Mode ─── */
+.theater-mode-player {
+  max-height: 85vh !important;
+  border-radius: 0 !important;
+}
+.theater-mode-bg {
+  background: #000;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  padding: 0;
+}
+
+/* ─── Ambient Mode Glow ─── */
+.ambient-glow {
+  transition: box-shadow 2s ease, background-color 2s ease;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .video-js:not(.vjs-has-started) .vjs-big-play-button { animation: none; }
   .video-js .vjs-big-play-button:hover { transform: none; }
+  .ambient-glow { transition: none; }
 }
 
 /* ─── Dark Theme ─── */
