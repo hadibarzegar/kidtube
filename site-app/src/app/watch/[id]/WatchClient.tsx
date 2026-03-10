@@ -40,7 +40,7 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
   const currentTimeRef = useRef(0)
 
   // Ambient mode: extract dominant color from video
-  const ambientColor = useAmbientColor('.video-js video', ambientEnabled)
+  const ambientColor = useAmbientColor('[data-media-player] video', ambientEnabled)
 
   const isKidMode = !!activeChildId
 
