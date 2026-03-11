@@ -45,11 +45,19 @@ export default function ThumbnailCard({
   const pastelBg = pastelColors[index % pastelColors.length]
   const channelInitial = channelName?.charAt(0) || title.charAt(0)
 
+  const animDelay = `${index * 80}ms`
+
   return (
-    <div className="group">
+    <div
+      className="group"
+      style={{
+        opacity: 0,
+        animation: `kidtube-card-enter 500ms cubic-bezier(0.34,1.56,0.64,1) ${animDelay} forwards`,
+      }}
+    >
       {/* Thumbnail */}
       <a href={href} className="block no-underline">
-        <div className="aspect-video relative rounded-[var(--clay-radius)] overflow-hidden transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-[2px] group-hover:shadow-[var(--clay-shadow-hover)] group-active:translate-y-[1px] group-active:scale-[0.98]">
+        <div className="aspect-video relative rounded-[var(--clay-radius)] overflow-hidden transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-[3px] group-hover:scale-[1.02] group-hover:shadow-[var(--clay-shadow-hover)] group-hover:animate-[kidtube-wiggle_400ms_ease-in-out] group-active:translate-y-[1px] group-active:scale-[0.98]">
           {resolvedThumbnail ? (
             <img
               src={resolvedThumbnail}
@@ -75,22 +83,22 @@ export default function ThumbnailCard({
       </a>
 
       {/* Info area */}
-      <div className="flex gap-3 mt-3 px-0.5">
+      <div className="flex gap-2 sm:gap-3 mt-2 sm:mt-3 px-0.5">
         {/* Channel avatar */}
         {channelName && (
           <a
             href={channelHref || href}
-            className="flex-shrink-0 no-underline"
+            className="flex-shrink-0 no-underline hidden sm:block"
           >
             {resolvedChannelThumb ? (
               <img
                 src={resolvedChannelThumb}
                 alt={channelName}
-                className="w-9 h-9 rounded-full object-cover border-2 border-[var(--color-border)]"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border-2 border-[var(--color-border)]"
               />
             ) : (
-              <div className="w-9 h-9 rounded-full bg-[var(--color-secondary-light)] flex items-center justify-center border-2 border-[var(--color-secondary)]">
-                <span className="text-[var(--color-secondary)] font-bold text-sm">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[var(--color-secondary-light)] flex items-center justify-center border-2 border-[var(--color-secondary)]">
+                <span className="text-[var(--color-secondary)] font-bold text-xs sm:text-sm">
                   {channelInitial}
                 </span>
               </div>
@@ -101,7 +109,7 @@ export default function ThumbnailCard({
         {/* Text info */}
         <div className="min-w-0 flex-1">
           <a href={href} className="no-underline">
-            <p className="text-sm font-bold line-clamp-2 text-[var(--color-text)] leading-snug">
+            <p className="text-xs sm:text-sm font-bold line-clamp-2 text-[var(--color-text)] leading-snug">
               {title}
             </p>
           </a>
@@ -110,12 +118,12 @@ export default function ThumbnailCard({
               href={channelHref || href}
               className="no-underline block"
             >
-              <p className="text-xs text-[var(--color-text-muted)] mt-1 hover:text-[var(--color-text)] transition-colors">
+              <p className="text-[11px] sm:text-xs text-[var(--color-text-muted)] mt-0.5 sm:mt-1 hover:text-[var(--color-text)] transition-colors line-clamp-1">
                 {channelName}
               </p>
             </a>
           )}
-          <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[var(--color-text-faint)]">
+          <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 text-[10px] sm:text-xs text-[var(--color-text-faint)]">
             {episodeNumber !== undefined && episodeNumber > 0 && (
               <span>قسمت {episodeNumber}</span>
             )}
@@ -127,7 +135,7 @@ export default function ThumbnailCard({
             )}
           </div>
           {!channelName && subtitle && (
-            <p className="text-xs text-[var(--color-text-muted)] mt-1 line-clamp-1">
+            <p className="text-[11px] sm:text-xs text-[var(--color-text-muted)] mt-0.5 sm:mt-1 line-clamp-1">
               {subtitle}
             </p>
           )}

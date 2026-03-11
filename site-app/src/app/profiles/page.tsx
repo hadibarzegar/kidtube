@@ -49,11 +49,11 @@ export default async function ProfilesPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] text-center mb-2">
+      <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] text-center mb-2">
           چه کسی تماشا می‌کند؟
         </h1>
-        <p className="text-center text-[var(--color-text-muted)] mb-10">
+        <p className="text-center text-[var(--color-text-muted)] mb-8 sm:mb-10">
           یک پروفایل را انتخاب کنید
         </p>
 
@@ -65,16 +65,17 @@ export default async function ProfilesPage() {
 
         {/* Badges section */}
         {activeChildId && badges.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-xl font-bold text-[var(--color-text)] text-center mb-6">
+          <div className="mt-8 sm:mt-12">
+            <h2 className="text-lg sm:text-xl font-bold text-[var(--color-text)] text-center mb-4 sm:mb-6">
               نشان‌های کسب شده
             </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-              {badges.map((badge) => (
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
+              {badges.map((badge, i) => (
                 <BadgeCard
                   key={badge.badge_type}
                   badgeType={badge.badge_type}
                   earnedAt={badge.earned_at}
+                  index={i}
                 />
               ))}
             </div>

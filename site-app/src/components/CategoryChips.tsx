@@ -29,8 +29,8 @@ export default function CategoryChips({ categories, selectedId }: CategoryChipsP
   ]
 
   return (
-    <div className="sticky top-[56px] z-20 clay-frosted border-b border-[var(--color-border)] py-2">
-      <div className="flex gap-2 overflow-x-auto px-4 scrollbar-hide [-webkit-overflow-scrolling:touch]">
+    <div className="sticky top-[56px] z-20 clay-frosted border-b border-[var(--color-border)] py-2.5">
+      <div className="flex gap-2 overflow-x-auto px-4 scrollbar-hide [-webkit-overflow-scrolling:touch] snap-x">
         {tabs.map((tab) => {
           const isActive = tab.id === selectedId
           return (
@@ -38,7 +38,7 @@ export default function CategoryChips({ categories, selectedId }: CategoryChipsP
               key={tab.id ?? 'all'}
               onClick={() => handleSelect(tab.id)}
               className={[
-                'min-h-[36px] px-4 rounded-lg font-medium text-sm whitespace-nowrap flex-shrink-0 transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer border-[2px]',
+                'min-h-[40px] px-4 rounded-xl font-medium text-sm whitespace-nowrap flex-shrink-0 snap-start transition-all duration-200 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer border-[2px] active:scale-95',
                 isActive
                   ? 'bg-[var(--color-text)] text-white border-[var(--color-text)]'
                   : 'bg-[var(--color-surface)] text-[var(--color-text)] border-[var(--color-border)] hover:border-[var(--color-text)] hover:bg-[var(--color-primary-hover)]',

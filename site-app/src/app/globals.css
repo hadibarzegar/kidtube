@@ -158,6 +158,111 @@ body {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* ─── Kid-Friendly Animations ─── */
+
+/* Like button heart burst */
+@keyframes kidtube-heart-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.4); }
+  50% { transform: scale(0.9); }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Particles that fly out from like/subscribe */
+@keyframes kidtube-particle {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+}
+
+/* Bookmark sparkle twinkle */
+@keyframes kidtube-sparkle {
+  0% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+  100% { opacity: 0; transform: scale(0) rotate(360deg); }
+}
+
+/* Thumbnail card wiggle on hover */
+@keyframes kidtube-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-1.5deg); }
+  75% { transform: rotate(1.5deg); }
+}
+
+/* Staggered card entrance */
+@keyframes kidtube-card-enter {
+  from { opacity: 0; transform: translateY(24px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Fire flicker for streak */
+@keyframes kidtube-fire-flicker {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.15) rotate(-5deg); }
+  50% { transform: scale(1.05) rotate(3deg); }
+  75% { transform: scale(1.2) rotate(-3deg); }
+}
+
+/* Badge shimmer sweep */
+@keyframes kidtube-shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* Badge pop-in */
+@keyframes kidtube-badge-pop {
+  0% { opacity: 0; transform: scale(0.3) rotate(-15deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(3deg); }
+  70% { transform: scale(0.95) rotate(-1deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* Countdown pulse glow */
+@keyframes kidtube-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,138,122,0.4); }
+  50% { box-shadow: 0 0 20px 8px rgba(255,138,122,0.3); }
+}
+
+/* Button bounce (for countdown play button) */
+@keyframes kidtube-btn-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Bottom tab icon bounce */
+@keyframes kidtube-tab-bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.85); }
+  50% { transform: scale(1.15); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* Colorful skeleton wave */
+@keyframes kidtube-skeleton-wave {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Mascot gentle float */
+@keyframes kidtube-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Mascot bubble pop-in */
+@keyframes kidtube-bubble-pop {
+  0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+  60% { opacity: 1; transform: scale(1.05) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Subscribe confetti burst */
+@keyframes kidtube-confetti {
+  0% { opacity: 1; transform: translate(0,0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--cx), var(--cy)) rotate(var(--cr)); }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .clay-card,
@@ -169,6 +274,29 @@ body {
     transition: none;
     transform: none;
   }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Skeleton colorful shimmer */
+.kidtube-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 0%,
+    var(--pastel-peach) 15%,
+    var(--pastel-blue) 30%,
+    var(--pastel-mint) 45%,
+    var(--pastel-lilac) 60%,
+    var(--pastel-yellow) 75%,
+    var(--color-border) 100%
+  );
+  background-size: 200% 100%;
+  animation: kidtube-skeleton-wave 2.5s ease-in-out infinite;
 }
 
 /* ─── Vidstack Player Overrides ─── */
@@ -197,6 +325,23 @@ body {
 .vds-tooltip-content,
 [data-media-player] [data-media-captions] {
   font-family: 'Vazirmatn', system-ui, sans-serif !important;
+}
+
+/* Mobile settings modal (portaled outside player) — font + RTL fix */
+.vds-menu-items {
+  font-family: 'Vazirmatn', system-ui, sans-serif !important;
+  direction: rtl !important;
+}
+
+.vds-menu-items * {
+  font-family: inherit !important;
+}
+
+/* Keep sliders and toggle switches LTR so their internals don't break */
+.vds-menu-items .vds-slider,
+.vds-menu-items .vds-slider *,
+.vds-menu-items .vds-menu-checkbox {
+  direction: ltr !important;
 }
 
 /* ─── Kid Mode ─── */
@@ -267,4 +412,42 @@ body {
 
 [data-theme="dark"] .clay-frosted {
   background: rgba(26, 26, 46, 0.9);
+}
+
+/* Ocean theme frosted */
+[data-theme="ocean"] .clay-frosted {
+  background: rgba(232, 244, 248, 0.9);
+}
+
+/* ─── Mobile Enhancements ─── */
+@media (max-width: 767px) {
+  /* Disable hover transforms on touch devices to prevent sticky hover states */
+  .clay-card:hover {
+    transform: none;
+  }
+
+  /* Smaller clay radius on mobile for tighter layouts */
+  :root {
+    --clay-radius: 16px;
+    --clay-radius-sm: 12px;
+    --clay-radius-xs: 10px;
+  }
+
+  /* Tighter padding on mobile home page */
+  .clay-card {
+    border-width: 2px;
+  }
+}
+
+/* Improve tap highlighting on mobile */
+@media (hover: none) {
+  .clay-card:active {
+    transform: scale(0.97);
+    box-shadow: var(--clay-shadow-press);
+  }
+
+  .clay-btn:active {
+    transform: scale(0.95);
+    box-shadow: var(--clay-shadow-press);
+  }
 }

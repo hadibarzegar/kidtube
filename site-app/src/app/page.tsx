@@ -127,7 +127,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         {continueWatching.length > 0 && (
           <HorizontalSection title="ادامه تماشا" seeAllHref="/history">
             {continueWatching.map((item, i) => (
-              <div key={item.id} className="min-w-[240px] max-w-[280px] flex-shrink-0">
+              <div key={item.id} className="min-w-[160px] w-[42vw] max-w-[280px] flex-shrink-0 snap-start">
                 <ThumbnailCard
                   title={item.title}
                   thumbnail={item.thumbnail}
@@ -146,7 +146,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             {trending.map((ep, i) => {
               const channel = channelMap.get(ep.channel_id)
               return (
-                <div key={ep.id} className="min-w-[240px] max-w-[280px] flex-shrink-0">
+                <div key={ep.id} className="min-w-[160px] w-[42vw] max-w-[280px] flex-shrink-0 snap-start">
                   <ThumbnailCard
                     title={ep.title}
                     thumbnail={ep.thumbnail}
@@ -169,7 +169,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             {newEpisodes.map((ep, i) => {
               const channel = channelMap.get(ep.channel_id)
               return (
-                <div key={ep.id} className="min-w-[240px] max-w-[280px] flex-shrink-0">
+                <div key={ep.id} className="min-w-[160px] w-[42vw] max-w-[280px] flex-shrink-0 snap-start">
                   <ThumbnailCard
                     title={ep.title}
                     thumbnail={ep.thumbnail}
@@ -192,7 +192,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             <h2 className="text-lg font-bold text-[var(--color-text)] mb-4 font-display">
               {categoryId ? 'نتایج' : 'همه ویدیوها'}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6">
               {episodes.map((ep, i) => {
                 const channel = channelMap.get(ep.channel_id)
                 return (

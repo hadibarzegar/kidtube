@@ -1,35 +1,44 @@
 'use client'
 
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 const tabs = [
   {
-    label: 'خانه',
+    href: '/browse',
+    color: '#7B5CA0',
+    bgColor: '#EBD9FA',
+    ariaLabel: 'دسته‌بندی',
+    icon: (active: boolean) => (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="7" height="7" rx="2" />
+        <rect x="14" y="3" width="7" height="7" rx="2" />
+        <rect x="14" y="14" width="7" height="7" rx="2" />
+        <rect x="3" y="14" width="7" height="7" rx="2" />
+      </svg>
+    ),
+  },
+  {
     href: '/',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    color: '#C0453A',
+    bgColor: '#FFE0D9',
+    ariaLabel: 'خانه',
+    isCenter: true,
+    icon: (active: boolean) => (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
         <polyline points="9 22 9 12 15 12 15 22" />
       </svg>
     ),
   },
   {
-    label: 'دسته‌بندی',
-    href: '/browse',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="3" y="3" width="7" height="7" />
-        <rect x="14" y="3" width="7" height="7" />
-        <rect x="14" y="14" width="7" height="7" />
-        <rect x="3" y="14" width="7" height="7" />
-      </svg>
-    ),
-  },
-  {
-    label: 'جستجو',
     href: '/search',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    color: '#2A7FA0',
+    bgColor: '#D0ECFA',
+    ariaLabel: 'جستجو',
+    icon: (active: boolean) => (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <circle cx="11" cy="11" r="8" />
         <line x1="21" y1="21" x2="16.65" y2="16.65" />
       </svg>
@@ -39,8 +48,8 @@ const tabs = [
 
 export default function BottomTabBar() {
   const pathname = usePathname()
+  const [tappedTab, setTappedTab] = useState<string | null>(null)
 
-  // Hide the bottom tab bar on watch pages to avoid overlapping player controls
   if (pathname.startsWith('/watch/')) return null
 
   function isActive(href: string) {
@@ -48,37 +57,87 @@ export default function BottomTabBar() {
     return pathname.startsWith(href)
   }
 
+  function handleTap(href: string) {
+    setTappedTab(href)
+    setTimeout(() => setTappedTab(null), 500)
+  }
+
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 clay-frosted border-t-[3px] border-[var(--color-border)] md:hidden shadow-[0_-4px_10px_rgba(0,0,0,0.05)]"
+      className="fixed bottom-0 inset-x-0 z-50 md:hidden"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
-      <div className="flex">
-        {tabs.map((tab) => {
-          const active = isActive(tab.href)
-          return (
-            <a
-              key={tab.href}
-              href={tab.href}
-              className={[
-                'flex flex-col items-center justify-center flex-1 min-h-[60px] gap-1 text-xs font-medium transition-colors duration-200',
-                active
-                  ? 'text-[var(--color-primary)]'
-                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
-              ].join(' ')}
-              aria-current={active ? 'page' : undefined}
-            >
-              {active ? (
-                <span className="bg-[var(--color-primary-light)] rounded-xl px-4 py-1.5 flex items-center justify-center">
-                  {tab.icon}
+      <div
+        className="mx-3 mb-2 rounded-[22px] border-[3px] border-[var(--color-border)]"
+        style={{
+          background: 'var(--color-surface)',
+          boxShadow: `
+            0 -2px 20px rgba(0,0,0,0.06),
+            0 4px 16px rgba(0,0,0,0.10),
+            inset 0 1px 0 rgba(255,255,255,0.6),
+            inset 0 -1px 3px rgba(0,0,0,0.04)
+          `,
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+        }}
+      >
+        <div className="flex items-end justify-around px-4 py-2 relative" style={{ minHeight: 56 }}>
+          {tabs.map((tab) => {
+            const active = isActive(tab.href)
+            const tapped = tappedTab === tab.href
+
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                onClick={() => handleTap(tab.href)}
+                className="relative flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] rounded-full"
+                aria-label={tab.ariaLabel}
+                aria-current={active ? 'page' : undefined}
+                style={{ width: 52, height: 52 }}
+              >
+                {/* Bubble background — lifts & scales on active */}
+                <span
+                  className="absolute inset-0 rounded-full transition-all duration-[400ms]"
+                  style={{
+                    background: active ? tab.bgColor : 'transparent',
+                    transform: active
+                      ? tapped
+                        ? 'scale(0.85) translateY(-6px)'
+                        : 'scale(1) translateY(-5px)'
+                      : tapped
+                        ? 'scale(0.9)'
+                        : 'scale(0)',
+                    opacity: active ? 1 : 0,
+                    boxShadow: active
+                      ? `0 4px 12px ${tab.bgColor}, inset 0 -2px 4px rgba(0,0,0,0.06), inset 0 2px 2px rgba(255,255,255,0.5)`
+                      : 'none',
+                    transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  }}
+                />
+
+                {/* Icon */}
+                <span
+                  className="relative z-10 transition-all duration-[400ms]"
+                  style={{
+                    color: active ? tab.color : 'var(--color-text-muted)',
+                    transform: active
+                      ? tapped
+                        ? 'scale(0.85) translateY(-6px)'
+                        : 'scale(1.15) translateY(-5px)'
+                      : tapped
+                        ? 'scale(0.85)'
+                        : 'scale(1)',
+                    transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  }}
+                >
+                  {tab.icon(active)}
                 </span>
-              ) : (
-                tab.icon
-              )}
-              <span>{tab.label}</span>
-            </a>
-          )
-        })}
+
+              </Link>
+            )
+          })}
+        </div>
       </div>
     </nav>
   )

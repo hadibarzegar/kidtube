@@ -162,9 +162,9 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
       </div>
 
       {/* Channel row + action buttons */}
-      <div className="flex items-center justify-between mt-3 gap-3 flex-wrap">
+      <div className="mt-3 space-y-3">
         {/* Channel info + subscribe */}
-        <div className="flex items-center gap-3 min-w-0">
+        <div className="flex items-center justify-between gap-3">
           <a
             href={`/channel/${channel.id}`}
             className="flex items-center gap-2.5 no-underline min-w-0 group"
@@ -190,35 +190,37 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
           />
         </div>
 
-        {/* Action buttons */}
+        {/* Action buttons — horizontal scroll on mobile */}
         {episodeId !== undefined && (
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center bg-[var(--color-surface)] rounded-full border-[2px] border-[var(--color-border)]">
-              <LikeButton
-                episodeId={episodeId}
-                initialLiked={isLiked ?? false}
-                initialLikeCount={episode.like_count ?? 0}
-              />
-              <div className="w-px h-5 bg-[var(--color-border)]" />
-              <BookmarkButton
-                episodeId={episodeId}
-                initialBookmarked={isBookmarked ?? false}
-              />
-              <div className="w-px h-5 bg-[var(--color-border)]" />
-              <ShareButton episodeId={episodeId} title={episode.title} />
+          <div className="overflow-x-auto scrollbar-hide [-webkit-overflow-scrolling:touch]">
+            <div className="flex items-center gap-2 w-max">
+              <div className="flex items-center bg-[var(--color-surface)] rounded-full border-[2px] border-[var(--color-border)]">
+                <LikeButton
+                  episodeId={episodeId}
+                  initialLiked={isLiked ?? false}
+                  initialLikeCount={episode.like_count ?? 0}
+                />
+                <div className="w-px h-5 bg-[var(--color-border)]" />
+                <BookmarkButton
+                  episodeId={episodeId}
+                  initialBookmarked={isBookmarked ?? false}
+                />
+                <div className="w-px h-5 bg-[var(--color-border)]" />
+                <ShareButton episodeId={episodeId} title={episode.title} />
+              </div>
+              <button
+                onClick={() => setShowPlaylistModal(true)}
+                className="h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 bg-[var(--color-surface)] border-[2px] border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors cursor-pointer"
+                title="افزودن به لیست پخش"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </button>
+              <ReportButton episodeId={episodeId} />
+              <BlockEpisodeButton episodeId={episodeId} childId={activeChildId ?? null} />
             </div>
-            <button
-              onClick={() => setShowPlaylistModal(true)}
-              className="h-9 w-9 rounded-full flex items-center justify-center bg-[var(--color-surface)] border-[2px] border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors cursor-pointer"
-              title="افزودن به لیست پخش"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-            </button>
-            <ReportButton episodeId={episodeId} />
-            <BlockEpisodeButton episodeId={episodeId} childId={activeChildId ?? null} />
           </div>
         )}
       </div>

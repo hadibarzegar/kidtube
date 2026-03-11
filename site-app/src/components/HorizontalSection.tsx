@@ -10,8 +10,8 @@ export default function HorizontalSection({ title, seeAllHref, children }: Horiz
   return (
     <section className="mb-8">
       <SectionHeader title={title} seeAllHref={seeAllHref} />
-      <div className="overflow-x-auto scrollbar-hide">
-        <div className="flex gap-4 pb-2">
+      <div className="overflow-x-auto scrollbar-hide [-webkit-overflow-scrolling:touch]">
+        <div className="flex gap-3 sm:gap-4 pb-2 snap-x snap-mandatory">
           {children}
         </div>
       </div>

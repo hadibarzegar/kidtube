@@ -85,7 +85,7 @@ export default function ProfilePicker({ children, activeChildId, hasPIN }: Profi
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 mb-8">
         {children.map((child) => (
           <button
             key={child.id}
@@ -97,13 +97,13 @@ export default function ProfilePicker({ children, activeChildId, hasPIN }: Profi
               }
             }}
             disabled={loading !== null}
-            className={`flex flex-col items-center gap-3 p-6 rounded-[20px] border-[3px] transition-all duration-200 cursor-pointer ${
+            className={`flex flex-col items-center gap-2 sm:gap-3 p-4 sm:p-6 rounded-[20px] border-[3px] transition-all duration-200 cursor-pointer active:scale-95 ${
               activeChildId === child.id
                 ? 'border-[var(--color-primary)] bg-[var(--color-primary-hover)] shadow-[var(--clay-shadow-hover)]'
                 : 'border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--clay-shadow)] hover:shadow-[var(--clay-shadow-hover)] hover:border-[var(--color-primary)]'
             } ${loading === child.id ? 'opacity-70' : ''}`}
           >
-            <span className="text-5xl" role="img" aria-label={child.avatar}>
+            <span className="text-4xl sm:text-5xl" role="img" aria-label={child.avatar}>
               {AVATAR_EMOJIS[child.avatar] ?? '⭐'}
             </span>
             <span className="text-sm font-bold text-[var(--color-text)]">{child.name}</span>
@@ -114,7 +114,7 @@ export default function ProfilePicker({ children, activeChildId, hasPIN }: Profi
         {/* Add Child button */}
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex flex-col items-center justify-center gap-3 p-6 rounded-[20px] border-[3px] border-dashed border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--clay-shadow)] hover:shadow-[var(--clay-shadow-hover)] hover:border-[var(--color-primary)] transition-all duration-200 cursor-pointer"
+          className="flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 rounded-[20px] border-[3px] border-dashed border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--clay-shadow)] hover:shadow-[var(--clay-shadow-hover)] hover:border-[var(--color-primary)] transition-all duration-200 cursor-pointer active:scale-95"
         >
           <span className="text-4xl text-[var(--color-text-muted)]">+</span>
           <span className="text-sm font-medium text-[var(--color-text-muted)]">افزودن کودک</span>

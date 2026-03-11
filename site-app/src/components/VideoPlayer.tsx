@@ -6,17 +6,19 @@ import {
   MediaProvider,
   Track,
   Tooltip,
+  Menu,
   useMediaState,
   type MediaPlayerInstance,
 } from '@vidstack/react'
 import {
   DefaultVideoLayout,
   defaultLayoutIcons,
+  useDefaultLayoutContext,
 } from '@vidstack/react/player/layouts/default'
 import '@vidstack/react/player/styles/default/theme.css'
 import '@vidstack/react/player/styles/default/layouts/video.css'
 import { persianTranslations } from '@/lib/vidstack-fa'
-import { CaptionSettings, loadPrefs } from './CaptionSettings'
+import { loadPrefs } from './CaptionSettings'
 import type { CaptionPrefs } from './CaptionSettings'
 import { useSoundContext } from './SoundProvider'
 
@@ -48,7 +50,6 @@ export function VideoPlayer({
   isTheater = false,
 }: VideoPlayerProps) {
   const playerRef = useRef<MediaPlayerInstance>(null)
-  const [showCaptionSettings, setShowCaptionSettings] = useState(false)
   const [longPressActive, setLongPressActive] = useState(false)
   const [seekRipple, setSeekRipple] = useState<{ side: 'left' | 'right'; visible: boolean }>({ side: 'left', visible: false })
   const [swipeIndicator, setSwipeIndicator] = useState<{
@@ -71,7 +72,22 @@ export function VideoPlayer({
   }, [])
 
   // --- Long-press for 2x speed ---
+  const isControlElement = useCallback((target: EventTarget | null): boolean => {
+    if (!(target instanceof Element)) return false
+    // Check if the touch target is an interactive player control (button, slider, menu)
+    // Use Element (not HTMLElement) so SVG elements inside buttons are also detected
+    return !!(
+      target.closest('button') ||
+      target.closest('[data-media-slider]') ||
+      target.closest('.vds-menu') ||
+      target.closest('[role="slider"]') ||
+      target.closest('[role="menu"]') ||
+      target.closest('.vds-controls-group')
+    )
+  }, [])
+
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (isControlElement(e.target)) return
     const touch = e.touches[0]
     touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() }
 
@@ -82,9 +98,10 @@ export function VideoPlayer({
       player.playbackRate = 2
       setLongPressActive(true)
     }, 500)
-  }, [])
+  }, [isControlElement])
 
   const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (isControlElement(e.target)) return
     const start = touchStartRef.current
     if (!start) return
     const touch = e.touches[0]
@@ -124,9 +141,23 @@ export function VideoPlayer({
         setSwipeIndicator({ type: 'brightness', value: brightnessRef.current })
       }
     }
-  }, [])
+  }, [isControlElement])
 
   const handleTouchEnd = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (isControlElement(e.target)) {
+      // Still clean up long-press state if active
+      if (longPressTimerRef.current) {
+        clearTimeout(longPressTimerRef.current)
+        longPressTimerRef.current = null
+      }
+      if (longPressActive) {
+        const player = playerRef.current
+        if (player) player.playbackRate = prevPlaybackRateRef.current
+        setLongPressActive(false)
+      }
+      touchStartRef.current = null
+      return
+    }
     // Double-tap seek with ripple indicator
     const now = Date.now()
     const delta = now - lastTapRef.current
@@ -163,7 +194,7 @@ export function VideoPlayer({
 
     touchStartRef.current = null
     setTimeout(() => setSwipeIndicator(null), 800)
-  }, [longPressActive, isKidMode, playSound])
+  }, [longPressActive, isKidMode, playSound, isControlElement])
 
   // --- Caption prefs ---
   useEffect(() => {
@@ -265,8 +296,24 @@ export function VideoPlayer({
             ) : null,
             // Caption settings button after captions button
             afterCaptionButton: (
-              <CaptionSettingsButton onClick={() => setShowCaptionSettings((v) => !v)} />
+              <CaptionSettingsMenu />
             ),
+            // Mobile (small) layout: place custom buttons in available slots
+            smallLayout: {
+              pipButton: isKidMode ? null : undefined,
+              settingsMenu: isKidMode ? null : undefined,
+              afterCaptionButton: (
+                <CaptionSettingsMenu />
+              ),
+              beforeFullscreenButton: !isKidMode ? (
+                <>
+                  <SleepTimerSlotButton onSleep={handleSleep} />
+                  {onTheaterToggle && (
+                    <TheaterButton isTheater={isTheater} onToggle={onTheaterToggle} />
+                  )}
+                </>
+              ) : null,
+            },
           }}
         />
 
@@ -319,14 +366,6 @@ export function VideoPlayer({
           {seekRipple.side === 'right' ? '+۱۰' : '−۱۰'}
         </div>
       )}
-
-
-      {/* Caption settings panel */}
-      {showCaptionSettings && (
-        <div className="absolute top-14 left-3 z-30">
-          <CaptionSettings onClose={() => setShowCaptionSettings(false)} />
-        </div>
-      )}
     </div>
   )
 }
@@ -338,7 +377,7 @@ function TheaterButton({ isTheater, onToggle }: { isTheater: boolean; onToggle: 
     <Tooltip.Root>
       <Tooltip.Trigger asChild>
         <button
-          onClick={onToggle}
+          onPointerUp={onToggle}
           className="vds-button"
           aria-label={isTheater ? 'خروج از حالت تئاتر' : 'حالت تئاتر'}
         >
@@ -357,10 +396,12 @@ function TheaterButton({ isTheater, onToggle }: { isTheater: boolean; onToggle: 
 }
 
 function SleepTimerSlotButton({ onSleep }: { onSleep: () => void }) {
-  const [open, setOpen] = useState(false)
   const [remainingMs, setRemainingMs] = useState<number | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const endTimeRef = useRef<number>(0)
+  const menuCloseRef = useRef<(() => void) | null>(null)
+  const { isSmallLayout, noModal } = useDefaultLayoutContext()
+  const placement = noModal ? 'top end' as const : !isSmallLayout ? 'top end' as const : null
 
   const PRESETS = [
     { label: '۱۵ دقیقه', minutes: 15 },
@@ -381,7 +422,7 @@ function SleepTimerSlotButton({ onSleep }: { onSleep: () => void }) {
     clearTimer()
     endTimeRef.current = Date.now() + minutes * 60 * 1000
     setRemainingMs(minutes * 60 * 1000)
-    setOpen(false)
+    menuCloseRef.current?.()
 
     timerRef.current = setInterval(() => {
       const left = endTimeRef.current - Date.now()
@@ -409,14 +450,10 @@ function SleepTimerSlotButton({ onSleep }: { onSleep: () => void }) {
   }
 
   return (
-    <>
+    <Menu.Root onOpen={() => {}} onClose={() => {}}>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
-          <button
-            onClick={() => setOpen(!open)}
-            className="vds-button"
-            aria-label="تایمر خواب"
-          >
+          <Menu.Button className="vds-button" aria-label="تایمر خواب">
             {remainingMs ? (
               <span className="text-[10px] font-bold leading-none text-white">{formatTime(remainingMs)}</span>
             ) : (
@@ -424,33 +461,36 @@ function SleepTimerSlotButton({ onSleep }: { onSleep: () => void }) {
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
             )}
-          </button>
+          </Menu.Button>
         </Tooltip.Trigger>
         <Tooltip.Content className="vds-tooltip-content" placement="top">
           تایمر خواب
         </Tooltip.Content>
       </Tooltip.Root>
 
-      {open && (
-        <div
-          dir="rtl"
-          className="absolute bottom-[var(--media-controls-group-height,48px)] right-0 z-50 w-44 p-3 bg-[var(--color-surface)] border-[3px] border-[var(--color-border)] rounded-[var(--clay-radius)] shadow-[var(--clay-shadow)] text-sm"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-bold text-[var(--color-text)]">تایمر خواب</span>
-            <button
-              onClick={() => setOpen(false)}
-              className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center text-xs hover:bg-black/20"
-            >
-              ✕
-            </button>
+      <Menu.Items className="vds-menu-items" placement={placement} offset={8}>
+        <div dir="rtl" style={{ padding: '6px 8px 8px' }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary-color, #888)', marginBottom: 6, paddingInline: 2 }}>
+            تایمر خواب
           </div>
-          <div className="flex flex-col gap-1.5">
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
             {PRESETS.map((p) => (
               <button
                 key={p.minutes}
-                onClick={() => startTimer(p.minutes)}
-                className="w-full text-right py-1.5 px-2 rounded-lg hover:bg-[var(--color-primary-hover)] text-[var(--color-text)] transition-colors cursor-pointer"
+                onPointerUp={() => startTimer(p.minutes)}
+                role="menuitem"
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: 14,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  border: 'none',
+                  outline: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-color, #333)',
+                  backgroundColor: 'var(--item-hover-bg, rgba(150,150,150,0.15))',
+                  transition: 'background-color 0.15s ease',
+                }}
               >
                 {p.label}
               </button>
@@ -458,37 +498,175 @@ function SleepTimerSlotButton({ onSleep }: { onSleep: () => void }) {
           </div>
           {remainingMs && (
             <button
-              onClick={clearTimer}
-              className="w-full mt-2 py-1.5 px-2 rounded-lg bg-[var(--color-error)]/10 text-[var(--color-error)] text-center font-medium cursor-pointer hover:bg-[var(--color-error)]/20 transition-colors"
+              onPointerUp={() => { clearTimer(); menuCloseRef.current?.() }}
+              role="menuitem"
+              style={{
+                width: '100%',
+                marginTop: 6,
+                padding: '5px 10px',
+                borderRadius: 14,
+                fontSize: 13,
+                fontWeight: 600,
+                border: 'none',
+                outline: 'none',
+                cursor: 'pointer',
+                color: '#fff',
+                backgroundColor: '#dc2626',
+                textAlign: 'center',
+              }}
             >
               لغو تایمر
             </button>
           )}
         </div>
-      )}
-    </>
+      </Menu.Items>
+    </Menu.Root>
   )
 }
 
-function CaptionSettingsButton({ onClick }: { onClick: () => void }) {
+function CaptionSettingsMenu() {
+  const { isSmallLayout, noModal } = useDefaultLayoutContext()
+  const placement = noModal ? 'top end' as const : !isSmallLayout ? 'top end' as const : null
+
   return (
-    <Tooltip.Root>
-      <Tooltip.Trigger asChild>
-        <button
-          onClick={onClick}
-          className="vds-button"
-          aria-label="تنظیمات زیرنویس"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="2" />
-            <path d="M7 15h4M13 15h4M7 11h10" />
-          </svg>
-        </button>
-      </Tooltip.Trigger>
-      <Tooltip.Content className="vds-tooltip-content" placement="top">
-        تنظیمات زیرنویس
-      </Tooltip.Content>
-    </Tooltip.Root>
+    <Menu.Root>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <Menu.Button className="vds-button" aria-label="تنظیمات زیرنویس">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="M7 15h4M13 15h4M7 11h10" />
+            </svg>
+          </Menu.Button>
+        </Tooltip.Trigger>
+        <Tooltip.Content className="vds-tooltip-content" placement="top">
+          تنظیمات زیرنویس
+        </Tooltip.Content>
+      </Tooltip.Root>
+
+      <Menu.Items className="vds-menu-items" placement={placement} offset={8}>
+        <CaptionSettingsContent />
+      </Menu.Items>
+    </Menu.Root>
+  )
+}
+
+function CaptionSettingsContent() {
+  const [prefs, setPrefs] = useState<CaptionPrefs>(loadPrefs())
+
+  const update = (key: keyof CaptionPrefs, value: string) => {
+    const next = { ...prefs, [key]: value }
+    setPrefs(next)
+    try {
+      localStorage.setItem('caption_prefs', JSON.stringify(next))
+      window.dispatchEvent(new Event('caption_prefs_changed'))
+    } catch { /* ignore */ }
+  }
+
+  const fontSizeOptions = [
+    { label: 'کوچک', value: '0.8em' },
+    { label: 'متوسط', value: '1em' },
+    { label: 'بزرگ', value: '1.4em' },
+  ] as const
+
+  const bgOpacityOptions = [
+    { label: '۰٪', value: '0' },
+    { label: '۵۰٪', value: '0.5' },
+    { label: '۷۵٪', value: '0.75' },
+    { label: '۱۰۰٪', value: '1' },
+  ] as const
+
+  const textColorOptions = [
+    { label: 'سفید', value: '#fff', color: '#ffffff' },
+    { label: 'زرد', value: '#ff0', color: '#ffff00' },
+  ] as const
+
+  const chipStyle = (selected: boolean): React.CSSProperties => ({
+    padding: '5px 14px',
+    borderRadius: '16px',
+    fontSize: '13px',
+    fontWeight: selected ? 600 : 500,
+    border: 'none',
+    cursor: 'pointer',
+    color: selected ? '#fff' : 'var(--text-color, #333)',
+    backgroundColor: selected ? '#6d28d9' : 'var(--item-hover-bg, rgba(150,150,150,0.2))',
+    transition: 'all 0.15s ease',
+  })
+
+  return (
+    <div dir="rtl" style={{ padding: '8px 10px 10px', minWidth: 200 }}>
+      {/* Font size */}
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary-color)', marginBottom: 6 }}>
+          اندازه متن
+        </div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {fontSizeOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onPointerUp={() => update('fontSize', opt.value)}
+              style={chipStyle(prefs.fontSize === opt.value)}
+              role="menuitemradio"
+              aria-checked={prefs.fontSize === opt.value}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Background opacity */}
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary-color)', marginBottom: 6 }}>
+          شفافیت پس‌زمینه
+        </div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {bgOpacityOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onPointerUp={() => update('bgOpacity', opt.value)}
+              style={chipStyle(prefs.bgOpacity === opt.value)}
+              role="menuitemradio"
+              aria-checked={prefs.bgOpacity === opt.value}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Text color */}
+      <div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary-color)', marginBottom: 6 }}>
+          رنگ متن
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {textColorOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onPointerUp={() => update('textColor', opt.value)}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: '50%',
+                backgroundColor: opt.color,
+                border: prefs.textColor === opt.value
+                  ? '3px solid #6d28d9'
+                  : '2px solid rgba(150,150,150,0.4)',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                transform: prefs.textColor === opt.value ? 'scale(1.15)' : 'scale(1)',
+                boxShadow: prefs.textColor === opt.value ? '0 0 0 2px rgba(109,40,217,0.3)' : 'none',
+              }}
+              role="menuitemradio"
+              aria-checked={prefs.textColor === opt.value}
+              aria-label={opt.label}
+              title={opt.label}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
 
