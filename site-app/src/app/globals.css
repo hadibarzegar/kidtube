@@ -177,7 +177,9 @@ body {
   --media-brand: var(--color-primary);
   --media-focus-ring-color: var(--color-primary);
   --media-font-family: 'Vazirmatn', system-ui, sans-serif;
+  --media-user-font-family: 'Vazirmatn', system-ui, sans-serif;
   --media-controls-color: #fff;
+  --font-family: 'Vazirmatn', system-ui, sans-serif;
   font-family: 'Vazirmatn', system-ui, sans-serif;
 }
 
@@ -189,12 +191,10 @@ body {
   --media-slider-thumb-border: 2.5px solid var(--color-primary);
 }
 
-/* Menus (quality, speed, captions) */
-[data-media-player] [data-media-menu] {
-  font-family: 'Vazirmatn', system-ui, sans-serif;
-}
-
-/* Captions — Vazirmatn font */
+/* Menus, tooltips, captions — ensure Vazirmatn everywhere */
+[data-media-player] .vds-menu,
+[data-media-player] .vds-menu-items,
+.vds-tooltip-content,
 [data-media-player] [data-media-captions] {
   font-family: 'Vazirmatn', system-ui, sans-serif !important;
 }

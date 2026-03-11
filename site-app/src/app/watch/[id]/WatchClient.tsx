@@ -96,8 +96,8 @@ export default function WatchClient({ episode, nextEpisode, channel, isBookmarke
       >
         {/* Player */}
         <div
-          className={`relative overflow-hidden bg-black w-full aspect-video mx-auto ${
-            isTheater ? 'theater-mode-player max-h-[85vh] rounded-none' : 'rounded-2xl max-h-[70vh]'
+          className={`relative bg-black w-full aspect-video mx-auto ${
+            isTheater ? 'theater-mode-player max-h-[85vh] rounded-none' : 'overflow-hidden rounded-2xl max-h-[70vh]'
           }`}
         >
           <VideoPlayer

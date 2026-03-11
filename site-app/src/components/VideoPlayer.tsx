@@ -5,6 +5,7 @@ import {
   MediaPlayer,
   MediaProvider,
   Track,
+  Tooltip,
   useMediaState,
   type MediaPlayerInstance,
 } from '@vidstack/react'
@@ -17,7 +18,6 @@ import '@vidstack/react/player/styles/default/layouts/video.css'
 import { persianTranslations } from '@/lib/vidstack-fa'
 import { CaptionSettings, loadPrefs } from './CaptionSettings'
 import type { CaptionPrefs } from './CaptionSettings'
-import SleepTimer from './SleepTimer'
 import { useSoundContext } from './SoundProvider'
 
 interface VideoPlayerProps {
@@ -254,11 +254,15 @@ export function VideoPlayer({
             // Hide PiP and settings in kid mode
             pipButton: isKidMode ? null : undefined,
             settingsMenu: isKidMode ? null : undefined,
-            // Theater mode button before fullscreen
-            beforeFullscreenButton:
-              onTheaterToggle && !isKidMode ? (
-                <TheaterButton isTheater={isTheater} onToggle={onTheaterToggle} />
-              ) : null,
+            // Sleep timer + theater mode button before fullscreen
+            beforeFullscreenButton: !isKidMode ? (
+              <>
+                <SleepTimerSlotButton onSleep={handleSleep} />
+                {onTheaterToggle && (
+                  <TheaterButton isTheater={isTheater} onToggle={onTheaterToggle} />
+                )}
+              </>
+            ) : null,
             // Caption settings button after captions button
             afterCaptionButton: (
               <CaptionSettingsButton onClick={() => setShowCaptionSettings((v) => !v)} />
@@ -316,16 +320,10 @@ export function VideoPlayer({
         </div>
       )}
 
-      {/* Sleep timer — rendered as overlay button, not inside Vidstack menu */}
-      {!isKidMode && (
-        <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <SleepTimer onSleep={handleSleep} />
-        </div>
-      )}
 
       {/* Caption settings panel */}
       {showCaptionSettings && (
-        <div className="absolute top-14 right-3 z-30">
+        <div className="absolute top-14 left-3 z-30">
           <CaptionSettings onClose={() => setShowCaptionSettings(false)} />
         </div>
       )}
@@ -337,32 +335,160 @@ export function VideoPlayer({
 
 function TheaterButton({ isTheater, onToggle }: { isTheater: boolean; onToggle: () => void }) {
   return (
-    <button
-      onClick={onToggle}
-      className="vds-button"
-      aria-label={isTheater ? 'خروج از حالت تئاتر' : 'حالت تئاتر'}
-    >
-      {isTheater ? (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 14 10 14 10 20" /><polyline points="20 10 14 10 14 4" /><line x1="14" y1="10" x2="21" y2="3" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
-      ) : (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" /><line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <button
+          onClick={onToggle}
+          className="vds-button"
+          aria-label={isTheater ? 'خروج از حالت تئاتر' : 'حالت تئاتر'}
+        >
+          {isTheater ? (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 14 10 14 10 20" /><polyline points="20 10 14 10 14 4" /><line x1="14" y1="10" x2="21" y2="3" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
+          ) : (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" /><line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
+          )}
+        </button>
+      </Tooltip.Trigger>
+      <Tooltip.Content className="vds-tooltip-content" placement="top">
+        {isTheater ? 'خروج از حالت تئاتر' : 'حالت تئاتر'}
+      </Tooltip.Content>
+    </Tooltip.Root>
+  )
+}
+
+function SleepTimerSlotButton({ onSleep }: { onSleep: () => void }) {
+  const [open, setOpen] = useState(false)
+  const [remainingMs, setRemainingMs] = useState<number | null>(null)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const endTimeRef = useRef<number>(0)
+
+  const PRESETS = [
+    { label: '۱۵ دقیقه', minutes: 15 },
+    { label: '۳۰ دقیقه', minutes: 30 },
+    { label: '۴۵ دقیقه', minutes: 45 },
+    { label: '۶۰ دقیقه', minutes: 60 },
+  ] as const
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+    setRemainingMs(null)
+  }, [])
+
+  const startTimer = useCallback((minutes: number) => {
+    clearTimer()
+    endTimeRef.current = Date.now() + minutes * 60 * 1000
+    setRemainingMs(minutes * 60 * 1000)
+    setOpen(false)
+
+    timerRef.current = setInterval(() => {
+      const left = endTimeRef.current - Date.now()
+      if (left <= 0) {
+        clearTimer()
+        onSleep()
+      } else {
+        setRemainingMs(left)
+      }
+    }, 1000)
+  }, [clearTimer, onSleep])
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
+
+  const formatTime = (ms: number) => {
+    const totalSec = Math.ceil(ms / 1000)
+    const m = Math.floor(totalSec / 60)
+    const s = totalSec % 60
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+      .replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d])
+  }
+
+  return (
+    <>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <button
+            onClick={() => setOpen(!open)}
+            className="vds-button"
+            aria-label="تایمر خواب"
+          >
+            {remainingMs ? (
+              <span className="text-[10px] font-bold leading-none text-white">{formatTime(remainingMs)}</span>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
+        </Tooltip.Trigger>
+        <Tooltip.Content className="vds-tooltip-content" placement="top">
+          تایمر خواب
+        </Tooltip.Content>
+      </Tooltip.Root>
+
+      {open && (
+        <div
+          dir="rtl"
+          className="absolute bottom-[var(--media-controls-group-height,48px)] right-0 z-50 w-44 p-3 bg-[var(--color-surface)] border-[3px] border-[var(--color-border)] rounded-[var(--clay-radius)] shadow-[var(--clay-shadow)] text-sm"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-bold text-[var(--color-text)]">تایمر خواب</span>
+            <button
+              onClick={() => setOpen(false)}
+              className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center text-xs hover:bg-black/20"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {PRESETS.map((p) => (
+              <button
+                key={p.minutes}
+                onClick={() => startTimer(p.minutes)}
+                className="w-full text-right py-1.5 px-2 rounded-lg hover:bg-[var(--color-primary-hover)] text-[var(--color-text)] transition-colors cursor-pointer"
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+          {remainingMs && (
+            <button
+              onClick={clearTimer}
+              className="w-full mt-2 py-1.5 px-2 rounded-lg bg-[var(--color-error)]/10 text-[var(--color-error)] text-center font-medium cursor-pointer hover:bg-[var(--color-error)]/20 transition-colors"
+            >
+              لغو تایمر
+            </button>
+          )}
+        </div>
       )}
-    </button>
+    </>
   )
 }
 
 function CaptionSettingsButton({ onClick }: { onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      className="vds-button"
-      aria-label="تنظیمات زیرنویس"
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="4" width="20" height="16" rx="2" />
-        <path d="M7 15h4M13 15h4M7 11h10" />
-      </svg>
-    </button>
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <button
+          onClick={onClick}
+          className="vds-button"
+          aria-label="تنظیمات زیرنویس"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="M7 15h4M13 15h4M7 11h10" />
+          </svg>
+        </button>
+      </Tooltip.Trigger>
+      <Tooltip.Content className="vds-tooltip-content" placement="top">
+        تنظیمات زیرنویس
+      </Tooltip.Content>
+    </Tooltip.Root>
   )
 }
 
