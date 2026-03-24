@@ -2,29 +2,9 @@
 
 import { useState } from 'react'
 import { authFetch } from '@/lib/api'
-
-const AVATAR_CATEGORIES = [
-  { name: 'حیوانات', avatars: [
-    { key: 'bear', emoji: '🐻' }, { key: 'cat', emoji: '🐱' },
-    { key: 'elephant', emoji: '🐘' }, { key: 'rabbit', emoji: '🐰' },
-    { key: 'dolphin', emoji: '🐬' }, { key: 'penguin', emoji: '🐧' },
-    { key: 'butterfly', emoji: '🦋' }, { key: 'lion', emoji: '🦁' },
-  ]},
-  { name: 'فضا', avatars: [
-    { key: 'rocket', emoji: '🚀' }, { key: 'astronaut', emoji: '👨‍🚀' },
-    { key: 'planet', emoji: '🪐' }, { key: 'star', emoji: '⭐' },
-  ]},
-  { name: 'طبیعت', avatars: [
-    { key: 'flower', emoji: '🌸' }, { key: 'tree', emoji: '🌳' },
-    { key: 'rainbow', emoji: '🌈' }, { key: 'sun', emoji: '☀️' },
-  ]},
-  { name: 'سرگرمی', avatars: [
-    { key: 'robot', emoji: '🤖' }, { key: 'unicorn', emoji: '🦄' },
-    { key: 'wizard', emoji: '🧙' }, { key: 'pirate', emoji: '🏴‍☠️' },
-    { key: 'superhero', emoji: '🦸' }, { key: 'ninja', emoji: '🥷' },
-    { key: 'dragon', emoji: '🐉' }, { key: 'mermaid', emoji: '🧜‍♀️' },
-  ]},
-]
+import type { AvatarConfig } from '@/lib/types'
+import { randomAvatarConfig } from '@/lib/avatar-config'
+import AvatarBuilder from './AvatarBuilder'
 
 const MATURITY_LEVELS = [
   { value: 'all', label: 'همه سنین' },
@@ -41,7 +21,7 @@ interface CreateChildModalProps {
 export default function CreateChildModal({ onCreated, onClose }: CreateChildModalProps) {
   const [name, setName] = useState('')
   const [age, setAge] = useState<number>(5)
-  const [avatar, setAvatar] = useState('bear')
+  const [avatar, setAvatar] = useState<AvatarConfig>(() => randomAvatarConfig())
   const [maturityLevel, setMaturityLevel] = useState('all')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -93,7 +73,7 @@ export default function CreateChildModal({ onCreated, onClose }: CreateChildModa
         if (e.target === e.currentTarget) onClose()
       }}
     >
-      <div className="bg-[var(--color-surface)] rounded-[20px] border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)] p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-[var(--color-surface)] rounded-[20px] border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)] p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <h2 className="text-lg font-bold text-[var(--color-text)] mb-6 text-center">
           افزودن پروفایل کودک
         </h2>
@@ -133,35 +113,18 @@ export default function CreateChildModal({ onCreated, onClose }: CreateChildModa
             />
           </div>
 
-          {/* Avatar */}
+          {/* Avatar Builder */}
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-muted)] mb-2">
               آواتار
             </label>
-            <div className="flex flex-col gap-4">
-              {AVATAR_CATEGORIES.map((category) => (
-                <div key={category.name}>
-                  <p className="text-xs font-medium text-[var(--color-text-muted)] mb-2">{category.name}</p>
-                  <div className="grid grid-cols-4 gap-3">
-                    {category.avatars.map((a) => (
-                      <button
-                        key={a.key}
-                        type="button"
-                        onClick={() => setAvatar(a.key)}
-                        className={`flex items-center justify-center p-3 rounded-2xl border-[3px] transition-all duration-200 cursor-pointer ${
-                          avatar === a.key
-                            ? 'border-[var(--color-primary)] bg-[var(--color-primary-hover)] shadow-[var(--clay-shadow-hover)]'
-                            : 'border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--clay-shadow)] hover:border-[var(--color-primary)]'
-                        }`}
-                      >
-                        <span className="text-3xl" role="img" aria-label={a.key}>
-                          {a.emoji}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+            <div className="bg-[var(--color-bg)] rounded-2xl border-2 border-[var(--color-border)] p-3">
+              <AvatarBuilder
+                value={avatar}
+                onChange={setAvatar}
+                onDone={() => {}}
+                compact
+              />
             </div>
           </div>
 

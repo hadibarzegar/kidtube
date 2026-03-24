@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authFetch } from '@/lib/api'
-import Mascot from './Mascot'
+import AnimatedAvatar from './AnimatedAvatar'
+import { DEFAULT_AVATAR_CONFIG } from '@/lib/avatar-config'
 
 interface TimeLockOverlayProps {
   childId: string
@@ -48,9 +49,9 @@ export default function TimeLockOverlay({ childId }: TimeLockOverlayProps) {
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
       <div className="bg-[var(--color-surface)] rounded-[20px] border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)] p-8 w-full max-w-sm text-center">
-        {/* Sleeping mascot */}
-        <div className="mb-6">
-          <Mascot state="sleeping" size="lg" />
+        {/* Sleeping avatar */}
+        <div className="mb-6 flex justify-center">
+          <AnimatedAvatar config={DEFAULT_AVATAR_CONFIG} expression="sleepy" size="lg" />
         </div>
 
         <h2 className="text-xl font-bold text-[var(--color-text)] mb-2">

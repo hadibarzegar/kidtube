@@ -1,13 +1,25 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useAvatarExpression } from '@/hooks/useAvatarExpression'
 
 interface StreakCounterProps {
   currentStreak: number
 }
 
+const MILESTONES = [3, 7, 30]
+
 export default function StreakCounter({ currentStreak }: StreakCounterProps) {
+  const { triggerExpression } = useAvatarExpression()
   const [displayCount, setDisplayCount] = useState(0)
+  const triggeredRef = useRef(false)
+
+  useEffect(() => {
+    if (!triggeredRef.current && MILESTONES.includes(currentStreak)) {
+      triggeredRef.current = true
+      triggerExpression('dancing')
+    }
+  }, [currentStreak, triggerExpression])
 
   useEffect(() => {
     if (currentStreak <= 0) return

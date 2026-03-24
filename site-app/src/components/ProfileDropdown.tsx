@@ -3,12 +3,16 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { logout } from '@/app/actions/auth'
+import type { ChildProfile } from '@/lib/types'
+import { isLegacyAvatar, LEGACY_AVATAR_EMOJIS, validateAvatarConfig } from '@/lib/avatar-config'
+import AnimatedAvatar from './AnimatedAvatar'
 
 interface ProfileDropdownProps {
   email: string
+  activeChild?: ChildProfile | null
 }
 
-export default function ProfileDropdown({ email }: ProfileDropdownProps) {
+export default function ProfileDropdown({ email, activeChild }: ProfileDropdownProps) {
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -25,6 +29,25 @@ export default function ProfileDropdown({ email }: ProfileDropdownProps) {
 
   const initial = email?.charAt(0)?.toUpperCase() ?? '?'
 
+  function renderAvatarButton() {
+    if (activeChild && !isLegacyAvatar(activeChild.avatar)) {
+      return (
+        <AnimatedAvatar
+          config={validateAvatarConfig(activeChild.avatar)}
+          size="sm"
+        />
+      )
+    }
+    if (activeChild && isLegacyAvatar(activeChild.avatar)) {
+      return (
+        <span className="text-lg" role="img" aria-label={activeChild.avatar}>
+          {LEGACY_AVATAR_EMOJIS[activeChild.avatar] ?? '⭐'}
+        </span>
+      )
+    }
+    return <span>{initial}</span>
+  }
+
   return (
     <div ref={containerRef} className="relative">
       {/* Avatar circle */}
@@ -32,9 +55,9 @@ export default function ProfileDropdown({ email }: ProfileDropdownProps) {
         onClick={() => setOpen((prev) => !prev)}
         aria-label="منوی حساب کاربری"
         aria-expanded={open}
-        className="w-9 h-9 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm cursor-pointer hover:bg-[var(--color-primary-dark)] transition-colors shadow-[var(--clay-shadow)]"
+        className="w-9 h-9 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm cursor-pointer hover:bg-[var(--color-primary-dark)] transition-colors shadow-[var(--clay-shadow)] overflow-hidden"
       >
-        {initial}
+        {renderAvatarButton()}
       </button>
 
       {/* Dropdown menu */}

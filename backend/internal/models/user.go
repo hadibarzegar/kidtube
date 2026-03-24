@@ -10,7 +10,7 @@ import (
 type ChildProfile struct {
 	ID            bson.ObjectID `bson:"_id,omitempty" json:"id"`
 	Name          string        `bson:"name" json:"name"`
-	Avatar        string        `bson:"avatar" json:"avatar"`                 // predefined key: bear, cat, elephant, rabbit, star, dolphin, penguin, butterfly
+	Avatar        any           `bson:"avatar" json:"avatar"`                 // string (legacy emoji key) or AvatarConfig object
 	Age           int           `bson:"age" json:"age"`                       // child's age
 	MaturityLevel      string        `bson:"maturity_level" json:"maturity_level"` // "all-ages", "6+", "9+", "12+"
 	ScreenTimeLimitMin int           `bson:"screen_time_limit_min" json:"screen_time_limit_min"`

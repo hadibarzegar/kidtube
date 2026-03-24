@@ -3,18 +3,10 @@
 import { useState } from 'react'
 import { authFetch } from '@/lib/api'
 import { useRouter } from 'next/navigation'
-import Mascot from '@/components/Mascot'
-
-const AVATARS = [
-  { key: 'bear', emoji: '🐻' },
-  { key: 'cat', emoji: '🐱' },
-  { key: 'elephant', emoji: '🐘' },
-  { key: 'rabbit', emoji: '🐰' },
-  { key: 'star', emoji: '⭐' },
-  { key: 'dolphin', emoji: '🐬' },
-  { key: 'penguin', emoji: '🐧' },
-  { key: 'butterfly', emoji: '🦋' },
-]
+import type { AvatarConfig } from '@/lib/types'
+import { randomAvatarConfig } from '@/lib/avatar-config'
+import AnimatedAvatar from '@/components/AnimatedAvatar'
+import AvatarBuilder from '@/components/AvatarBuilder'
 
 const MATURITY_LEVELS = [
   { value: 'all', label: 'همه سنین' },
@@ -37,7 +29,7 @@ export default function OnboardingPage() {
   // Step 3: Child profile
   const [childName, setChildName] = useState('')
   const [childAge, setChildAge] = useState<number>(5)
-  const [childAvatar, setChildAvatar] = useState('bear')
+  const [childAvatar, setChildAvatar] = useState<AvatarConfig>(() => randomAvatarConfig())
   const [childMaturity, setChildMaturity] = useState('all')
   const [childError, setChildError] = useState<string | null>(null)
   const [childLoading, setChildLoading] = useState(false)
@@ -114,8 +106,12 @@ export default function OnboardingPage() {
         {/* Step 1: Welcome */}
         {step === 1 && (
           <div className="bg-[var(--color-surface)] rounded-[var(--clay-radius)] border-[3px] border-[var(--color-border)] shadow-[var(--clay-shadow)] p-8 text-center" style={{ animation: 'kidtube-slide-up 0.4s ease' }}>
-            <div className="mb-6">
-              <Mascot state="waving" size="lg" />
+            <div className="mb-6 flex justify-center">
+              <AnimatedAvatar
+                config={randomAvatarConfig()}
+                expression="waving"
+                size="lg"
+              />
             </div>
             <h1 className="text-2xl font-bold text-[var(--color-text)] mb-3">
               خوش آمدید!
@@ -248,28 +244,18 @@ export default function OnboardingPage() {
                 />
               </div>
 
-              {/* Avatar */}
+              {/* Avatar Builder */}
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-muted)] mb-2">
                   آواتار
                 </label>
-                <div className="grid grid-cols-4 gap-3">
-                  {AVATARS.map((a) => (
-                    <button
-                      key={a.key}
-                      type="button"
-                      onClick={() => setChildAvatar(a.key)}
-                      className={`flex items-center justify-center p-3 rounded-2xl border-[3px] transition-all duration-200 cursor-pointer ${
-                        childAvatar === a.key
-                          ? 'border-[var(--color-primary)] bg-[var(--color-primary-hover)] shadow-[var(--clay-shadow-hover)]'
-                          : 'border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--clay-shadow)] hover:border-[var(--color-primary)]'
-                      }`}
-                    >
-                      <span className="text-2xl" role="img" aria-label={a.key}>
-                        {a.emoji}
-                      </span>
-                    </button>
-                  ))}
+                <div className="bg-[var(--color-bg)] rounded-2xl border-2 border-[var(--color-border)] p-3">
+                  <AvatarBuilder
+                    value={childAvatar}
+                    onChange={setChildAvatar}
+                    onDone={() => {}}
+                    compact
+                  />
                 </div>
               </div>
 

@@ -3,17 +3,7 @@ import { getSiteSession } from '@/lib/session'
 import { apiServerAuthFetch } from '@/lib/api'
 import type { SiteUser, ChildProfile, ChannelRule } from '@/lib/types'
 import ParentalControlsClient from '@/components/ParentalControlsClient'
-
-const AVATAR_EMOJIS: Record<string, string> = {
-  bear: '🐻',
-  cat: '🐱',
-  elephant: '🐘',
-  rabbit: '🐰',
-  star: '⭐',
-  dolphin: '🐬',
-  penguin: '🐧',
-  butterfly: '🦋',
-}
+import { isLegacyAvatar, LEGACY_AVATAR_EMOJIS } from '@/lib/avatar-config'
 
 interface PageProps {
   params: Promise<{ childId: string }>
@@ -66,8 +56,8 @@ export default async function ChildControlsPage({ params }: PageProps) {
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Child info header */}
         <div className="flex items-center gap-4 mb-8">
-          <span className="text-5xl" role="img" aria-label={child.avatar}>
-            {AVATAR_EMOJIS[child.avatar] ?? '⭐'}
+          <span className="text-5xl" role="img" aria-label={isLegacyAvatar(child.avatar) ? child.avatar : child.name}>
+            {isLegacyAvatar(child.avatar) ? (LEGACY_AVATAR_EMOJIS[child.avatar] ?? '⭐') : '🧑'}
           </span>
           <div>
             <h1 className="text-2xl font-bold text-[var(--color-text)]">

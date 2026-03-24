@@ -1,7 +1,26 @@
+export type ExpressionState =
+  | 'idle' | 'happy' | 'excited' | 'watching' | 'sleepy'
+  | 'celebrating' | 'curious' | 'waving' | 'dancing'
+  | 'laughing' | 'surprised' | 'thinking' | 'sad' | 'cheering'
+
+export type AvatarSize = 'sm' | 'md' | 'lg'
+
+export interface AvatarConfig {
+  hair: string
+  eyes: string
+  eyebrows: string
+  mouth: string
+  skinColor: string
+  hairColor: string
+  earrings: string   // 'none' or variant
+  glasses: string     // 'none' or variant
+  features: string    // 'none', 'blush', 'freckles', 'mustache', 'birthmark'
+}
+
 export interface ChildProfile {
   id: string
   name: string
-  avatar: string
+  avatar: string | AvatarConfig
   age: number
   maturity_level: string
   screen_time_limit_min: number

@@ -419,6 +419,31 @@ body {
   background: rgba(232, 244, 248, 0.9);
 }
 
+/* ─── Avatar Animations ─── */
+@keyframes kidtube-avatar-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(0.8); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes kidtube-avatar-bounce-select {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.15); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1.05); }
+}
+
+@keyframes kidtube-companion-expand {
+  0% { transform: scale(0.5); opacity: 0.7; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes kidtube-companion-collapse {
+  0% { transform: scale(1); }
+  100% { transform: scale(0.5); }
+}
+
 /* ─── Mobile Enhancements ─── */
 @media (max-width: 767px) {
   /* Disable hover transforms on touch devices to prevent sticky hover states */

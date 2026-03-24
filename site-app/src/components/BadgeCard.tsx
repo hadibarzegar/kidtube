@@ -1,5 +1,8 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useAvatarExpression } from '@/hooks/useAvatarExpression'
+
 interface BadgeCardProps {
   badgeType: string
   earnedAt: string
@@ -19,7 +22,13 @@ const BADGE_INFO: Record<string, { emoji: string; label: string }> = {
 }
 
 export default function BadgeCard({ badgeType, earnedAt, index = 0 }: BadgeCardProps) {
+  const { triggerExpression } = useAvatarExpression()
   const info = BADGE_INFO[badgeType] ?? { emoji: '🏅', label: badgeType }
+
+  useEffect(() => {
+    const timer = setTimeout(() => triggerExpression('celebrating'), index * 100 + 300)
+    return () => clearTimeout(timer)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const formattedDate = new Date(earnedAt).toLocaleDateString('fa-IR', {
     year: 'numeric',

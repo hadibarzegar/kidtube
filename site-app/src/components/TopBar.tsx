@@ -13,6 +13,7 @@ export default async function TopBar() {
   const user = await getCurrentUser()
 
   let userEmail: string | null = null
+  let meData: SiteUser | null = null
   if (user) {
     const token = await getSiteSession()
     if (token) {
@@ -21,12 +22,15 @@ export default async function TopBar() {
         if (meRes.ok) {
           const me: SiteUser = await meRes.json()
           userEmail = me.email
+          meData = me
         }
       } catch {
         // Backend unreachable — degrade gracefully to logged-out state
       }
     }
   }
+
+  const activeChild = meData?.child_profiles?.find(c => c.id === meData?.active_child_id) ?? null
 
   return (
     <header className="sticky top-0 z-40 clay-frosted border-b border-[var(--color-border)] shadow-sm">
@@ -74,7 +78,7 @@ export default async function TopBar() {
           {user && userEmail ? (
             <>
               <NotificationBell />
-              <ProfileDropdown email={userEmail} />
+              <ProfileDropdown email={userEmail} activeChild={activeChild} />
             </>
           ) : (
             <Link

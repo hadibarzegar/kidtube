@@ -4,19 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ChildProfile } from '@/lib/types'
 import { authFetch } from '@/lib/api'
+import { isLegacyAvatar, LEGACY_AVATAR_EMOJIS, validateAvatarConfig } from '@/lib/avatar-config'
+import AnimatedAvatar from './AnimatedAvatar'
 import CreateChildModal from './CreateChildModal'
 import KidProofChallenge from './KidProofChallenge'
 import PinModal from './PinModal'
 import ChildPasscodeModal from './ChildPasscodeModal'
-
-const AVATAR_EMOJIS: Record<string, string> = {
-  bear: '🐻', cat: '🐱', elephant: '🐘', rabbit: '🐰',
-  dolphin: '🐬', penguin: '🐧', butterfly: '🦋', lion: '🦁',
-  rocket: '🚀', astronaut: '👨‍🚀', planet: '🪐', star: '⭐',
-  flower: '🌸', tree: '🌳', rainbow: '🌈', sun: '☀️',
-  robot: '🤖', unicorn: '🦄', wizard: '🧙', pirate: '🏴‍☠️',
-  superhero: '🦸', ninja: '🥷', dragon: '🐉', mermaid: '🧜‍♀️',
-}
 
 interface ProfilePickerProps {
   children: ChildProfile[]
@@ -103,9 +96,17 @@ export default function ProfilePicker({ children, activeChildId, hasPIN }: Profi
                 : 'border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--clay-shadow)] hover:shadow-[var(--clay-shadow-hover)] hover:border-[var(--color-primary)]'
             } ${loading === child.id ? 'opacity-70' : ''}`}
           >
-            <span className="text-4xl sm:text-5xl" role="img" aria-label={child.avatar}>
-              {AVATAR_EMOJIS[child.avatar] ?? '⭐'}
-            </span>
+            {isLegacyAvatar(child.avatar) ? (
+              <span className="text-4xl sm:text-5xl" role="img" aria-label={child.avatar}>
+                {LEGACY_AVATAR_EMOJIS[child.avatar] ?? '⭐'}
+              </span>
+            ) : (
+              <AnimatedAvatar
+                config={validateAvatarConfig(child.avatar)}
+                expression="waving"
+                size="md"
+              />
+            )}
             <span className="text-sm font-bold text-[var(--color-text)]">{child.name}</span>
             <span className="text-xs text-[var(--color-text-muted)]">{child.age} ساله</span>
           </button>

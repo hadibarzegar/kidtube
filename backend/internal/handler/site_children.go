@@ -127,7 +127,7 @@ func ListChildren(database *mongo.Database) http.HandlerFunc {
 
 type createChildRequest struct {
 	Name          string `json:"name"`
-	Avatar        string `json:"avatar"`
+	Avatar        any    `json:"avatar"` // string (legacy emoji key) or AvatarConfig object
 	Age           int    `json:"age"`
 	MaturityLevel string `json:"maturity_level"`
 }
@@ -189,7 +189,7 @@ func CreateChild(database *mongo.Database) http.HandlerFunc {
 
 type updateChildRequest struct {
 	Name                string `json:"name"`
-	Avatar              string `json:"avatar"`
+	Avatar              any    `json:"avatar"` // string (legacy emoji key) or AvatarConfig object
 	Age                 int    `json:"age"`
 	MaturityLevel       string `json:"maturity_level"`
 	WatchHistoryPaused  *bool  `json:"watch_history_paused"`

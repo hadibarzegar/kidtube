@@ -3,20 +3,10 @@ import Link from 'next/link'
 import { getSiteSession } from '@/lib/session'
 import { apiServerAuthFetch } from '@/lib/api'
 import type { SiteUser, ChildProfile } from '@/lib/types'
+import { isLegacyAvatar, LEGACY_AVATAR_EMOJIS } from '@/lib/avatar-config'
 
 export const metadata = {
   title: 'کنترل والدین — KidTube',
-}
-
-const AVATAR_EMOJIS: Record<string, string> = {
-  bear: '🐻',
-  cat: '🐱',
-  elephant: '🐘',
-  rabbit: '🐰',
-  star: '⭐',
-  dolphin: '🐬',
-  penguin: '🐧',
-  butterfly: '🦋',
 }
 
 export default async function ParentDashboardPage() {
@@ -62,8 +52,8 @@ export default async function ParentDashboardPage() {
                 href={`/parent/${child.id}`}
                 className="flex flex-col items-center gap-3 p-6 rounded-[20px] border-[3px] border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--clay-shadow)] hover:shadow-[var(--clay-shadow-hover)] hover:border-[var(--color-primary)] transition-all duration-200 no-underline"
               >
-                <span className="text-5xl" role="img" aria-label={child.avatar}>
-                  {AVATAR_EMOJIS[child.avatar] ?? '⭐'}
+                <span className="text-5xl" role="img" aria-label={isLegacyAvatar(child.avatar) ? child.avatar : child.name}>
+                  {isLegacyAvatar(child.avatar) ? (LEGACY_AVATAR_EMOJIS[child.avatar] ?? '⭐') : '🧑'}
                 </span>
                 <span className="text-base font-bold text-[var(--color-text)]">{child.name}</span>
                 <span className="text-xs text-[var(--color-text-muted)]">{child.age} ساله</span>

@@ -7,6 +7,8 @@ import { SidebarProvider } from '@/components/SidebarContext';
 import LayoutShell from '@/components/LayoutShell';
 import ThemeProvider from '@/components/ThemeProvider';
 import SoundProvider from '@/components/SoundProvider';
+import AvatarExpressionProvider from '@/components/AvatarExpressionProvider';
+import AvatarCompanionWrapper from '@/components/AvatarCompanionWrapper';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -28,6 +30,7 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-[var(--color-bg)]">
         <ThemeProvider>
           <SoundProvider>
+            <AvatarExpressionProvider>
               <SidebarProvider>
                 <div className="min-h-screen">
                   <TopBar />
@@ -35,9 +38,11 @@ export default function RootLayout({
                     {children}
                   </LayoutShell>
                   <BottomTabBar />
+                  <AvatarCompanionWrapper />
                   <OnboardingTour />
                 </div>
               </SidebarProvider>
+            </AvatarExpressionProvider>
           </SoundProvider>
         </ThemeProvider>
       </body>

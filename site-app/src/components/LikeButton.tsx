@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { authFetch } from '@/lib/api'
+import { useAvatarExpression } from '@/hooks/useAvatarExpression'
 
 interface LikeButtonProps {
   episodeId: string
@@ -19,6 +20,7 @@ interface Particle {
 const PARTICLE_COLORS = ['#FF8A7A', '#FFD166', '#7EC8E3', '#C4A8E0', '#7ED6A8', '#FFB3D9']
 
 export default function LikeButton({ episodeId, initialLiked, initialLikeCount }: LikeButtonProps) {
+  const { triggerExpression } = useAvatarExpression()
   const [liked, setLiked] = useState(initialLiked)
   const [likeCount, setLikeCount] = useState(initialLikeCount)
   const [loading, setLoading] = useState(false)
@@ -53,6 +55,7 @@ export default function LikeButton({ episodeId, initialLiked, initialLikeCount }
     if (!wasLiked) {
       setAnimating(true)
       spawnParticles()
+      triggerExpression('happy')
       setTimeout(() => setAnimating(false), 500)
     }
 

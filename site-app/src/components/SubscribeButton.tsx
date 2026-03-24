@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { authFetch } from '@/lib/api'
+import { useAvatarExpression } from '@/hooks/useAvatarExpression'
 
 interface SubscribeButtonProps {
   channelId: string
@@ -20,6 +21,7 @@ interface Confetti {
 const CONFETTI_COLORS = ['#FF8A7A', '#FFD166', '#7EC8E3', '#C4A8E0', '#7ED6A8', '#FFB3D9']
 
 export default function SubscribeButton({ channelId, initialSubscribed }: SubscribeButtonProps) {
+  const { triggerExpression } = useAvatarExpression()
   const [subscribed, setSubscribed] = useState(initialSubscribed)
   const [loading, setLoading] = useState(false)
   const [confetti, setConfetti] = useState<Confetti[]>([])
@@ -51,6 +53,7 @@ export default function SubscribeButton({ channelId, initialSubscribed }: Subscr
 
     if (!wasSubscribed) {
       spawnConfetti()
+      triggerExpression('excited')
     }
 
     try {
